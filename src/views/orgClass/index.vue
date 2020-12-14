@@ -1,0 +1,304 @@
+<template lang="html">
+  <div class="app-container">
+    <mod-filter :datas="datas" @query="getData">
+      <template slot="lastBtn">
+        <el-button type="primary" size="mini" @click="edit(0)">新增</el-button>
+        <el-button type="primary" size="mini" @click="remove(0)">删除</el-button>
+      </template>
+      <template slot="enable" slot-scope="scope">
+        <span>{{ scope.value.enable?'启用':'禁用' }}</span>
+      </template>
+      <template slot="oper" slot-scope="scope">
+        <el-button size="mini" type="text" @click="edit(scope.value)">编辑</el-button>
+        <el-button size="mini" type="text" @click="remove(scope.value)">删除</el-button>
+      </template>
+    </mod-filter>
+    <!--新增/编辑界面-->
+    <el-dialog width="50%" :title="subFormData.id?'编辑':'新增'" :visible.sync="dialogFormVisible">
+      <el-form ref="subFormData" :model="subFormData" :rules="subFormDataRule" class="subFormData" label-width="100px">
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="subFormData.name" size="mini" auto-complete="off" />
+        </el-form-item>
+        <el-form-item label="编码" prop="code">
+          <el-input v-model="subFormData.code" size="mini" auto-complete="off" />
+        </el-form-item>
+        <el-form-item label="最大用户数" prop="number">
+          <el-input-number v-model="subFormData.number" :min="0" size="mini" auto-complete="off" />
+        </el-form-item>
+        <el-form-item label="联系方式" prop="phone">
+          <el-input v-model="subFormData.phone" size="mini" auto-complete="off" />
+        </el-form-item>
+        <el-form-item label="地址" prop="address">
+          <el-input v-model="subFormData.address" size="mini" auto-complete="off" />
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="subFormData.remark" size="mini" auto-complete="off" />
+        </el-form-item>
+        <el-form-item label="状态" prop="enable">
+          <el-radio-group v-model="subFormData.enable">
+            <el-radio :label="true">启用</el-radio>
+            <el-radio :label="false">禁用</el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="dialogFormVisible = false">取 消</el-button>
+        <el-button size="mini" type="primary" @click="subForm('subFormData')">确 定</el-button>
+      </div>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import * as api from '@/api/orgClass'
+
+export default {
+  data() {
+    return {
+      dialogFormVisible: false,
+      dialogRowTitle: null,
+      selectionPropList: [],
+      rowData: {
+        id: null,
+        name: null,
+        code: null,
+        phone: null,
+        address: null,
+        remark: null,
+        enable: null
+      },
+      subFormData: {
+        id: null,
+        name: null,
+        code: null,
+        number: 1,
+        phone: null,
+        address: null,
+        remark: null,
+        enable: null
+      },
+      subFormDataRule: {
+        'name': [{
+          required: true,
+          message: '请填写名称'
+        }],
+        'code': [{
+          required: true,
+          message: '请填写编码'
+        }],
+        'number': [{
+          required: true,
+          message: '请填写最大用户数'
+        }],
+        'phone': [{
+          required: true,
+          message: '请填写联系方式'
+        }],
+        'address': [{
+          required: true,
+          message: '请填写地址'
+        }],
+        'enable': [{
+          required: true,
+          message: '请选择状态'
+        }]
+      },
+      tableData: [],
+      params: {
+        currentPage: 1,
+        pageSize: 10
+      },
+      datas: {
+        multipleSelection: [],
+        params: {
+          currentPage: 1,
+          pageSize: 10
+        },
+        table: {
+          selection: true,
+          loading: true
+        },
+        resData: {
+          rows: [],
+          pageSize: 10,
+          currentPage: 1,
+          totalCount: 0
+        },
+        filterList: [
+          {
+            type: 'input',
+            prop: 'name',
+            conditionshow: true,
+            filedShow: true,
+            label: '名称',
+            placeholder: '名称',
+            optList: []
+          },
+          {
+            type: 'input',
+            prop: 'code',
+            conditionshow: true,
+            filedShow: true,
+            label: '编码',
+            placeholder: '编码',
+            optList: []
+          },
+          {
+            type: 'input',
+            prop: 'number',
+            conditionshow: false,
+            filedShow: true,
+            isSearchHide: true,
+            label: '最大用户数',
+            placeholder: '最大用户数',
+            optList: []
+          },
+          {
+            type: 'input',
+            prop: 'phone',
+            conditionshow: true,
+            filedShow: true,
+            label: '联系方式',
+            placeholder: '联系方式',
+            optList: []
+          },
+          {
+            type: 'input',
+            prop: 'address',
+            conditionshow: true,
+            filedShow: true,
+            label: '地址',
+            placeholder: '地址',
+            optList: []
+          },
+          {
+            type: 'input',
+            prop: 'remark',
+            conditionshow: true,
+            filedShow: true,
+            label: '备注',
+            placeholder: '备注',
+            optList: []
+          },
+          {
+            type: 'select',
+            prop: 'enable',
+            conditionshow: true,
+            filedShow: true,
+            slot: true,
+            label: '状态',
+            placeholder: '状态',
+            optList: [{ label: '启用', value: 1 }, { label: '禁用', value: 0 }]
+          },
+          {
+            type: 'input',
+            prop: 'oper',
+            conditionshow: false,
+            filedShow: true,
+            isSearchHide: true,
+            slot: true,
+            label: '操作',
+            placeholder: '操作',
+            optList: []
+          }
+        ]
+      }
+    }
+  },
+  async created() {
+  },
+  mounted() {},
+  methods: {
+    // 删除
+    remove(row) {
+      let items = []
+      if (!row) {
+        if (!this.datas.multipleSelection.length) {
+          this.$message.info('请选择相关数据')
+          return
+        }
+        items = this.datas.multipleSelection.map((value) => {
+          return value['id']
+        })
+      } else {
+        items.push(row.id)
+      }
+      this.$confirm('是否删除?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          api.batchDelete({
+            'items': items
+          }).then(res => {
+            this.$message.success({
+              message: '删除成功'
+            })
+            this.getData()
+            this.dialogFormVisible = false
+          })
+        })
+        .catch(() => {})
+    },
+    subForm(formData) {
+      this.$refs[formData].validate((valid) => {
+        if (valid) {
+          api.submitForm(this[formData]).then(res => {
+            this.$message.success('保存成功')
+            this.getData(this.datas)
+            this.dialogFormVisible = false
+          }).catch(() => {
+          })
+        } else {
+          return false
+        }
+      })
+    },
+    // 新增或编辑页面
+    edit(row) {
+      this.dialogFormVisible = true
+      if (!row) {
+        this.$set(this, 'subFormData', {
+          'name': null,
+          'code': null,
+          'number': null,
+          'phone': null,
+          'address': null,
+          'remark': null,
+          'enable': true
+        })
+        this.$nextTick(() => {
+          this.$refs['subFormData'].resetFields()
+        })
+        return
+      }
+      this.$set(this.subFormData, 'id', row.id)
+      this.$set(this.subFormData, 'name', row.name)
+      this.$set(this.subFormData, 'code', row.code)
+      this.$set(this.subFormData, 'number', row.number)
+      this.$set(this.subFormData, 'phone', row.phone)
+      this.$set(this.subFormData, 'address', row.address)
+      this.$set(this.subFormData, 'remark', row.remark)
+      this.$set(this.subFormData, 'enable', row.enable)
+    },
+    getData(datas = this.datas) {
+      this.$set(this, 'datas', datas)
+      this.$set(this, 'params', datas.params)
+      this.$set(this.datas.table, 'loading', true)
+      this.$set(this.params, 'orgId', this.params.orgName)
+      api.getPage(this.params).then(res => {
+        this.$set(this.datas.resData, 'rows', res.model)
+        this.$set(this.datas.params, 'currentPage', res.currentPage)
+        this.$set(this.datas.params, 'pageSize', res.pageSize)
+        this.$set(this.datas.resData, 'totalCount', res.totalCount)
+        this.$set(this.datas.table, 'loading', false)
+      })
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+
+</style>

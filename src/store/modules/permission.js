@@ -60,7 +60,8 @@ const actions = {
           children.forEach(({ code, name, url }) => {
             childMenu.push({
               path: code,
-              component: () => import(`@/views/${url}`),
+              component: (resolve) => require([`@/views/${url}`], resolve),
+              //component: () => import(`@/views/${url}`),
               meta: { title: name }
             })
           })
@@ -78,7 +79,8 @@ const actions = {
             children: [
               {
                 path: '',
-                component: () => import(`@/views/${url}`),
+                component: (resolve) => require([`@/views/${url}`], resolve),
+                //component: () => import(`@/views/${url}`),
                 meta: { title: name }
               }
             ]

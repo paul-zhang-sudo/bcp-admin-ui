@@ -6,7 +6,7 @@
         <el-button type="primary" size="mini" @click="remove(0)">删除</el-button>
       </template>
       <template slot="enable" slot-scope="scope">
-        <span>{{ scope.value.enable?'启用':'禁用' }}</span>
+        <span>{{ scope.value.enable ? '启用' : '禁用' }}</span>
       </template>
       <template slot="oper" slot-scope="scope">
         <el-button size="mini" type="text" @click="edit(scope.value)">编辑</el-button>
@@ -16,32 +16,47 @@
     <!--新增/编辑界面-->
     <el-dialog width="50%" :title="subFormData.id?'编辑':'新增'" :visible.sync="dialogFormVisible">
       <el-form ref="subFormData" :model="subFormData" :rules="subFormDataRule" class="subFormData" label-width="100px">
-        <el-form-item label="租户" prop="sourceType">
-          <el-select v-model="subFormData.tenantId" size="mini">
-            <el-option v-for="(optItem,optindex) in tenants" :key="optindex" :label="optItem.name" :value="optItem.id" />
-          </el-select>
-        </el-form-item>
         <el-form-item label="名称" prop="name">
-          <el-input v-model="subFormData.name" size="mini" auto-complete="off" />
+          <el-input v-model="subFormData.name" size="mini" auto-complete="off"/>
         </el-form-item>
         <el-form-item label="编码" prop="code">
-          <el-input v-model="subFormData.code" size="mini" auto-complete="off" />
+          <el-input v-model="subFormData.code" size="mini" auto-complete="off"/>
         </el-form-item>
-        <el-form-item label="节点id" prop="nodeId">
-          <el-input v-model="subFormData.nodeId" size="mini" auto-complete="off" />
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="subFormData.remark" size="mini" auto-complete="off" />
-        </el-form-item>
-        <el-form-item label="状态" prop="enable">
-          <el-radio-group v-model="subFormData.enable">
-            <el-radio :label="true">启用</el-radio>
-            <el-radio :label="false">禁用</el-radio>
+        <el-form-item label="计划输入方式">
+          <el-radio-group v-model="planCheckWay">
+            <el-radio :label="1" @change="inputByMenu">菜单选择</el-radio>
+            <el-radio :label="2" @change="inputByCustom">自定义cron</el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item v-if="planCheckWay===1" label="运行计划" prop="plan">
+          <el-select v-model="subFormData.plan" size="mini" auto-complete="off" @change="getCronByPlan">
+            <el-option v-for="(optItem,optindex) in planOptions" :key="optindex" :label="optItem.propvalue"
+                       :value="optItem.propkey"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="planCheckWay===1" v-show="false" label="cron">
+          <el-input v-model="subFormData.cron" size="mini" auto-complete="off"/>
+        </el-form-item>
+        <el-form-item v-if="planCheckWay===2">
+          <cron v-if="showCronBox" v-model="subFormData.cron"></cron>
+        </el-form-item>
+        <el-form-item label="cron" v-if="planCheckWay===2">
+          <el-input v-model="subFormData.cron" size="mini" auto-complete="off">
+            <el-button slot="append" v-if="!showCronBox" icon="el-icon-arrow-up" @click="showCronBox = true"
+                       title="打开图形配置"
+            ></el-button>
+            <el-button slot="append" v-else icon="el-icon-arrow-down" @click="showCronBox = false" title="关闭图形配置"
+            ></el-button>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="绑定service" prop="execService">
+          <el-input v-model="subFormData.execService" size="mini" auto-complete="off"/>
+        </el-form-item>
       </el-form>
+
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="dialogFormVisible = false">取 消</el-button>
+        <el-button size="mini" @click="dialogFormVisible = false;showCronBox=false">取 消</el-button>
         <el-button size="mini" type="primary" @click="subForm('subFormData')">确 定</el-button>
       </div>
     </el-dialog>
@@ -49,11 +64,17 @@
 </template>
 
 <script>
-import * as api from '@/api/frontComputer'
+import * as api from '@/api/task'
+import cron from '@/components/cron/cron'
 
 export default {
+  components: {
+    cron
+  },
   data() {
     return {
+      planOptions: [],
+      planCheckWay: 1,
       tenants: [],
       dialogFormVisible: false,
       dialogRowTitle: null,
@@ -62,19 +83,17 @@ export default {
         id: null,
         name: null,
         code: null,
-        remark: null,
-        tenantId: null,
-        nodeId: null,
-        enable: null
+        plan: null,
+        execService: null,
+        cron: null
       },
       subFormData: {
         id: null,
         name: null,
         code: null,
-        remark: null,
-        tenantId: null,
-        nodeId: null,
-        enable: null
+        plan: null,
+        execService: null,
+        cron: null
       },
       subFormDataRule: {
         'name': [{
@@ -85,18 +104,18 @@ export default {
           required: true,
           message: '请填写编码'
         }],
-        'tenantId': [{
+        'plan': [{
           required: true,
-          message: '请填写租户'
+          message: '请填写运行计划'
         }],
-        'nodeId': [{
+        'execService': [{
           required: true,
-          message: '请填写节点id'
+          message: '请填写绑定service'
         }],
-        'enable': [{
-          required: true,
-          message: '请选择状态'
-        }]
+        'cronExpression': [
+          { required: true, validator: handleCronValidate, trigger: 'blur' }
+        ]
+
       },
       tableData: [],
       params: {
@@ -122,15 +141,6 @@ export default {
         filterList: [
           {
             type: 'input',
-            prop: 'tenant',
-            conditionshow: true,
-            filedShow: true,
-            label: '租户',
-            placeholder: '租户',
-            optList: []
-          },
-          {
-            type: 'input',
             prop: 'name',
             conditionshow: true,
             filedShow: true,
@@ -149,31 +159,21 @@ export default {
           },
           {
             type: 'input',
-            prop: 'nodeId',
-            conditionshow: true,
+            prop: 'planName',
+            conditionshow: false,
             filedShow: true,
-            label: '节点id',
-            placeholder: '节点id',
+            label: '运行计划',
+            placeholder: '运行计划',
             optList: []
           },
           {
             type: 'input',
-            prop: 'remark',
-            conditionshow: true,
+            prop: 'execService',
+            conditionshow: false,
             filedShow: true,
-            label: '备注',
-            placeholder: '备注',
+            label: '绑定service',
+            placeholder: '绑定service',
             optList: []
-          },
-          {
-            type: 'select',
-            prop: 'enable',
-            conditionshow: true,
-            filedShow: true,
-            slot: true,
-            label: '状态',
-            placeholder: '状态',
-            optList: [{ label: '启用', value: 1 }, { label: '禁用', value: 0 }]
           },
           {
             type: 'input',
@@ -187,14 +187,37 @@ export default {
             optList: []
           }
         ]
+      },
+      showCronBox: false
+    }
+    // 校验是否为cron表达式
+    var handleCronValidate = (rule, value, callback) => {
+      if (value) {
+        const parser = require('cron-parser')
+        try {
+          const interval = parser.parseExpression(value)
+          console.log('cronDate:', interval.next().toDate())
+        } catch (e) {
+          callback('非Cron表达式格式，请检查！' + e.message)
+        }
+      } else {
+        callback('Cron表达式不能为空！')
       }
+      callback()
     }
   },
   async created() {
-    this.getTenants()
+    this.getPlanOptions()
   },
-  mounted() {},
+  mounted() {
+  },
   methods: {
+    inputByMenu() {
+      this.subFormData.cron = null
+    },
+    inputByCustom() {
+      this.subFormData.cron = null
+    },
     // 删除
     remove(row) {
       let items = []
@@ -225,11 +248,15 @@ export default {
             this.dialogFormVisible = false
           })
         })
-        .catch(() => {})
+        .catch(() => {
+        })
     },
     subForm(formData) {
+
+      this.showCronBox = false
       this.$refs[formData].validate((valid) => {
         if (valid) {
+          console.log(this[formData])
           api.submitForm(this[formData]).then(res => {
             this.$message.success('保存成功')
             this.getData(this.datas)
@@ -248,11 +275,9 @@ export default {
         this.$set(this, 'subFormData', {
           'name': null,
           'code': null,
-          'number': null,
-          'remark': null,
-          'tenantId': null,
-          'nodeId': null,
-          'enable': true
+          'plan': null,
+          'execService': null,
+          'cron': null
         })
         this.$nextTick(() => {
           this.$refs['subFormData'].resetFields()
@@ -262,10 +287,9 @@ export default {
       this.$set(this.subFormData, 'id', row.id)
       this.$set(this.subFormData, 'name', row.name)
       this.$set(this.subFormData, 'code', row.code)
-      this.$set(this.subFormData, 'remark', row.remark)
-      this.$set(this.subFormData, 'tenantId', row.tenantId)
-      this.$set(this.subFormData, 'nodeId', row.nodeId)
-      this.$set(this.subFormData, 'enable', row.enable)
+      this.$set(this.subFormData, 'plan', row.plan)
+      this.$set(this.subFormData, 'execService', row.execService)
+      this.$set(this.subFormData, 'cron', row.cron)
     },
     getData(datas = this.datas) {
       this.$set(this, 'datas', datas)
@@ -280,12 +304,55 @@ export default {
         this.$set(this.datas.table, 'loading', false)
       })
     },
-    getTenants() {
-      api.getTenants().then(res => {
-        this.tenants = res.model
+    getPlanOptions() {
+      api.getPlanOptions('fw.task.plan').then(res => {
+        this.planOptions = res.model
       }).catch(e => {
         return false
       })
+    },
+    // 定义plan转cron表达式
+    getCronByPlan(plan) {
+      let cron
+      switch (plan) {
+        case '1':
+          cron = '0 0/1 * * * ?'
+          break
+        case '2':
+          cron = '0 0/5 * * * ?'
+          break
+        case '3':
+          cron = '0 0/10 * * * ?'
+          break
+        case '4':
+          cron = '0 0/30 * * * ?'
+          break
+        case '5':
+          cron = '0 0 */1 * * ?'
+          break
+        case '6':
+          cron = '0 0 */3 * * ?'
+          break
+        case '7':
+          cron = '0 0 */6 * * ?'
+          break
+        case '8':
+          cron = '0 0 */12 * * ?'
+          break
+        case '9':
+          cron = '0 0 0 * * ? *'
+          break
+        case '10':
+          cron = '0 0 0 /2 * ? *'
+          break
+        case '11':
+          cron = '0 0 0 0 0 ? *'
+          break
+        case '12':
+          cron = '0 0 0 0 * ? *'
+          break
+      }
+      this.$set(this.subFormData, 'cron', cron)
     }
   }
 }

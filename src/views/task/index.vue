@@ -24,7 +24,7 @@
         </el-form-item>
         <el-form-item label="计划输入方式">
           <el-radio-group v-model="planCheckWay">
-            <el-radio :label="1" @change="inputByMenu">菜单选择</el-radio>
+            <el-radio :label="1" @change="inputByMenu">下拉选择</el-radio>
             <el-radio :label="2" @change="inputByCustom">自定义cron</el-radio>
           </el-radio-group>
         </el-form-item>
@@ -35,21 +35,24 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="planCheckWay===1" v-show="false" label="cron">
+        <el-form-item v-if="planCheckWay===1" v-show="false" label="cron" prop="cron">
           <el-input v-model="subFormData.cron" size="mini" auto-complete="off"/>
         </el-form-item>
-        <el-form-item v-if="planCheckWay===2">
-          <cron v-if="showCronBox" v-model="subFormData.cron"></cron>
+        <el-form-item v-if="planCheckWay===2" label="cron" prop="cron">
+          <el-input v-model="subFormData.cron" size="mini" auto-complete="off"/>
         </el-form-item>
-        <el-form-item label="cron" v-if="planCheckWay===2">
-          <el-input v-model="subFormData.cron" size="mini" auto-complete="off">
-            <el-button slot="append" v-if="!showCronBox" icon="el-icon-arrow-up" @click="showCronBox = true"
-                       title="打开图形配置"
-            ></el-button>
-            <el-button slot="append" v-else icon="el-icon-arrow-down" @click="showCronBox = false" title="关闭图形配置"
-            ></el-button>
-          </el-input>
-        </el-form-item>
+        <!--        <el-form-item v-if="planCheckWay===2">-->
+        <!--          <cron v-if="showCronBox" v-model="subFormData.cron"></cron>-->
+        <!--        </el-form-item>-->
+        <!--        <el-form-item label="cron" v-if="planCheckWay===2">-->
+        <!--          <el-input v-model="subFormData.cron" size="mini" auto-complete="off">-->
+        <!--            <el-button slot="append" v-if="!showCronBox" icon="el-icon-arrow-up" @click="showCronBox = true"-->
+        <!--                       title="打开图形配置"-->
+        <!--            ></el-button>-->
+        <!--            <el-button slot="append" v-else icon="el-icon-arrow-down" @click="showCronBox = false" title="关闭图形配置"-->
+        <!--            ></el-button>-->
+        <!--          </el-input>-->
+        <!--        </el-form-item>-->
         <el-form-item label="绑定service" prop="execService">
           <el-input v-model="subFormData.execService" size="mini" auto-complete="off"/>
         </el-form-item>
@@ -68,9 +71,6 @@ import * as api from '@/api/task'
 import cron from '@/components/cron/cron'
 
 export default {
-  components: {
-    cron
-  },
   data() {
     return {
       planOptions: [],
@@ -112,10 +112,10 @@ export default {
           required: true,
           message: '请填写绑定service'
         }],
-        'cronExpression': [
-          { required: true, validator: handleCronValidate, trigger: 'blur' }
-        ]
-
+        'cron': [{
+          required: true,
+          message: '请填写cron'
+        }]
       },
       tableData: [],
       params: {
@@ -190,21 +190,6 @@ export default {
       },
       showCronBox: false
     }
-    // 校验是否为cron表达式
-    var handleCronValidate = (rule, value, callback) => {
-      if (value) {
-        const parser = require('cron-parser')
-        try {
-          const interval = parser.parseExpression(value)
-          console.log('cronDate:', interval.next().toDate())
-        } catch (e) {
-          callback('非Cron表达式格式，请检查！' + e.message)
-        }
-      } else {
-        callback('Cron表达式不能为空！')
-      }
-      callback()
-    }
   },
   async created() {
     this.getPlanOptions()
@@ -214,9 +199,11 @@ export default {
   methods: {
     inputByMenu() {
       this.subFormData.cron = null
+      this.subFormDataRule.cron[0].required = false
     },
     inputByCustom() {
       this.subFormData.cron = null
+      this.subFormDataRule.cron[0].required = true
     },
     // 删除
     remove(row) {
@@ -252,7 +239,6 @@ export default {
         })
     },
     subForm(formData) {
-
       this.showCronBox = false
       this.$refs[formData].validate((valid) => {
         if (valid) {

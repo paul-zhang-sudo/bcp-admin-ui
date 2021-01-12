@@ -84,3 +84,12 @@ export function getSourceTypeOptions(code) {
   })
 }
 
+// 3、批量下发任务到前置机
+export function batchSendTask(codes) {
+  console.log(codes)
+  return request({
+    url: '/services/fwcore/batchSendTask?codes=' + codes,
+    method: 'post'
+    // params
+  })
+}

@@ -52,7 +52,7 @@ export function batchDelete(params) {
 }
 
 // 5、查询字典
-export function getPlanOptions(code) {
+export function getSourceTypeOptions(code) {
   return request({
     url: '/services/fwcore/props/getPropListByPropCode?code=' + code,
     method: 'get'
@@ -71,6 +71,14 @@ export function getTenants() {
 export function getComputers(tenantId) {
   return request({
     url: '/services/fwcore/getFrontComputerByTenantId/' + tenantId,
+    method: 'get'
+  })
+}
+
+// 6、查询类型
+export function getTypes() {
+  return request({
+    url: '/services/fwcore/taskTypes',
     method: 'get'
   })
 }

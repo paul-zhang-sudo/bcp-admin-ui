@@ -57,8 +57,24 @@
         <el-form-item label="绑定service" prop="execService">
           <el-input v-model="subFormData.execService" size="mini" auto-complete="off"/>
         </el-form-item>
+        <el-form-item label="类型" prop="type">
+          <el-select v-model="subFormData.type" size="mini" auto-complete="off">
+            <el-option v-for="(optItem,optindex) in typeOptions" :key="optindex" :label="optItem.propvalue"
+                       :value="optItem.propkey"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="subFormData.type==='1'" label="绑定用户场景" prop="userCaseId">
+          <el-select v-model="subFormData.userCaseId" size="mini" auto-complete="off">
+            <el-option v-for="(optItem,optindex) in userCaseOptions" :key="optindex" :label="optItem.propvalue"
+                       :value="optItem.propkey"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="subFormData.remark" size="mini" auto-complete="off"/>
+        </el-form-item>
       </el-form>
-
       <div slot="footer" class="dialog-footer">
         <el-button size="mini" @click="dialogFormVisible = false;showCronBox=false">取 消</el-button>
         <el-button size="mini" type="primary" @click="subForm('subFormData')">确 定</el-button>
@@ -107,6 +123,8 @@ export default {
   data() {
     return {
       planOptions: [],
+      userCaseOptions: [],
+      typeOptions: [],
       nameOptions: [],
       planCheckWay: 1,
       tenants: [],
@@ -121,7 +139,10 @@ export default {
         code: null,
         plan: null,
         execService: null,
-        cron: null
+        cron: null,
+        type: null,
+        userCaseId: null,
+        remark: null
       },
       subFormData: {
         id: null,
@@ -129,7 +150,10 @@ export default {
         code: null,
         plan: null,
         execService: null,
-        cron: null
+        cron: null,
+        type: null,
+        userCaseId: null,
+        remark: null
       },
       allocationSubFormData: {
         items: null,
@@ -157,6 +181,14 @@ export default {
         'cron': [{
           required: true,
           message: '请填写cron'
+        }],
+        'type': [{
+          required: true,
+          message: '请填写类型'
+        }],
+        'userCaseId': [{
+          required: true,
+          message: '请填写绑定用户场景'
         }]
       },
       allocationSubFormDataRule: {
@@ -244,7 +276,7 @@ export default {
     }
   },
   async created() {
-    this.getPlanOptions()
+    this.getSourceTypeOptions()
     this.getTenants()
   },
   mounted() {
@@ -351,7 +383,10 @@ export default {
           'code': null,
           'plan': null,
           'execService': null,
-          'cron': null
+          'cron': null,
+          'type': null,
+          'userCaseId': null,
+          'remark': null
         })
         this.$nextTick(() => {
           this.$refs['subFormData'].resetFields()
@@ -364,6 +399,9 @@ export default {
       this.$set(this.subFormData, 'plan', row.plan)
       this.$set(this.subFormData, 'execService', row.execService)
       this.$set(this.subFormData, 'cron', row.cron)
+      this.$set(this.subFormData, 'type', row.type)
+      this.$set(this.subFormData, 'userCaseId', row.userCaseId)
+      this.$set(this.subFormData, 'remark', row.remark)
     },
     getData(datas = this.datas) {
       this.$set(this, 'datas', datas)
@@ -378,9 +416,26 @@ export default {
         this.$set(this.datas.table, 'loading', false)
       })
     },
-    getPlanOptions() {
-      api.getPlanOptions('fw.task.plan').then(res => {
+    getPropOptions(propCode) {
+      api.getPropOptions('fw.task.plan').then(res => {
         this.planOptions = res.model
+      }).catch(e => {
+        return false
+      })
+    },
+    getSourceTypeOptions() {
+      api.getSourceTypeOptions('fw.task.plan').then(res => {
+        this.planOptions = res.model
+      }).catch(e => {
+        return false
+      })
+      api.getSourceTypeOptions('fw.task.userCase').then(res => {
+        this.userCaseOptions = res.model
+      }).catch(e => {
+        return false
+      })
+      api.getSourceTypeOptions('fw.task.type').then(res => {
+        this.typeOptions = res.model
       }).catch(e => {
         return false
       })

@@ -56,6 +56,9 @@
         <el-form-item label="项目id" prop="projectId">
           <el-input v-model="subConfigFormData.projectId" size="mini" auto-complete="off"/>
         </el-form-item>
+        <el-form-item label="项目名称" prop="projectName">
+          <el-input v-model="subConfigFormData.projectName" size="mini" auto-complete="off"/>
+        </el-form-item>
         <el-form-item label="模块id" prop="moduleId">
           <el-input v-model="subConfigFormData.moduleId" size="mini" auto-complete="off"/>
         </el-form-item>
@@ -121,6 +124,7 @@ export default {
       subConfigFormData: {
         id: null,
         projectId: null,
+        projectName: null,
         moduleId: null,
         iamUname: null,
         iamPassword: null,
@@ -159,6 +163,10 @@ export default {
         'projectId': [{
           required: true,
           message: '请填写项目Id'
+        }],
+        'projectName': [{
+          required: true,
+          message: '请填写项目名称'
         }],
         'moduleId': [{
           required: true,
@@ -338,7 +346,6 @@ export default {
     subConfigForm(formData) {
       this.$refs[formData].validate((valid) => {
         if (valid) {
-          console.log('!!!!!!!' + this[formData].tenantId)
           api.submitConfigForm(this[formData]).then(res => {
             this.$message.success('保存成功')
             this.getData(this.datas)
@@ -385,11 +392,11 @@ export default {
       }
       this.getConfigData(id)
       this.$set(this.subConfigFormData, 'tenantId', id)
-      console.log('ssss' + this.subConfigFormData.tenantId)
     },
     resetConfigValue() {
       this.$set(this, 'subConfigFormData', {
         'projectId': null,
+        'projectName': null,
         'moduleId': null,
         'iamUname': null,
         'iamPassword': null,

@@ -42,35 +42,23 @@
         <el-form-item v-if="planCheckWay===2" label="cron" prop="cron">
           <el-input v-model="subFormData.cron" maxlength="50" size="mini" auto-complete="off"/>
         </el-form-item>
-        <!--        <el-form-item v-if="planCheckWay===2">-->
-        <!--          <cron v-if="showCronBox" v-model="subFormData.cron"></cron>-->
-        <!--        </el-form-item>-->
-        <!--        <el-form-item label="cron" v-if="planCheckWay===2">-->
-        <!--          <el-input v-model="subFormData.cron" size="mini" auto-complete="off">-->
-        <!--            <el-button slot="append" v-if="!showCronBox" icon="el-icon-arrow-up" @click="showCronBox = true"-->
-        <!--                       title="打开图形配置"-->
-        <!--            ></el-button>-->
-        <!--            <el-button slot="append" v-else icon="el-icon-arrow-down" @click="showCronBox = false" title="关闭图形配置"-->
-        <!--            ></el-button>-->
-        <!--          </el-input>-->
-        <!--        </el-form-item>-->
         <el-form-item label="绑定service" prop="execService">
           <el-input v-model="subFormData.execService" maxlength="50" size="mini" auto-complete="off"/>
         </el-form-item>
-        <el-form-item label="类型" prop="type">
-          <el-select v-model="subFormData.type" size="mini" auto-complete="off">
-            <el-option v-for="(optItem,optindex) in typeOptions" :key="optindex" :label="optItem.propvalue"
-                       :value="optItem.propkey"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item v-if="subFormData.type==='1'" label="绑定用户场景" prop="userCaseId">
-          <el-select v-model="subFormData.userCaseId" size="mini" auto-complete="off">
-            <el-option v-for="(optItem,optindex) in userCaseOptions" :key="optindex" :label="optItem.propvalue"
-                       :value="optItem.propkey"
-            />
-          </el-select>
-        </el-form-item>
+<!--        <el-form-item label="类型" prop="type">-->
+<!--          <el-select v-model="subFormData.type" size="mini" auto-complete="off">-->
+<!--            <el-option v-for="(optItem,optindex) in typeOptions" :key="optindex" :label="optItem.propvalue"-->
+<!--                       :value="optItem.propkey"-->
+<!--            />-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item v-if="subFormData.type==='1'" label="绑定用户场景" prop="userCaseId">-->
+<!--          <el-select v-model="subFormData.userCaseId" size="mini" auto-complete="off">-->
+<!--            <el-option v-for="(optItem,optindex) in userCaseOptions" :key="optindex" :label="optItem.propvalue"-->
+<!--                       :value="optItem.propkey"-->
+<!--            />-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
         <el-form-item label="备注" prop="remark">
           <el-input v-model="subFormData.remark" maxlength="500" size="mini" auto-complete="off"/>
         </el-form-item>

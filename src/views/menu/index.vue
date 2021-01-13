@@ -39,10 +39,10 @@
           <div>
             <el-form ref="editForm" :model="editForm" :rules="subFormDataRule" label-width="90px" class="rest-validate-form">
               <el-form-item label="名称" prop="name">
-                <el-input v-model="editForm.name" style="width:50%" />
+                <el-input v-model="editForm.name" maxlength="50" style="width:50%" />
               </el-form-item>
               <el-form-item label="编码" prop="code">
-                <el-input v-model="editForm.code" style="width:50%" />
+                <el-input v-model="editForm.code" maxlength="20" style="width:50%" />
               </el-form-item>
               <!-- <el-form-item label="上级菜单" prop="parentId">
                 <el-input v-model="editForm.parentId | filterParentName" style="width:50%" />
@@ -60,7 +60,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item v-if="editForm.sourceType === 'menu'" label="菜单路径" prop="url">
-                <el-input v-model="editForm.url" style="width:50%" />
+                <el-input v-model="editForm.url" maxlength="200" style="width:50%" />
               </el-form-item>
               <!-- <el-form-item label="叶子节点" prop="isLeaf">
                 <el-input :disabled="true" v-model="editForm.isLeaf ? '是':'否'"
@@ -82,7 +82,7 @@ style="width:50%"></el-input>
                 </el-radio-group>
               </el-form-item>
               <el-form-item label="备注" prop="remark">
-                <el-input v-model="editForm.remark" style="width:50%" />
+                <el-input v-model="editForm.remark" maxlength="1000" style="width:50%" />
               </el-form-item>
               <el-button type="primary" style="float:right;margin-right:20px;" :disabled="editForm.id === ''" @click="updateData">修改</el-button>
             </el-form>
@@ -94,10 +94,10 @@ style="width:50%"></el-input>
     <el-dialog :title="'新增'" :visible.sync="dialogFormVisible" width="50%">
       <el-form ref="addForm" :model="addForm" :rules="subFormDataRule" class="addForm" label-width="100px">
         <el-form-item label="名称" prop="name">
-          <el-input v-model="addForm.name" style="width:50%" />
+          <el-input v-model="addForm.name" maxlength="50" style="width:50%" />
         </el-form-item>
         <el-form-item label="编码" prop="code">
-          <el-input v-model="addForm.code" style="width:50%" />
+          <el-input v-model="addForm.code" maxlength="20" style="width:50%" />
         </el-form-item>
         <el-form-item label="资源类型" prop="sourceType">
           <!-- <el-input v-model="addForm.sourceType" style="width:50%" /> -->
@@ -112,7 +112,7 @@ style="width:50%"></el-input>
           </el-select>
         </el-form-item>
         <el-form-item v-if="addForm.sourceType==='menu'" label="菜单路径" prop="url">
-          <el-input v-model="addForm.url" style="width:50%" />
+          <el-input v-model="addForm.url" maxlength="200" style="width:50%" />
         </el-form-item>
         <el-form-item label="所选父级" prop="parentId">
           <el-input v-model="clickTree.parentName" :disabled="true" style="width:50%" />
@@ -132,7 +132,7 @@ style="width:50%"></el-input>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="addForm.remark" auto-complete="off" />
+          <el-input v-model="addForm.remark" maxlength="1000" auto-complete="off" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

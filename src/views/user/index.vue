@@ -81,10 +81,10 @@
           <el-form ref="subFormData" :model="subFormData" :rules="subFormDataRule" class="subFormData" label-width="100px">
             <div style="width:50%; float:left">
               <el-form-item label="名称" prop="name">
-                <el-input v-model="subFormData.name" size="mini" auto-complete="off" />
+                <el-input v-model="subFormData.name" maxlength="50" size="mini" auto-complete="off" />
               </el-form-item>
               <el-form-item label="登录名" prop="uname">
-                <el-input v-model="subFormData.uname" size="mini" auto-complete="off" />
+                <el-input v-model="subFormData.uname" maxlength="20" size="mini" auto-complete="off" />
               </el-form-item>
               <el-form-item label="性别" prop="sex">
                 <el-radio-group v-model="subFormData.sex">
@@ -121,13 +121,13 @@
                 </el-select>
               </el-form-item> -->
               <el-form-item label="手机号" prop="phoneNo">
-                <el-input v-model="subFormData.phoneNo" size="mini" auto-complete="off" />
+                <el-input v-model="subFormData.phoneNo" maxlength="20" size="mini" auto-complete="off" />
               </el-form-item>
               <el-form-item label="邮箱" prop="email">
-                <el-input v-model="subFormData.email" size="mini" auto-complete="off" />
+                <el-input v-model="subFormData.email" maxlength="100" size="mini" auto-complete="off" />
               </el-form-item>
               <el-form-item label="备注" prop="remark">
-                <el-input v-model="subFormData.remark" size="mini" auto-complete="off" />
+                <el-input v-model="subFormData.remark" maxlength="1000" size="mini" auto-complete="off" />
               </el-form-item>
               <el-form-item label="是否有效" prop="enable">
                 <el-radio-group v-model="subFormData.enable">

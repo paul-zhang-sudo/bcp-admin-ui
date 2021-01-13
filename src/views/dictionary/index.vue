@@ -18,13 +18,13 @@
     <el-dialog width="50%" :title="subFormData.id?'编辑':'新增'" :visible.sync="dialogFormVisible">
       <el-form ref="subFormData" :model="subFormData" :rules="subFormDataRule" class="subFormData" label-width="100px">
         <el-form-item label="名称" prop="name">
-          <el-input v-model="subFormData.name" size="mini" auto-complete="off" />
+          <el-input v-model="subFormData.name" maxlength="50" size="mini" auto-complete="off" />
         </el-form-item>
         <el-form-item label="编码" prop="code">
-          <el-input v-model="subFormData.code" size="mini" auto-complete="off" />
+          <el-input v-model="subFormData.code" maxlength="50" size="mini" auto-complete="off" />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="subFormData.remark" size="mini" auto-complete="off" />
+          <el-input v-model="subFormData.remark" maxlength="1000" size="mini" auto-complete="off" />
         </el-form-item>
         <el-form-item label="状态" prop="enable">
           <el-radio-group v-model="subFormData.enable">
@@ -42,19 +42,19 @@
     <el-dialog width="50%" :title="subPropListFormData.id?'编辑':'新增'" :visible.sync="dialogPropListFormVisible">
       <el-form ref="subPropListFormData" :model="subPropListFormData" :rules="subPropListFormDataRule" class="subFormData" label-width="100px">
         <el-form-item label="属性名" prop="propkey">
-          <el-input v-model="subPropListFormData.propkey" size="mini" auto-complete="off" />
+          <el-input v-model="subPropListFormData.propkey" maxlength="50" size="mini" auto-complete="off" />
         </el-form-item>
         <el-form-item label="属性值" prop="propvalue">
-          <el-input v-model="subPropListFormData.propvalue" size="mini" auto-complete="off" />
+          <el-input v-model="subPropListFormData.propvalue" maxlength="2000" size="mini" auto-complete="off" />
         </el-form-item>
         <el-form-item label="序号" prop="orderNo">
           <el-input v-model="subPropListFormData.orderNo" size="mini" auto-complete="off" />
         </el-form-item>
         <el-form-item label="分组" prop="group">
-          <el-input v-model="subPropListFormData.group" size="mini" auto-complete="off" />
+          <el-input v-model="subPropListFormData.group"  maxlength="50" size="mini" auto-complete="off" />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="subPropListFormData.remark" size="mini" auto-complete="off" />
+          <el-input v-model="subPropListFormData.remark"  maxlength="1000" size="mini" auto-complete="off" />
         </el-form-item>
         <el-form-item label="状态" prop="enable">
           <el-radio-group v-model="subPropListFormData.enable">

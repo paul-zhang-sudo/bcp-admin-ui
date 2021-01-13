@@ -18,22 +18,22 @@
     <el-dialog width="50%" :title="subFormData.id?'编辑':'新增'" :visible.sync="dialogFormVisible">
       <el-form ref="subFormData" :model="subFormData" :rules="subFormDataRule" class="subFormData" label-width="100px">
         <el-form-item label="名称" prop="name">
-          <el-input v-model="subFormData.name" size="mini" auto-complete="off"/>
+          <el-input v-model="subFormData.name" maxlength="100" size="mini" auto-complete="off"/>
         </el-form-item>
         <el-form-item label="编码" prop="code">
-          <el-input v-model="subFormData.code" size="mini" auto-complete="off"/>
+          <el-input v-model="subFormData.code" maxlength="20" size="mini" auto-complete="off"/>
         </el-form-item>
         <el-form-item label="最大用户数" prop="number">
           <el-input-number v-model="subFormData.number" :min="0" size="mini" auto-complete="off"/>
         </el-form-item>
         <el-form-item label="联系方式" prop="phone">
-          <el-input v-model="subFormData.phone" size="mini" auto-complete="off"/>
+          <el-input v-model="subFormData.phone" maxlength="50" size="mini" auto-complete="off"/>
         </el-form-item>
         <el-form-item label="地址" prop="address">
-          <el-input v-model="subFormData.address" size="mini" auto-complete="off"/>
+          <el-input v-model="subFormData.address" maxlength="200" size="mini" auto-complete="off"/>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="subFormData.remark" size="mini" auto-complete="off"/>
+          <el-input v-model="subFormData.remark" maxlength="500" size="mini" auto-complete="off"/>
         </el-form-item>
         <el-form-item label="状态" prop="enable">
           <el-radio-group v-model="subFormData.enable">
@@ -54,25 +54,25 @@
                class="subConfigFormData" label-width="100px"
       >
         <el-form-item label="项目id" prop="projectId">
-          <el-input v-model="subConfigFormData.projectId" size="mini" auto-complete="off"/>
+          <el-input v-model="subConfigFormData.projectId" maxlength="50" size="mini" auto-complete="off"/>
         </el-form-item>
         <el-form-item label="项目名称" prop="projectName">
-          <el-input v-model="subConfigFormData.projectName" size="mini" auto-complete="off"/>
+          <el-input v-model="subConfigFormData.projectName" maxlength="50" size="mini" auto-complete="off"/>
         </el-form-item>
         <el-form-item label="模块id" prop="moduleId">
-          <el-input v-model="subConfigFormData.moduleId" size="mini" auto-complete="off"/>
+          <el-input v-model="subConfigFormData.moduleId" maxlength="50" size="mini" auto-complete="off"/>
         </el-form-item>
         <el-form-item label="iam账号" prop="iamUname">
-          <el-input v-model="subConfigFormData.iamUname" size="mini" auto-complete="off"/>
+          <el-input v-model="subConfigFormData.iamUname" maxlength="100" size="mini" auto-complete="off"/>
         </el-form-item>
         <el-form-item label="iam密码" prop="iamPassword">
-          <el-input v-model="subConfigFormData.iamPassword" size="mini" auto-complete="off"/>
+          <el-input v-model="subConfigFormData.iamPassword" maxlength="100" size="mini" auto-complete="off"/>
         </el-form-item>
         <el-form-item label="iam域账号" prop="iamDomain">
-          <el-input v-model="subConfigFormData.iamDomain" size="mini" auto-complete="off"/>
+          <el-input v-model="subConfigFormData.iamDomain" maxlength="100" size="mini" auto-complete="off"/>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="subConfigFormData.remark" size="mini" auto-complete="off"/>
+          <el-input v-model="subConfigFormData.remark" maxlength="100" size="mini" auto-complete="off"/>
         </el-form-item>
         <el-form-item label="状态" prop="enable">
           <el-radio-group v-model="subConfigFormData.enable">

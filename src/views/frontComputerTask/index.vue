@@ -38,10 +38,10 @@
           <el-input v-model="subFormData.taskId" size="mini" auto-complete="off"/>
         </el-form-item>
         <el-form-item label="任务名称" prop="taskName">
-          <el-input v-model="subFormData.taskName" size="mini" auto-complete="off"/>
+          <el-input v-model="subFormData.taskName" maxlength="100" size="mini" auto-complete="off"/>
         </el-form-item>
         <el-form-item label="任务编码" prop="code">
-          <el-input v-model="subFormData.code" size="mini" auto-complete="off"/>
+          <el-input v-model="subFormData.code" maxlength="20" size="mini" auto-complete="off"/>
         </el-form-item>
         <el-form-item label="运行计划" prop="plan">
           <el-select v-model="subFormData.plan" size="mini" auto-complete="off" @change="getCronByPlan">
@@ -68,11 +68,11 @@
         <!--          <el-input v-model="subFormData.cron" size="mini" auto-complete="off"/>-->
         <!--        </el-form-item>-->
         <el-form-item label="绑定service" prop="execService">
-          <el-input v-model="subFormData.execService" size="mini" auto-complete="off"/>
+          <el-input v-model="subFormData.execService" maxlength="50" size="mini" auto-complete="off"/>
         </el-form-item>
-        <el-form-item label="绑定用户场景" prop="userCase">
-          <el-input v-model="subFormData.userCaseId" size="mini" auto-complete="off"/>
-        </el-form-item>
+<!--        <el-form-item label="绑定用户场景" prop="userCase">-->
+<!--          <el-input v-model="subFormData.userCaseId" maxlength="10" size="mini" auto-complete="off"/>-->
+<!--        </el-form-item>-->
         <!--        <el-form-item label="下发状态" prop="sendStatusName">-->
         <!--          <el-select v-model="subFormData.sendStatus" size="mini">-->
         <!--            <el-option v-for="(optItem,optindex) in sendStatusOptions" :key="optindex" :label="optItem.propvalue"-->

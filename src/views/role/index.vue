@@ -41,10 +41,10 @@
     <el-dialog width="50%" :title="subFormData.id?'编辑':'新增'" :visible.sync="dialogFormVisible">
       <el-form ref="subFormData" :model="subFormData" :rules="subFormDataRule" class="subFormData" label-width="100px">
         <el-form-item label="名称" prop="name">
-          <el-input v-model="subFormData.name" size="mini" auto-complete="off" />
+          <el-input v-model="subFormData.name" maxlength="20" size="mini" auto-complete="off" />
         </el-form-item>
         <el-form-item label="编码" prop="code">
-          <el-input v-model="subFormData.code" size="mini" auto-complete="off" />
+          <el-input v-model="subFormData.code" maxlength="50" size="mini" auto-complete="off" />
         </el-form-item>
         <el-form-item label="菜单权限" prop="menuArr">
           <!--<el-select v-model="subFormData.menuArr" multiple size="5">
@@ -58,7 +58,7 @@
             clearable
           />
         </el-form-item>
-        <el-form-item label="备注" prop="remark">
+        <el-form-item label="备注" maxlength="1000" prop="remark">
           <el-input v-model="subFormData.remark" size="mini" auto-complete="off" />
         </el-form-item>
         <el-form-item label="状态" prop="enable">

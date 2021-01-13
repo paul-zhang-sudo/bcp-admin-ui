@@ -2,13 +2,13 @@
   <div class="app-container">
     <el-form ref="subFormData" :model="subFormData" :rules="subFormDataRule" class="subFormData" label-width="140px">
       <el-form-item label="密码位数：" prop="chars">
-        <el-input v-model="subFormData.chars" type="number" size="mini" auto-complete="off" class="input-width" />
+        <el-input v-model="subFormData.chars" maxlength="50" type="number" size="mini" auto-complete="off" class="input-width" />
       </el-form-item>
       <el-form-item label="错误次数：" prop="errorTimes">
-        <el-input v-model="subFormData.errorTimes" type="number" size="mini" auto-complete="off" class="input-width" />
+        <el-input v-model="subFormData.errorTimes" maxlength="20" type="number" size="mini" auto-complete="off" class="input-width" />
       </el-form-item>
       <el-form-item label="初始密码：" prop="defaultPwd">
-        <el-input v-model="subFormData.defaultPwd" size="mini" auto-complete="off" class="input-width" />
+        <el-input v-model="subFormData.defaultPwd" maxlength="100" size="mini" auto-complete="off" class="input-width" />
       </el-form-item>
       <el-form-item label="是否强密码：" prop="strongFlag">
         <el-radio-group v-model="subFormData.strongFlag">

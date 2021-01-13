@@ -21,6 +21,7 @@ export default {
       dialogRowTitle: null,
       rowData: {
         id: null,
+        code: null,
         frontComputerTaskId: null,
         resultInfo: null,
         error: null,
@@ -29,7 +30,6 @@ export default {
       },
       tableData: [],
       params: {
-        code: null,
         currentPage: 1,
         pageSize: 10
       },
@@ -50,6 +50,15 @@ export default {
           totalCount: 0
         },
         filterList: [
+          {
+            type: 'input',
+            prop: 'code',
+            conditionshow: true,
+            filedShow: true,
+            label: '任务编码',
+            placeholder: '编码',
+            optList: []
+          },
           {
             type: 'input',
             prop: 'runTime',
@@ -103,21 +112,26 @@ export default {
     }
   },
   async created() {
+    this.getCodeQuery()
   },
   mounted() {
   },
   methods: {
+    getCodeQuery() {
+      var query = this.$route.query
+      const code = query.code
+      if (code) {
+        this.$router.push({ query: {} })
+        this.$set(this.datas.filterList[0], 'code', code)
+      }
+    },
     detail(row) {
       console.log(row)
     },
     getData(datas = this.datas) {
-      var query = this.$route.query
-      const code = query.code
       this.$set(this, 'datas', datas)
       this.$set(this, 'params', datas.params)
       this.$set(this.datas.table, 'loading', true)
-      this.$set(this.params, 'orgId', this.params.orgName)
-      this.$set(this.params, 'code', code)
       api.getPage(this.params).then(res => {
         this.$set(this.datas.resData, 'rows', res.model)
         this.$set(this.datas.params, 'currentPage', res.currentPage)

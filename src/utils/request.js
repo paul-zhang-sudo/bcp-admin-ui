@@ -92,12 +92,20 @@ service.interceptors.response.use(
   error => {
     if(error.message == "Network Error"){
       error.message = "网络异常，请联系管理员"
+      router.push('/login')
+      Message({
+        message: error.message,
+        type: 'error',
+        duration: 5 * 1000
+      })
+      return
     }
     console.log('response error: ' + error)
     if (error.response && error.response.status === 403) {
       console.log('403跳转到登录')
       store.dispatch('user/resetToken')
       router.push('/login')
+      return
     } else {
       Message({
         message: error.message,

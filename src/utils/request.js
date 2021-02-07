@@ -90,15 +90,9 @@ service.interceptors.response.use(
     */
   },
   error => {
-    if(error.message == "Network Error"){
-      error.message = "网络异常，请联系管理员"
+    if (error.message === 'Network Error') {
       store.dispatch('user/resetToken')
       router.push('/login')
-      Message({
-        message: error.message,
-        type: 'error',
-        duration: 3 * 1000
-      })
       return
     }
     console.log('response error: ' + error)

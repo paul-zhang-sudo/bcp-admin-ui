@@ -98,7 +98,8 @@
                 </el-select>
               </el-form-item>-->
               <el-form-item label="所属组织" prop="orgId">
-                <el-select v-model="subFormData.orgId" :disabled="cur_user.userType==='admin'" size="mini">
+                <!-- <el-select v-model="subFormData.orgId" :disabled="cur_user.userType==='admin'" size="mini"> -->
+                <el-select v-model="subFormData.orgId" size="mini">
                   <el-option v-for="(item,index) in orgArr" :key="index" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>

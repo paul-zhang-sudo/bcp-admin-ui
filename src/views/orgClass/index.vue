@@ -53,25 +53,33 @@
       <el-form ref="subConfigFormData" :model="subConfigFormData" :rules="subConfigFormDataRule"
                class="subConfigFormData" label-width="100px"
       >
-        <el-form-item label="项目id" prop="projectId">
+        <el-form-item label="下发类型" prop="sendType">
+          <el-select v-model="subConfigFormData.sendType" style="width:50%">
+            <el-option v-for="(optItem,optindex) in typeOptions" :key="optindex" :label="optItem.propvalue" :value="optItem.propkey" />
+          </el-select>
+        </el-form-item>
+         <el-form-item label="下发api地址" prop="url" v-if="subConfigFormData.sendType === 'noiot'">
+          <el-input v-model="subConfigFormData.url" maxlength="500" size="mini" auto-complete="off"/>
+        </el-form-item>
+        <el-form-item label="项目id" prop="projectId" v-if="subConfigFormData.sendType === 'iot'">
           <el-input v-model="subConfigFormData.projectId" maxlength="50" size="mini" auto-complete="off"/>
         </el-form-item>
-        <el-form-item label="项目名称" prop="projectName">
+        <el-form-item label="项目名称" prop="projectName" v-if="subConfigFormData.sendType === 'iot'">
           <el-input v-model="subConfigFormData.projectName" maxlength="50" size="mini" auto-complete="off"/>
         </el-form-item>
-        <el-form-item label="模块id" prop="moduleId">
+        <el-form-item label="模块id" prop="moduleId" v-if="subConfigFormData.sendType === 'iot'">
           <el-input v-model="subConfigFormData.moduleId" maxlength="50" size="mini" auto-complete="off"/>
         </el-form-item>
-        <el-form-item label="iam账号" prop="iamUname">
+        <el-form-item label="iam账号" prop="iamUname" v-if="subConfigFormData.sendType === 'iot'">
           <el-input v-model="subConfigFormData.iamUname" maxlength="100" size="mini" auto-complete="off"/>
         </el-form-item>
-        <el-form-item label="iam密码" prop="iamPassword">
+        <el-form-item label="iam密码" prop="iamPassword" v-if="subConfigFormData.sendType === 'iot'">
           <el-input v-model="subConfigFormData.iamPassword" maxlength="100" size="mini" auto-complete="off"/>
         </el-form-item>
-        <el-form-item label="iam域账号" prop="iamDomain">
+        <el-form-item label="iam域账号" prop="iamDomain" v-if="subConfigFormData.sendType === 'iot'">
           <el-input v-model="subConfigFormData.iamDomain" maxlength="100" size="mini" auto-complete="off"/>
         </el-form-item>
-        <el-form-item label="备注" prop="remark">
+        <el-form-item label="备注" prop="remark" v-if="subConfigFormData.sendType === 'iot'">
           <el-input v-model="subConfigFormData.remark" maxlength="100" size="mini" auto-complete="off"/>
         </el-form-item>
         <el-form-item label="状态" prop="enable">
@@ -94,10 +102,11 @@
 
 <script>
 import * as api from '@/api/orgClass'
-
+import * as menuApi from '@/api/menu'
 export default {
   data() {
     return {
+      typeOptions: [], 
       dialogFormVisible: false,
       configDialogFormVisible: false,
       dialogRowTitle: null,
@@ -131,7 +140,9 @@ export default {
         iamDomain: null,
         remark: null,
         enable: null,
-        tenantId: null
+        tenantId: null,
+        url: null,
+        sendType: 'iot'
       },
       subFormDataRule: {
         'name': [{
@@ -183,6 +194,10 @@ export default {
         'iamDomain': [{
           required: true,
           message: '请填写域账号'
+        }],
+        'url': [{
+          required: true,
+          message: '请填写下发api地址'
         }],
         'enable': [{
           required: true,
@@ -291,7 +306,8 @@ export default {
       }
     }
   },
-  async created() {
+  created() {
+      this.getSourceTypeOptions()
   },
   mounted() {
   },
@@ -328,6 +344,13 @@ export default {
         })
         .catch(() => {
         })
+    },
+    getSourceTypeOptions() {
+      menuApi.getSourceTypeOptions('md.bcp.sendType').then(res => {
+        this.typeOptions = res.model
+      }).catch(e => {
+        return false
+      })
     },
     subForm(formData) {
       this.$refs[formData].validate((valid) => {
@@ -389,9 +412,10 @@ export default {
       this.configDialogFormVisible = true
       if (id == null) {
         this.resetConfigValue()
+      }else{
+        this.getConfigData(id)
+        this.$set(this.subConfigFormData, 'tenantId', id)
       }
-      this.getConfigData(id)
-      this.$set(this.subConfigFormData, 'tenantId', id)
     },
     resetConfigValue() {
       this.$set(this, 'subConfigFormData', {
@@ -402,7 +426,9 @@ export default {
         'iamPassword': null,
         'iamDomain': null,
         'remark': null,
-        'enable': true
+        'enable': true,
+        'url': null,
+        'sendType': 'iot'
       })
       this.$nextTick(() => {
         this.$refs['subConfigFormData'].resetFields()

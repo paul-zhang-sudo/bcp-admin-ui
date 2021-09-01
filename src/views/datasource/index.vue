@@ -3,8 +3,6 @@
     <mod-filter :datas="datas" @query="getData">
       <template slot="lastBtn">
         <el-button type="primary" size="mini" @click="edit(0)">新增</el-button>
-        <el-button type="primary" size="mini" @click="remove(0)">删除</el-button>
-        <el-button type="primary" size="mini" @click="allocation(0)">分配</el-button>
       </template>
       <template slot="enable" slot-scope="scope">
         <span>{{ scope.value.enable ? '启用' : '禁用' }}</span>
@@ -20,14 +18,7 @@
       <el-form ref="subFormData" :model="subFormData" :rules="subFormDataRule" class="subFormData" label-width="100px">
         <el-form-item label="客户" prop="userCaseId">
          <template>
-          <el-select v-model="subFormData.userCaseId" placeholder="请选择">
-          <el-option
-          v-for="item in optionsOne"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-          </el-option>
-          </el-select>
+            <sxf-freelist v-model="subFormData.userCaseId" code="bcp.tenant.name" />
         </template>
         </el-form-item>
         <el-form-item label="数据源名称" prop="name" >
@@ -408,12 +399,15 @@ export default {
     }
   },
   async created() {
-    this.getSourceTypeOptions()
-    this.getTenants()
+    // this.getSourceTypeOptions()
+    // this.getTenants()
   },
   mounted() {
   },
   methods: {
+    input(data){
+      console.log('data===>',data)
+    },
     inputByMenu() {
       this.subFormData.cron = null
     },
@@ -462,45 +456,55 @@ export default {
       this.$set(this.allocationSubFormData, 'items', items)
     },
     //新增的方法
-    subForm(formData) {
+    subForm(subFormData) {
       this.showCronBox = false
-      this.$refs[formData].validate((valid) => {
+      this.$refs.subFormData.validate((valid) => {
         if (valid) {
-          console.log(this[formData])
-
-          let { userCaseId, name, type, url, authmode, tokenUrl, classify, databaseName, port, username, password, nodeId } = this[formData];
-          let param = {
-            userCaseId,
-            name,
-            type
-          };
+     
+          // let { userCaseId, name, type, url, authmode, tokenUrl, classify, databaseName, port, username, password, nodeId } = this[formData];
+          // let param = {
+          //   userCaseId,
+          //   name,
+          //   type
+          // };
           
-          if(type == 'API'){
-            param.classify = type;
-            param.configvalue = {
-              url,
-              authmode,
-              username,
-              password,
-              tokenUrl
-            }
-          }else{
-            param.classify = type;
-            param.nodeId = nodeId;
-             param.configvalue = {
-              databaseName,
-              port,
-              username,
-               password,
-               url
-            }
+          // if(type == 'API'){
+          //   param.classify = type;
+          //   param.configvalue = {
+          //     url,
+          //     authmode,
+          //     username,
+          //     password,
+          //     tokenUrl
+          //   }
+          // }else{
+          //   param.classify = type;
+          //   param.nodeId = nodeId;
+          //    param.configvalue = {
+          //     databaseName,
+          //     port,
+          //     username,
+          //      password,
+          //      url
+          //   }
+          // }
+          if(this.subFormData.type ==1){
+            this.subFormData.classify=this.subFormData.type
           }
-   
-          api.submitForm(param).then(res => {
+            console.log('this.subFormData',this.subFormData)
+    let dataVale = JSON.stringify(this.subFormData)
+  
+     let  obj = {
+       configValue:dataVale,
+       ...this.subFormData
+     }
+       console.log(obj)
+     
+          console.log( '1111',obj)
+          api.submitForm(obj).then(res => {
             this.$message.success('保存成功')
             this.getData(this.datas)
             this.dialogFormVisible = false
-          }).catch(() => {
           })
         } else {
           return false
@@ -524,8 +528,15 @@ export default {
     },
     // 新增或编辑页面
     edit(row) {
+      console.log('row',row)
       this.dialogFormVisible = true
-      if (!row) {
+      // api.getId(row.id).then(res=>{
+      //   console.log(res)
+      // })
+      this.subFormData = {
+        ...row
+      }
+      if (row===0) {
         this.$set(this, 'subFormData', {
           'name': null,
           'code': null,
@@ -536,20 +547,39 @@ export default {
           'userCaseId': null,
           'remark': null
         })
+      this.subFormData =  {
+          name: null,
+          code: null,
+          plan: null,
+          execService: null,
+          cron: null,
+          type: null,
+          userCaseId: null,
+          remark: null
+        }
+        //w===
         if (this.$refs['subFormData']) {
+          //重置表格参数
           this.$refs['subFormData'].resetFields()
         }
         return
       }
+      //第一个是  
+      let data =JSON.parse(row.configValue)
+      console.log('data',data)
+      this.subFormData = {
+        id:row.id,
+        ...data
+      }
       this.$set(this.subFormData, 'id', row.id)
-      this.$set(this.subFormData, 'name', row.name)
-      this.$set(this.subFormData, 'code', row.code)
-      this.$set(this.subFormData, 'plan', row.plan)
-      this.$set(this.subFormData, 'execService', row.execService)
-      this.$set(this.subFormData, 'cron', row.cron)
-      this.$set(this.subFormData, 'type', row.type)
+      this.$set(this.subFormData, 'name', data.name)
+      this.$set(this.subFormData, 'code', data.code)
+      this.$set(this.subFormData, 'plan', data.plan)
+      this.$set(this.subFormData, 'execService', data.execService)
+      this.$set(this.subFormData, 'cron', data.cron)
+      this.$set(this.subFormData, 'type', data.type)
       this.$set(this.subFormData, 'userCaseId', row.userCaseId)
-      this.$set(this.subFormData, 'remark', row.remark)
+      this.$set(this.subFormData, 'remark', data.remark)
     },
     getData(datas = this.datas) {
       console.log('this.params = ', this.params)

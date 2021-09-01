@@ -4,6 +4,13 @@ import qs from 'qs'
 const URL = {
   role: '/services/fwcore/datasource'
 }
+export function getId(id) {
+  return request({
+    url: URL.role + '/' + id,
+    method: 'get',
+  })
+}
+
 
 // 1、角色列表
 export function getPage(params) {
@@ -28,6 +35,7 @@ export function submitForm(params) {
   }
   params.menuIds = ids
   delete params.menuArr
+  console.log('params',params)
   return request({
     url: params.id ? URL.role + '/' + params.id + '' : URL.role,
     method: params.id ? 'PUT' : 'POST',

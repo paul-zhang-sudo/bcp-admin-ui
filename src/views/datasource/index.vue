@@ -149,7 +149,6 @@ export default {
       tenants: [],
       computers: [],
       dialogFormVisible: false,
-      allocationDialogFormVisible: false,
       dialogRowTitle: null,
       selectionPropList: [],
       isJxBc: false,
@@ -178,19 +177,22 @@ export default {
         id: null,
         name: null,
         code: null,
-        newType: null,
+        type: null,
         url:null,
         certificationMode:null,
         integrationNode:null,
         userName:null,
         password:null,
         authmode:null,//类型为API时的认证方式
-        classify: ''
+        classify:null,
+        tenantId:null,
+        nodeId:null
       },
       subFormDataRule: {
         'name': [{
           required: true,
-          message: '请填写名称'
+          message: '请填写名称',
+          trigger: 'blur'
         }],
         'code': [{
           required: true,
@@ -198,7 +200,8 @@ export default {
         }],
         'type': [{
           required: true,
-          message: '请填写类型'
+          message: '请填写类型',
+          trigger: 'blur'
         }]
       },
       tableData: [],
@@ -327,58 +330,25 @@ export default {
     },
     // 新增或编辑页面
     edit(row) {
-      console.log('row',row)
       this.dialogFormVisible = true
-      // api.getId(row.id).then(res=>{
-      //   console.log(res)
-      // })
-      this.subFormData = {
-        ...row
-      }
+      //如果是新增
       if (row===0) {
-        this.$set(this, 'subFormData', {
-          'name': null,
-          'code': null,
-          'plan': null,
-          'execService': null,
-          'cron': null,
-          'type': null,
-          'tenantId': "419",
-          'remark': null
-        })
-      this.subFormData =  {
-          name: null,
-          code: null,
-          plan: null,
-          execService: null,
-          cron: null,
-          type: null,
-          tenantId: "419",
-          remark: null
-        }
-        //w===
-        if (this.$refs['subFormData']) {
-          //重置表格参数
-          this.$refs['subFormData'].resetFields()
-        }
+        //清空属性值
+        Object.keys(this.subFormData).forEach((key) => (this.subFormData[key] = null));
+        this.$set(this.subFormData, 'tenantId', '')
+        alert(this.subFormData.tenantId)
         return
       }
-      //第一个是  
+      //如果是更新
       let data =JSON.parse(row.configValue)
-      console.log('data',data)
+      let tenantId = row.tenantId+"";
+      delete row.configValue
+      delete row.tenantId
       this.subFormData = {
-        id:row.id,
+        ...row,
         ...data
       }
-      this.$set(this.subFormData, 'id', row.id)
-      this.$set(this.subFormData, 'name', data.name)
-      this.$set(this.subFormData, 'code', data.code)
-      this.$set(this.subFormData, 'plan', data.plan)
-      this.$set(this.subFormData, 'execService', data.execService)
-      this.$set(this.subFormData, 'cron', data.cron)
-      this.$set(this.subFormData, 'type', data.type)
-      this.$set(this.subFormData, 'tenantId', row.tenantId)
-      this.$set(this.subFormData, 'remark', data.remark)
+      this.subFormData.tenantId = tenantId
     },
     getData(datas = this.datas) {
       console.log('this.params = ', this.params)
@@ -403,23 +373,18 @@ export default {
           if(this.subFormData.type =='api'){
             this.subFormData.classify=this.subFormData.type
           }
-            console.log('this.subFormData',this.subFormData)
-    let dataVale = JSON.stringify(this.subFormData)
-  
-     let  obj = {
-       configValue:dataVale,
-       ...this.subFormData
-     }
-       console.log(obj)
-     
-          console.log( '1111',obj)
+          let dataVale = JSON.stringify(this.subFormData)
+          let obj = {
+            configValue:dataVale,
+            ...this.subFormData
+          }
           api.submitForm(obj).then(res => {
             this.$message.success('保存成功')
             this.getData(this.datas)
             this.dialogFormVisible = false
           })
-        } else {
-          return false
+        }else{
+            return false
         }
       })
     },

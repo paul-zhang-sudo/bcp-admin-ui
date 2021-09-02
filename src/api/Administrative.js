@@ -84,9 +84,10 @@ export function upData(params) {
 }
 //新增模板
 export function AddTemplate(params) {
+  console.log('params',params)
   return request({
-    url: '/services/fwcore/template',
-    method: params.showType ? 'PUT' : 'POST',
+    url: params.showType ? '/services/fwcore/template' + '/' + params.id + '':'/services/fwcore/template',
+    method: params.showType ? 'put' : 'POST',
     data: params
   })
 }
@@ -100,10 +101,11 @@ export function GetTemplate(params) {
 }
 //禁用或者启用
 export function disableType(data) {
- var id = JSON.parse(data)
+//  var id = JSON.parse(data)
   return request({
-    url: `/services/fwcore/template/${id}`,
+    url: `/services/fwcore/template/${data.id}?enable=${!data.enable}`,
     method: 'post',
+    data: data
   })
 }
 //禁用或者启用

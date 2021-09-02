@@ -30,8 +30,11 @@
           <el-input v-model="subFormData.remark" maxlength="500" size="mini" auto-complete="off"/>
         </el-form-item>
         <el-form-item label="模板" prop="fileUrl">
-          <el-upload class="upload-demo" 
+          <el-upload 
+          class="upload-demo" 
           :limit="1"
+          :file-list="fileList"
+          :show-file-list='false'
           :http-request="handleUpload"
           action='undefined'
         :beforeUpload="beforeUpload"
@@ -95,6 +98,7 @@ import {
 export default {
   data() {
     return {
+      fileList:[],
       planOptions: [],
       userCaseOptions: [],
       typeOptions: [],
@@ -193,18 +197,20 @@ export default {
           },
         ],
       },
-      tableData: [],
       params: {
         currentPage: 1,
         pageSize: 10,
       },
       datas: {
-        multipleSelection: [],
+        // multipleSelection: [],
+        nosubmit: false,//true设置按钮消失 
+        noresetForm:false,
         params: {
           currentPage: 1,
           pageSize: 10,
         },
         table: {
+          orderNo: true,
           selection: true,
           loading: true,
         },
@@ -218,31 +224,23 @@ export default {
            {
             type: 'input',
             prop: 'key',
-            // 控制设置内部 复选框勾选的默认值
-            // 控制该字段是否出现在表格里
-             conditionshow: true,
-            isHiddenSearchLabel: true,
             filedShow: false,
-            // 控制搜索框的label显示与否
+             conditionshow: true,
             label: '名称',
             placeholder: '关键词',
-            optList: [],
-            name: ''
+
           },
           {
             prop: "id",
             filedShow: true,
             label: "序号",
             placeholder: "序号",
-            optList: [],
           },
           {
             type: "input",
             prop: "name",
-      
             label: "名称",
             placeholder: "关键词",
-            optList: [],
           },
           {
             prop: "code",
@@ -250,33 +248,26 @@ export default {
             filedShow: true,
             label: "编码",
             placeholder: "编码",
-            optList: [],
           },
           {
             prop: "enable",
-            conditionshow: false,
             filedShow: true,
             slot: true,
             label: "状态",
             placeholder: "状态",
-            optList: [],
           },
           {
             type: "input",
             prop: "createTime",
-            conditionshow: false,
             filedShow: true,
             label: "创建时间",
             placeholder: "创建时间",
-            optList: [],
           },
           {
             prop: "lastUpdateTime",
-            conditionshow: false,
             filedShow: true,
             label: "修改时间",
             placeholder: "修改时间",
-            optList: [],
           },
           {
             prop: "oper",
@@ -290,7 +281,7 @@ export default {
           },
         ],
       },
-      showCronBox: false,
+      showCronBox: true,
     };
   },
   async created() {},
@@ -298,7 +289,11 @@ export default {
   methods: {
     disableType(row) {
       console.log(row.enable);
-      disableType(row.id).then((res) => {
+      let obj = {
+        enable:row.enable,
+        id:row.id
+      }
+      disableType(obj).then((res) => {
         console.log(res);
         this.$message.success({
           message: "操作成功",
@@ -373,8 +368,7 @@ export default {
           let obj = {
             ...this.subFormData,
           };
-          obj.showType = this.subFormData.id;
-          console.log("obj", obj);
+        obj.showType=  obj.id? true:false
           AddTemplate(obj).then((res) => {
             this.$message.success("操作成功");
             this.getData(this.datas);
@@ -404,10 +398,23 @@ export default {
     },
     // 新增或编辑页面
     edit(row) {
+      console.log(this.fileList)
       this.dialogFormVisible = true;
-      if (!row) {
+      if (row==0) {
+        this.subFormData = {
+          name: null,
+          code: null,
+          plan: null,
+           fileUrl:null,
+          execService: null,
+          cron: null,
+          type: null,
+          userCaseId: null,
+          remark: null,
+        }
         this.$set(this, "subFormData", {
           name: null,
+          fileUrl:null,
           code: null,
           plan: null,
           execService: null,
@@ -432,13 +439,14 @@ export default {
       this.$set(this.subFormData, "remark", row.remark);
     },
     getData(datas = this.datas) {
+      console.log('datas',datas)
       this.$set(this, "datas", datas);
       this.$set(this, "params", datas.params);
       this.$set(this.datas.table, "loading", true);
       this.$set(this.params, "orgId", this.params.orgName);
 
       api
-        .getPage({ ...this.params, key: this.datas.filterList[0].name })
+        .getPage({ ...this.params})
         .then((res) => {
           this.$set(this.datas.resData, "rows", res.model);
           this.$set(this.datas.params, "currentPage", res.currentPage);

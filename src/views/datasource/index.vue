@@ -16,17 +16,18 @@
     <!-- todo1 -->
     <el-dialog width="50%" :title="subFormData.id?'编辑':'新增'" :visible.sync="dialogFormVisible">
       <el-form ref="subFormData" :model="subFormData" :rules="subFormDataRule" class="subFormData" label-width="100px">
-        <el-form-item label="客户" prop="userCaseId">
+        <el-form-item label="客户" prop="tenantId">
          <template>
-            <sxf-freelist v-model="subFormData.userCaseId" code="bcp.tenant.name" />
+            <sxf-freelist v-model="subFormData.tenantId" code="bcp.tenant.name" />
         </template>
         </el-form-item>
         <el-form-item label="数据源名称" prop="name" >
+          <!--maxlength 属性规定输入字段的最大长度-->
           <el-input v-model="subFormData.name" placeholder="单行输入"  maxlength="20" size="mini" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="类型" prop="type">
           <template>
-            <el-select v-model="subFormData.type" placeholder="请选择">
+            <el-select v-model="subFormData.type" placeholder="请选择" >
               <el-option v-for="(optItem,optindex) in typeOptions" :key="optindex" :label="optItem.propvalue" :value="optItem.propkey" />
           </el-select>
           </template>
@@ -46,7 +47,7 @@
           <!--认证方式 无需改变-->
           <div id="noChangeOne" else v-if="subFormData.authmode === 'noauth'">
           <el-form-item label="集成节点" prop="nodeId" >
-            <el-input  v-model="subFormData.nodeId" placeholder="节点ID"  maxlength="20" size="mini" auto-complete="off"></el-input>
+            <el-input  v-model="subFormData.nodeId" placeholder="节点ID"  maxlength="200" size="mini" auto-complete="off"></el-input>
           </el-form-item>
           </div>
           <!--认证方式 Basic Auth-->
@@ -94,7 +95,7 @@
           <div v-if="subFormData.type === 'db'">
             <el-form-item label="分类" prop="classify">
               <template>
-                <el-select v-model="subFormData.classify" placeholder="sqlserver">
+                <el-select v-model="subFormData.classify" placeholder="sqlserver" maxlength="10">
                 <el-option
                 v-for="item in optionsFive"
                 :key="item.value"
@@ -342,7 +343,7 @@ export default {
           'execService': null,
           'cron': null,
           'type': null,
-          'userCaseId': null,
+          'tenantId': "419",
           'remark': null
         })
       this.subFormData =  {
@@ -352,7 +353,7 @@ export default {
           execService: null,
           cron: null,
           type: null,
-          userCaseId: null,
+          tenantId: "419",
           remark: null
         }
         //w===
@@ -376,7 +377,7 @@ export default {
       this.$set(this.subFormData, 'execService', data.execService)
       this.$set(this.subFormData, 'cron', data.cron)
       this.$set(this.subFormData, 'type', data.type)
-      this.$set(this.subFormData, 'userCaseId', row.userCaseId)
+      this.$set(this.subFormData, 'tenantId', row.tenantId)
       this.$set(this.subFormData, 'remark', data.remark)
     },
     getData(datas = this.datas) {

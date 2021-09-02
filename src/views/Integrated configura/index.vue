@@ -3,71 +3,143 @@
     <mod-filter :datas="datas" @query="getData">
       <template slot="lastBtn">
         <el-button type="primary" size="mini" @click="edit(0)">新增</el-button>
+        <el-button type="primary" size="mini" @click="remove(0)">删除</el-button>
+        <el-button type="primary" size="mini" @click="allocation(0)">分配</el-button>
       </template>
       <template slot="enable" slot-scope="scope">
         <span>{{ scope.value.enable ? '启用' : '禁用' }}</span>
       </template>
       <template slot="oper" slot-scope="scope">
-          <el-button size="mini" type="text" @click="edit(scope.value)">编辑</el-button>
-          <el-button size="mini" type="text" @click="remove(scope.value)">删除</el-button>
+        <el-button size="mini" type="text" @click="edit(scope.value)">编辑</el-button>
+        <el-button size="mini" type="text" @click="remove(scope.value)">删除</el-button>
       </template>
     </mod-filter>
     <!--新增/编辑界面-->
-    <el-dialog width="50%" :title="subFormData.id?'编辑':'新增'" :visible.sync="dialogFormVisible">
-      <el-form ref="subFormData" :model="subFormData" :rules="subFormDataRule" class="subFormData" label-width="100px">
-        <el-form-item label="名称" prop="name">
-          <el-input v-model="subFormData.name" maxlength="100" size="mini" auto-complete="off"/>
-        </el-form-item>
-        <el-form-item label="编码" prop="code">
-          <el-input v-model="subFormData.code" maxlength="20" size="mini" auto-complete="off"/>
-        </el-form-item>
-        <el-form-item label="计划输入方式">
-          <el-radio-group v-model="planCheckWay">
-            <el-radio :label="1" @change="inputByMenu">下拉选择</el-radio>
-            <el-radio :label="2" @change="inputByCustom">自定义cron</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item v-if="planCheckWay===1" label="运行计划" prop="plan">
-          <!--          <el-select v-model="subFormData.plan" size="mini" auto-complete="off" @change="getCronByPlan">-->
-          <el-select v-model="subFormData.plan" size="mini" auto-complete="off">
-            <el-option v-for="(optItem,optindex) in planOptions" :key="optindex" :label="optItem.propkey"
-                       :value="optItem.propkey"
-            />
+    <el-dialog width="50%"  :title="subFormData.id?'编辑':'新增'" :visible.sync="dialogFormVisible">
+      <el-form ref="subFormData" :model="subFormData" :rules="subFormDataRule" class="subFormData " label-width="100px" >
+        <!--新增界面的集成名称项-->
+        <el-form-item label="集成名称" prop="name">
+          <el-input v-model="subFormData.name" placeholder="集成名称" maxlength="20" size="mini" auto-complete="off"></el-input>
+        </el-form-item>
+        <!--新增界面的客户项-->
+        <el-form-item label="客户" prop="tenantName">
+          <el-select v-model="subFormData.tenantName" placeholder="请选择客户项">
+            <el-option
+              v-for="item in optionsOne"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
           </el-select>
+        </el-form-item>
+        <!--新增界面的集成节点-->
+        <el-form-item label="集成节点" prop="nodeId">
+          <el-input v-model="subFormData.nodeId" placeholder="集成节点" maxlength="20" size="mini" auto-complete="off"  ></el-input>
+        </el-form-item>
+        <!--新增界面的模板选择-->
+        <el-form-item label="模板选择" prop="templateName" :inline="true">
+          <!--el-col可以让一行el-form-item放下两个组件-->
+          <el-col :span="12">
+            <el-input v-model="subFormData.templateName" placeholder="模板选择" maxlength="20" size="mini" auto-complete="off"  ></el-input>
+          </el-col>
+          <el-col :span="12">
+            <el-button @click="ShowMoule=true">选择模板</el-button>
+          </el-col>
+        </el-form-item>
+        <!--新增界面的参数-->
+        <el-form-item label="参数" prop="">
+          <el-table ref="multipleTable" :data="tableData"   @selection-change="select"  tooltip-effect="dark" style="width: 100%"   @select="handleSelectionChange">
+            <el-table-column prop="name" label="参数名称">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.name" />
+              </template>
+            </el-table-column>
+            <el-table-column prop="name" label="参数数据">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.name" />
+              </template>
+            </el-table-column>
+            <el-table-column prop="name" label="操作" >
+              <template slot-scope="scope">
+              <el-button type="text" @click="delTableData(scope,1)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <!--参数的添加按钮-->
+          <div @click="tableAdd">添加</div>
+        </el-form-item>
+        <!--新增界面的插件文件-->
+        <el-form-item label="插件文件" prop="">
+          <el-button type="primary">上传插件<i class="el-icon-upload el-icon--right"></i></el-button>
         </el-form-item>
-<!--        <el-form-item v-if="planCheckWay===1" v-show="false" label="cron" prop="cron">-->
-<!--          <el-input v-model="subFormData.cron" maxlength="50" size="mini" auto-complete="off"/>-->
-<!--        </el-form-item>-->
-        <el-form-item v-if="planCheckWay===2" label="cron" prop="cron">
-          <el-input v-model="subFormData.cron" maxlength="50" size="mini" auto-complete="off"/>
-        </el-form-item>
-        <el-form-item label="绑定service" prop="execService">
-          <el-input v-model="subFormData.execService" maxlength="50" size="mini" auto-complete="off"/>
-        </el-form-item>
-        <!--        <el-form-item label="类型" prop="type">-->
-        <!--          <el-select v-model="subFormData.type" size="mini" auto-complete="off">-->
-        <!--            <el-option v-for="(optItem,optindex) in typeOptions" :key="optindex" :label="optItem.propvalue"-->
-        <!--                       :value="optItem.propkey"-->
-        <!--            />-->
-        <!--          </el-select>-->
-        <!--        </el-form-item>-->
-        <!--        <el-form-item v-if="subFormData.type==='1'" label="绑定用户场景" prop="userCaseId">-->
-        <!--          <el-select v-model="subFormData.userCaseId" size="mini" auto-complete="off">-->
-        <!--            <el-option v-for="(optItem,optindex) in userCaseOptions" :key="optindex" :label="optItem.propvalue"-->
-        <!--                       :value="optItem.propkey"-->
-        <!--            />-->
-        <!--          </el-select>-->
-        <!--        </el-form-item>-->
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="subFormData.remark" maxlength="500" size="mini" auto-complete="off"/>
-        </el-form-item>
+        <!--新增界面的任务列表-->
+        <el-form-item label="任务列表" prop="">
+          <el-table ref="multipleTable" :data="tableData"   @selection-change="select"  tooltip-effect="dark"style="width: 100%"   @select="handleSelectionChange">
+            <!--任务列表的选择点击按钮-->
+            <el-table-column type="selection"  width="55">
+            </el-table-column>
+            <!--任务列表的名称-->
+            <el-table-column prop="name" label="名称">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.name" />
+              </template>
+            </el-table-column>
+            <!--任务列表的输入节点-->
+            <el-table-column prop="name" label="输入节点">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.name" />
+              </template>
+            </el-table-column>
+            <!--任务列表的转换节点-->
+            <el-table-column prop="name" label="转换节点" >
+              <template slot-scope="scope">
+              <el-button type="text" @click="delTableData(scope,1)">删除</el-button>
+              </template>
+            </el-table-column>
+            <!--任务列表的输出节点-->
+            <el-table-column prop="name" label="输出节点" >
+              <template slot-scope="scope">
+              <el-button type="text" @click="delTableData(scope,1)">删除</el-button>
+              </template>
+            </el-table-column>
+            <!--任务列表的状态-->
+            <el-table-column prop="name" label="状态" >
+              <template slot-scope="scope">
+              <el-button type="text" @click="delTableData(scope,1)">删除</el-button>
+              </template>
+            </el-table-column>
+            <!--任务列表的操作-->
+            <el-table-column prop="name" label="操作" >
+              <template slot-scope="scope">
+              <el-button type="text" @click="delTableData(scope,1)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <!--任务列表的按钮-->
+          <div @click="tableAdd">添加</div>
+        </el-form-item>
       </el-form>
+      <!--新增界面的确定取消-->
       <div slot="footer" class="dialog-footer">
         <el-button size="mini" @click="dialogFormVisible = false;showCronBox=false">取 消</el-button>
         <el-button size="mini" type="primary" @click="subForm('subFormData')">确 定</el-button>
       </div>
     </el-dialog>
-
+<!-----------------------------------------------跳转的界面--------------------------------------------------------->
+    <!--模板选择按钮的跳转界面-->
+    <el-dialog width="50%" title="选择模板" :visible.sync="ShowMoule">
+      <el-table ref="multipleTable" :data="tableData"   @selection-change="select"  tooltip-effect="dark"style="width: 100%"   @select="handleSelectionChange">
+        <el-table-column type="selection"  width="55">
+        </el-table-column>
+        <el-table-column prop="name" label="模板名称">
+        </el-table-column>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="ShowMoule = false">取 消</el-button>
+        <el-button size="mini" type="primary" @click="modelShow">确 定</el-button>
+      </div>
+    </el-dialog>
+<!-------------------------------------------------------------------------------------------------------->
     <!--分配界面-->
     <el-dialog width="50%" :title="'分配'" :visible.sync="allocationDialogFormVisible">
       <el-form ref="allocationSubFormData" :model="allocationSubFormData" :rules="allocationSubFormDataRule"
@@ -109,6 +181,9 @@ import * as api from '@/api/task'
 export default {
   data() {
     return {
+      modelData:{},
+      ShowMoule:false,//当前模态窗的显示隐藏
+      tableData:[],
       planOptions: [],
       userCaseOptions: [],
       typeOptions: [],
@@ -148,6 +223,13 @@ export default {
         computerId: null
       },
       allocationNames: null,
+      optionsOne: [{
+          value: '1',
+          label: '则成'
+        }, {
+          value: '2',
+          label: '云鲸'
+        }],
       subFormDataRule: {
         'name': [{
           required: true,
@@ -188,7 +270,6 @@ export default {
           message: '请选择前置机'
         }]
       },
-      tableData: [],
       params: {
         currentPage: 1,
         pageSize: 10
@@ -212,6 +293,15 @@ export default {
         filterList: [
           {
             type: 'input',
+            prop: 'code',
+            conditionshow: true,
+            filedShow: true,
+            label: '序号',
+            placeholder: '序号',
+            optList: []
+          },
+          {
+            type: 'input',
             prop: 'name',
             conditionshow: true,
             filedShow: true,
@@ -221,8 +311,8 @@ export default {
           },
           {
             type: 'input',
-            prop: 'name',
-            conditionshow: true,
+            prop: '',
+            conditionshow: false,
             filedShow: true,
             label: '客户',
             placeholder: '客户',
@@ -230,20 +320,29 @@ export default {
           },
           {
             type: 'input',
-            prop: 'plan',
+            prop: '',
             conditionshow: false,
             filedShow: true,
-            label: '运行计划',
-            placeholder: '运行计划',
+            label: '模板',
+            placeholder: '模板',
             optList: []
           },
           {
             type: 'input',
-            prop: 'execService',
+            prop: '',
             conditionshow: false,
             filedShow: true,
-            label: '绑定service',
-            placeholder: '绑定service',
+            label: '修改时间',
+            placeholder: '修改时间',
+            optList: []
+          },
+          {
+            type: 'input',
+            prop: '',
+            conditionshow: false,
+            filedShow: true,
+            label: '状态',
+            placeholder: '状态',
             optList: []
           },
           {
@@ -269,6 +368,42 @@ export default {
   mounted() {
   },
   methods: {
+    delTableData(index,type){
+      console.log(index)
+      console.log(type)
+
+        this.tableData.splice(index.$index,1)
+    },
+    tableAdd(){
+      this.tableData.push({
+        name:"1111"
+      })
+    },
+    modelShow(){
+      
+      this.subFormData.templateName = this.modelData.name
+      this.ShowMoule =false
+      console.log(this.modelData)
+    },
+    select(selection) {
+      // console.log("selection",selection)
+    },
+    handleSelectionChange(selection){
+     
+      if(selection.length==1){
+        this.modelData = selection[0]
+         console.log("第一次",selection[0])
+      }
+    if (selection.length > 1) {
+      let arr =  selection
+        let del_row = arr.shift()
+        this.modelData = arr[0]
+
+      console.log("第er次",arr[0])
+
+        this.$refs.multipleTable.toggleRowSelection(del_row, false)
+      }
+    },
     inputByMenu() {
       this.subFormData.cron = null
     },
@@ -488,5 +623,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+ /deep/ .el-table__header-wrapper .el-checkbox {
+  display: none;
+}
 </style>

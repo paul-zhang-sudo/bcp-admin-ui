@@ -12,6 +12,7 @@
     {{scope.value.enable ? "禁用" : "启用"}}
   </el-button>
   <el-button size="mini" type="text" @click="edit(scope.value)">编辑</el-button>
+  <el-button size="mini" type="text" @click="remove(scope.value)">删除</el-button>
 </template>
     </mod-filter>
     <!--新增/编辑界面-->
@@ -28,17 +29,13 @@
         </el-form-item>
         <el-form-item label="模板" prop="fileUrl">
           <el-upload 
-          class="upload-demo" 
-          :limit="1"
-          :file-list="fileList"
-          :show-file-list='true'
-          :http-request="handleUpload"
-          action='undefined'
-          :beforeUpload="beforeUpload"
-          multiple>
-            <i class="el-icon-upload"></i>
-            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-            <div class="el-upload__tip" slot="tip">只能上传js文件，且不超过1M</div>
+            :on-exceed="exceedFile"
+            :file-list="fileList"
+            :limit="1"
+            :http-request="handleUpload"
+            action='undefined'
+            :beforeUpload="beforeUpload">
+              <el-button size="small" type="primary">点击上传</el-button>
           </el-upload>
         </el-form-item>
       </el-form>
@@ -131,8 +128,7 @@ export default {
             // 控制搜索框的label显示与否
             isHiddenSearchLabel: true,
             label: '名称',
-            placeholder: '关键词',
-            optList: []
+            placeholder: '关键词'
           },
           {
             prop: "code",
@@ -179,6 +175,12 @@ export default {
   async created() {},
   mounted() {},
   methods: {
+    exceedFile(files, fileList) {
+      this.$notify.warning({
+        title: '警告',
+        message: `只能选择1个文件，当前共选择了 ${files.length + fileList.length} 个`
+      });
+    },
     disableType(row) {
       console.log(row.enable);
       let obj = {
@@ -194,15 +196,18 @@ export default {
       });
     },
     beforeUpload(file) {
-      if (file.size / (1024 * 1024) > 1) {
-        return this.msgError("文件大小不能超过1M");
+      if (file.size / (1024 * 1024) > 5) {
+          this.$notify.warning({
+            title: '警告',
+            message: `文件大小不得超过5M`
+          });
+      }else{
+        const formData = new FormData();
+        formData.append("file", file);
+        upData(formData).then((res) => {
+          this.subFormData.fileUrl = res.model;
+        });
       }
-      const formData = new FormData();
-      formData.append("file", file);
-      upData(formData).then((res) => {
-        let fileUal = window._CONFIG["nginxUrl"] + res.model;
-        this.subFormData.fileUrl = fileUal;
-      });
     },
     handleUpload(file, fileList) {},
     inputByMenu() {

@@ -8,13 +8,10 @@
   <span>{{ scope.value.enable ? "启用" : "禁用" }}</span>
 </template>
       <template slot="oper" slot-scope="scope">
-  <el-button size="mini" type="text" @click="disableType(scope.value)">{{
-    scope.value.enable ? "禁用" : "启用"
-  }}</el-button>
+  <el-button size="mini" type="text" @click="disableType(scope.value)">
+    {{scope.value.enable ? "禁用" : "启用"}}
+  </el-button>
   <el-button size="mini" type="text" @click="edit(scope.value)">编辑</el-button>
-  <el-button size="mini" type="text" @click="remove(scope.value)"
-    >删除</el-button
-  >
 </template>
     </mod-filter>
     <!--新增/编辑界面-->
@@ -34,10 +31,10 @@
           class="upload-demo" 
           :limit="1"
           :file-list="fileList"
-          :show-file-list='false'
+          :show-file-list='true'
           :http-request="handleUpload"
           action='undefined'
-        :beforeUpload="beforeUpload"
+          :beforeUpload="beforeUpload"
           multiple>
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -48,39 +45,6 @@
       <div slot="footer" class="dialog-footer">
         <el-button size="mini" @click="dialogFormVisible = false;showCronBox=false">取 消</el-button>
         <el-button size="mini" type="primary" @click="subForm('subFormData')">确 定</el-button>
-      </div>
-    </el-dialog>
-
-    <!--分配界面-->
-    <el-dialog width="50%" :title="'分配'" :visible.sync="allocationDialogFormVisible">
-      <el-form ref="allocationSubFormData" :model="allocationSubFormData" :rules="allocationSubFormDataRule"
-               class="allocationSubFormData" label-width="100px"
-      >
-        <el-form-item label="计划任务名称">
-          <el-select v-model="allocationNames" multiple disabled size="mini" auto-complete="off">
-            <el-option v-for="item in allocationNames" :key="item" :label="item" :value="item"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item v-show="false" label="items" prop="items">
-          <el-input v-model="allocationSubFormData.items" size="mini" auto-complete="off"/>
-        </el-form-item>
-        <el-form-item label="租户" prop="sourceType">
-          <el-select v-model="allocationSubFormData.tenantId" size="mini" @change="getComputers">
-            <el-option v-for="(optItem,optindex) in tenants" :key="optindex" :label="optItem.name" :value="optItem.id"/>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="前置机" prop="sourceType">
-          <el-select v-model="allocationSubFormData.computerId" size="mini">
-            <el-option v-for="(optItem,optindex) in computers" :key="optindex" :label="optItem.name"
-                       :value="optItem.id"
-            />
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="allocationDialogFormVisible = false">取 消</el-button>
-        <el-button size="mini" type="primary" @click="allocationSubForm('allocationSubFormData')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -99,103 +63,39 @@ export default {
   data() {
     return {
       fileList:[],
-      planOptions: [],
-      userCaseOptions: [],
       typeOptions: [],
       nameOptions: [],
-      planCheckWay: 1,
-      tenants: [],
-      computers: [],
       dialogFormVisible: false,
-      allocationDialogFormVisible: false,
       dialogRowTitle: null,
-      selectionPropList: [],
-      rowData: {
-        id: null,
-        name: null,
-        code: null,
-        plan: null,
-        execService: null,
-        cron: null,
-        type: null,
-        userCaseId: null,
-        remark: null,
-      },
       subFormData: {
         id: null,
         name: null,
         code: null,
-        plan: null,
-        execService: null,
-        cron: null,
-        type: "2",
-        userCaseId: null,
         remark: null,
         fileUrl: null,
       },
-      allocationSubFormData: {
-        items: null,
-        tenantId: null,
-        computerId: null,
-      },
-      allocationNames: null,
       subFormDataRule: {
         name: [
           {
             required: true,
             message: "请填写名称",
+            trigger: 'blur'
           },
         ],
         code: [
           {
             required: true,
             message: "请填写编码",
-          },
-        ],
-        plan: [
-          {
-            required: true,
-            message: "请填写运行计划",
-          },
-        ],
-        execService: [
-          {
-            required: true,
-            message: "请填写绑定service",
-          },
-        ],
-        cron: [
-          {
-            required: true,
-            message: "请填写cron",
+            trigger: 'blur'
           },
         ],
         type: [
           {
             required: true,
             message: "请填写类型",
+            trigger: 'blur'
           },
-        ],
-        userCaseId: [
-          {
-            required: true,
-            message: "请填写绑定用户场景",
-          },
-        ],
-      },
-      allocationSubFormDataRule: {
-        tenantId: [
-          {
-            required: true,
-            message: "请选择租户",
-          },
-        ],
-        computerId: [
-          {
-            required: true,
-            message: "请选择前置机",
-          },
-        ],
+        ]
       },
       params: {
         currentPage: 1,
@@ -223,51 +123,43 @@ export default {
         filterList: [
            {
             type: 'input',
-            prop: 'key',
-            filedShow: false,
-             conditionshow: true,
+            prop: 'name',
+            // 控制设置内部 复选框勾选的默认值
+            conditionshow: true,
+            // 控制该字段是否出现在表格里
+            filedShow: true,
+            // 控制搜索框的label显示与否
+            isHiddenSearchLabel: true,
             label: '名称',
             placeholder: '关键词',
-
-          },
-          {
-            prop: "id",
-            filedShow: true,
-            label: "序号",
-            placeholder: "序号",
-          },
-          {
-            type: "input",
-            prop: "name",
-            label: "名称",
-            placeholder: "关键词",
+            optList: []
           },
           {
             prop: "code",
             conditionshow: false,
             filedShow: true,
             label: "编码",
-            placeholder: "编码",
+            placeholder: "编码"
           },
           {
             prop: "enable",
             filedShow: true,
             slot: true,
             label: "状态",
-            placeholder: "状态",
+            placeholder: "状态"
           },
           {
             type: "input",
             prop: "createTime",
             filedShow: true,
             label: "创建时间",
-            placeholder: "创建时间",
+            placeholder: "创建时间"
           },
           {
             prop: "lastUpdateTime",
             filedShow: true,
             label: "修改时间",
-            placeholder: "修改时间",
+            placeholder: "修改时间"
           },
           {
             prop: "oper",
@@ -277,11 +169,11 @@ export default {
             slot: true,
             label: "操作",
             placeholder: "操作",
-            optList: [],
+            optList: []
           },
         ],
       },
-      showCronBox: true,
+      showCronBox: false,
     };
   },
   async created() {},
@@ -307,7 +199,6 @@ export default {
       }
       const formData = new FormData();
       formData.append("file", file);
-      console.log("formData", formData);
       upData(formData).then((res) => {
         let fileUal = window._CONFIG["nginxUrl"] + res.model;
         this.subFormData.fileUrl = fileUal;
@@ -338,28 +229,6 @@ export default {
         })
         .catch(() => {});
     },
-    allocation(row) {
-      let items = [];
-      let names = [];
-      if (!row) {
-        if (!this.datas.multipleSelection.length) {
-          this.$message.info("请选择相关数据");
-          return;
-        }
-        items = this.datas.multipleSelection.map((value) => {
-          return value["id"];
-        });
-        names = this.datas.multipleSelection.map((value) => {
-          return value["name"];
-        });
-      } else {
-        items.push(row.id);
-        names.push(row.name);
-      }
-      this.allocationNames = names;
-      this.allocationDialogFormVisible = true;
-      this.$set(this.allocationSubFormData, "items", items);
-    },
     //新增的方法
     subForm(formData) {
       this.showCronBox = false;
@@ -379,100 +248,37 @@ export default {
         }
       });
     },
-    allocationSubForm(formData) {
-      this.$refs[formData].validate((valid) => {
-        if (valid) {
-          api
-            .submitAllocationForm(this[formData])
-            .then((res) => {
-              // console.log(this[formData])
-              this.$message.success("分配成功");
-              this.getData(this.datas);
-              this.allocationDialogFormVisible = false;
-            })
-            .catch(() => {});
-        } else {
-          return false;
-        }
-      });
-    },
     // 新增或编辑页面
     edit(row) {
-      console.log(this.fileList)
-      this.dialogFormVisible = true;
-      if (row==0) {
-        this.subFormData = {
-          name: null,
-          code: null,
-          plan: null,
-           fileUrl:null,
-          execService: null,
-          cron: null,
-          type: null,
-          userCaseId: null,
-          remark: null,
-        }
-        this.$set(this, "subFormData", {
-          name: null,
-          fileUrl:null,
-          code: null,
-          plan: null,
-          execService: null,
-          cron: null,
-          type: null,
-          userCaseId: null,
-          remark: null,
-        });
-        if (this.$refs["subFormData"]) {
-          this.$refs["subFormData"].resetFields();
-        }
-        return;
+      this.dialogFormVisible = true
+      //如果是新增
+      if (row===0) {
+        //清空属性值
+        Object.keys(this.subFormData).forEach((key) => (this.subFormData[key] = null));
+        return
       }
-      this.$set(this.subFormData, "id", row.id);
-      this.$set(this.subFormData, "name", row.name);
-      this.$set(this.subFormData, "code", row.code);
-      this.$set(this.subFormData, "plan", row.plan);
-      this.$set(this.subFormData, "execService", row.execService);
-      this.$set(this.subFormData, "cron", row.cron);
-      this.$set(this.subFormData, "type", row.type);
-      this.$set(this.subFormData, "userCaseId", row.userCaseId);
-      this.$set(this.subFormData, "remark", row.remark);
+      //如果是更新
+      this.subFormData = {
+        ...row
+      }
+      //解构赋值id丢失，所以在这里单独设置一下id，原因待查找
+      // this.subFormData.id = row.id
     },
     getData(datas = this.datas) {
-      console.log('datas',datas)
       this.$set(this, "datas", datas);
       this.$set(this, "params", datas.params);
       this.$set(this.datas.table, "loading", true);
       this.$set(this.params, "orgId", this.params.orgName);
-
-      api
-        .getPage({ ...this.params})
-        .then((res) => {
+ 
+      api.getPage({ key:this.params.name}).then((res) => {
           this.$set(this.datas.resData, "rows", res.model);
           this.$set(this.datas.params, "currentPage", res.currentPage);
           this.$set(this.datas.params, "pageSize", res.pageSize);
           this.$set(this.datas.resData, "totalCount", res.totalCount);
           this.$set(this.datas.table, "loading", false);
         });
-    },
-
-    getComputers() {
-      this.allocationSubFormData.computerId = null;
-      const tenantId = this.allocationSubFormData.tenantId;
-      api
-        .getComputers(tenantId)
-        .then((res) => {
-          console.log(res.model);
-          this.computers = res.model;
-          if (this.computers.length === 1) {
-            this.allocationSubFormData.computerId = this.computers[0].id;
-          }
-        })
-        .catch((e) => {
-          return false;
-        });
-    },
-  },
+    }
+  }
 };
 </script>
 

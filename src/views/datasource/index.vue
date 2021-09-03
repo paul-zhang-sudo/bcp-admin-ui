@@ -17,9 +17,10 @@
     <el-dialog width="50%" :title="subFormData.id?'编辑':'新增'" :visible.sync="dialogFormVisible">
       <el-form ref="subFormData" :model="subFormData" :rules="subFormDataRule" class="subFormData" label-width="100px">
         <el-form-item label="客户" prop="tenantId">
-         <template>
-            <sxf-freelist v-model="subFormData.tenantId" code="bcp.tenant.name" />
-        </template>
+            <el-select v-model="subFormData.tenantId" placeholder="请选择" >
+                <el-option v-for="(optItem,optindex) in customerOptions" :key="optindex" :label="optItem" :value="optindex" />
+              </el-select>
+          <!-- <sxf-freelist v-model="subFormData.tenantId" code="bcp.tenant.name" /> -->
         </el-form-item>
         <el-form-item label="数据源名称" prop="name" >
           <!--maxlength 属性规定输入字段的最大长度-->
@@ -138,6 +139,7 @@
 <script>
 import * as api from '@/api/datasource'
 import * as menuApi from '@/api/menu'
+import * as sel from '@/api/select'
 export default {
   data() {
     return {
@@ -145,6 +147,7 @@ export default {
       userCaseOptions: [],
       typeOptions: [],
       authOptions: [],
+      customerOptions: [],
       planCheckWay: 1,
       tenants: [],
       computers: [],
@@ -179,8 +182,6 @@ export default {
         code: null,
         type: null,
         url:null,
-        certificationMode:null,
-        integrationNode:null,
         userName:null,
         password:null,
         authmode:null,//类型为API时的认证方式
@@ -335,24 +336,23 @@ export default {
       if (row===0) {
         //清空属性值
         Object.keys(this.subFormData).forEach((key) => (this.subFormData[key] = null));
-        this.$set(this.subFormData, 'tenantId', '')
-        alert(this.subFormData.tenantId)
         return
       }
       //如果是更新
       let data =JSON.parse(row.configValue)
-      let tenantId = row.tenantId+"";
-      delete row.configValue
-      delete row.tenantId
+      let tmp = {};
+      Object.assign(tmp, row)
+      debugger
+      delete tmp.configValue
+      delete tmp.tenantId
       this.subFormData = {
-        ...row,
+        ...tmp,
         ...data
       }
-      this.subFormData.tenantId = tenantId
+      //解构复值id丢失，所以在这里单独设置一下id，原因待查找
+      this.subFormData.id = tmp.id
     },
     getData(datas = this.datas) {
-      console.log('this.params = ', this.params)
-
       this.$set(this, 'datas', datas)
       this.$set(this, 'params', datas.params)
       this.$set(this.datas.table, 'loading', true)
@@ -367,12 +367,16 @@ export default {
       })
     },
     subForm(subFormData) {
+      console.log('id:'+subFormData.id);
+      console.log(JSON.stringify(this.subFormData));
       this.showCronBox = false
       this.$refs.subFormData.validate((valid) => {
         if (valid) {
           if(this.subFormData.type =='api'){
             this.subFormData.classify=this.subFormData.type
           }
+          console.log(JSON.stringify(this.subFormData));
+          debugger
           let dataVale = JSON.stringify(this.subFormData)
           let obj = {
             configValue:dataVale,
@@ -399,6 +403,9 @@ export default {
       }).catch(e => {
         return false
       })
+      sel.getFreelist({ code: 'bcp.tenant.name', params: '' }).then(res => {
+        this.customerOptions = res.model
+    })
     }
   }
 }

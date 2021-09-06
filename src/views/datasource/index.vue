@@ -36,7 +36,7 @@
           <!--类型是API-->
           <div v-if="subFormData.type === 'api'">
           <el-form-item label="URL" prop="url" >
-            <el-input v-model="subFormData.url" placeholder="单行输入"  maxlength="20" size="mini" auto-complete="off"></el-input>
+            <el-input v-model="subFormData.url" placeholder="单行输入"  maxlength="100" size="mini" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="认证方式" prop="authmode">
             <template>
@@ -331,6 +331,11 @@ export default {
     },
     // 新增或编辑页面
     edit(row) {
+      //清空验证信息
+      if( !!this.$refs.subFormData ){
+        this.$refs.subFormData.clearValidate()
+      }
+      
       this.dialogFormVisible = true
       //如果是新增
       if (row===0) {

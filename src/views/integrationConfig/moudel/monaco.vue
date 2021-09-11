@@ -25,7 +25,9 @@ export default {
                 value: '', // 编辑器的值
                 theme: 'vs-dark', // 编辑器主题：vs, hc-black, or vs-dark，更多选择详见官网
                 roundedSelection: false, // 右侧不显示编辑器预览框
-                autoIndent: true // 自动缩进
+                autoIndent: true, // 自动缩进
+                language: 'javascript'
+
             }
 
         }

@@ -183,7 +183,7 @@
       <div slot="footer" class="dialog-footer">
         <el-button size="mini" @click="dialogFormVisible = false">取 消</el-button>
         <el-button size="mini" type="primary" @click="subForm('subFormData')">确 定</el-button>
-        <el-button size="mini"  type="primary" @click="issue(this.subFormData.id)">下发</el-button>
+        <el-button size="mini" :disabled="subFormData.id==undefined"  type="primary" @click="issue(subFormData.id)">下发</el-button>
       </div>
     </el-dialog>
 <!-----------------------------------------------跳转的界面--------------------------------------------------------->
@@ -529,9 +529,33 @@ export default {
     
   },
   methods: {
-    // issue(row){
-    //   location.href = `${process.env.VUE_APP_BASE_API}/services/fwcore/template/down/${row.id}`
-    // },
+    //导出
+    derive(row){
+      api.exportExcel(row.id).then(res=>{
+          let blob = new Blob([res], { type: `${res.type}` });
+          let link = document.createElement("a");
+          link.href = window.URL.createObjectURL(blob);
+          link.click();
+          link.remove();
+      })
+      console.log(row)
+    },
+    issue(row){
+      api.issueType(row).then(res=>{
+        console.log(res)
+         this.$message({
+          showClose: true,
+          message: '恭喜你，这是一条成功消息',
+          type: 'success'
+        });
+          this.$message({
+          showClose: true,
+          message: '警告哦，这是一条警告消息',
+          type: 'warning'
+        });
+      })
+      // location.href = `${process.env.VUE_APP_BASE_API}/services/fwcore/template/down/${row.id}`
+    },
     templateData(val){
       //这个获取模板id
       console.log("val",val)
@@ -568,13 +592,14 @@ export default {
     },
     //任务列表的输入节点的配置按钮方法
     changeOptionsInput(data) {
-      if(this.subFormData.id!==undefined){
+      console.log(data)
+      if(data.row.id!==undefined){
         this.inNode = JSON.parse(data.row.inNode.configValue)
         this.$nextTick(()=>{
         this.$refs.MonAco.$data.defaultOpts.value = this.inNode.MonAcoData
         this.$refs.MonAco.setValue(this.inNode.MonAcoData)
+      
         })
-
       }else{
         this.inNode={
             timingSettings: null, //定时设置
@@ -602,7 +627,7 @@ export default {
     //任务列表的转换节点的配置按钮方法
     changeOptionsTransform(data) {
     console.log('data0',data)
-           if(this.subFormData.id!==undefined){
+           if(data.row.id!==undefined){
         this.inNode = JSON.parse(data.row.inNode.configValue)
         this.$nextTick(()=>{
         this.$refs.MonAcoTransformNode.$data.defaultOpts.value = this.inNode.MonAcoData
@@ -625,7 +650,7 @@ export default {
     //任务列表的输出节点的配置按钮方法
     changeOptionsOutput(data) {
         console.log(data)
-                 if(this.subFormData.id!==undefined){
+                 if(data.row.id!==undefined){
          this.outNodeTypeData = JSON.parse(data.row.outNode.configValue)
          console.log(  this.outNodeTypeData)
         this.$nextTick(()=>{
@@ -727,9 +752,11 @@ export default {
         ...this.subFormData,
         jobList:this.jobList
       }
-      obj.configValue={tableData:JSON.stringify(this.tableData),subFormData:JSON.stringify(this.subFormData)},
-
-      console.log('obj----->data',obj)
+      obj.configValue={
+          tableData:JSON.stringify(this.tableData),
+          subFormData:JSON.stringify(this.subFormData),
+          jobList:JSON.stringify(this.jobList)
+        },
       this.$refs[formData].validate((valid) => {
         if (valid) {
           console.log(this[formData]);
@@ -738,7 +765,8 @@ export default {
             .then((res) => {
               this.$message.success("保存成功");
               this.getData(this.datas);
-              this.dialogFormVisible = false;
+              console.log('res==>',res)
+              // this.dialogFormVisible = false;
             })
             .catch(() => {});
         } else {
@@ -796,19 +824,26 @@ export default {
 
         return
       }
-      this.dialogFormVisible = true;
-
-      const res = await api.getIdRow(row.id)
-       let data =JSON.parse(res.model)
-     let configValue =  JSON.parse(data.configValue)
-      // this.jobList = data.jobList
-      console.log("res->>>>",configValue)
+    this.dialogFormVisible = true;
+    const res = await api.getIdRow(row.id)
+    let data =JSON.parse(res.model)
+    console.log('data=>',data.jobList)
+    let configValue =  JSON.parse(data.configValue)
 
     this.jobList = JSON.parse(configValue.jobList)
+    data.jobList.forEach(item=>{
+      this.jobList.forEach(it=>{
+        if(item.jobName==it.jobName){
+          it.id = item.id
+        }
+      })
+    })
+    console.log('data=>1111',this.jobList )
+
     this.tableData = JSON.parse(configValue.tableData)
     this.subFormData = JSON.parse(configValue.subFormData)
-      let {id} = data
-      this.subFormData.id = id
+    let {id} = data
+    this.subFormData.id = id
     },
 
     getData(datas = this.datas) {
@@ -817,7 +852,6 @@ export default {
       this.$set(this.datas.table, "loading", true);
       this.$set(this.params, "orgId", this.params.orgName);
       api.getPage({...this.params}).then((res) => {
-          console.log('ras',res)
         this.$set(this.datas.resData, "rows", res.model);
         this.$set(this.datas.params, "currentPage", res.currentPage);
         this.$set(this.datas.params, "pageSize", res.pageSize);

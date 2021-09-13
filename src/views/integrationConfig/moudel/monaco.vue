@@ -1,9 +1,19 @@
 <template>
-  <div ref="container" class="monaco-editor" :style="`height: ${height}px`"></div>
+    <div class="the-code-editor-container" id="mEditor">
+        <div>
+        <i v-if="isMaximum" class="el-icon-rank" title="点击缩小" @click="minEditor"></i>
+        <i v-else class="el-icon-full-screen" title="点击放大" @click="maxEditor"></i>
+        </div>
+        <div class="my-editor" ref="container">
+        </div>
+    </div>
 </template>
 
 <script>
-import * as monaco from 'monaco-editor'
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js';
+import 'monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution';
+import 'monaco-editor/esm/vs/editor/contrib/find/findController.js';
+
 export default {
     name: 'AcMonaco',
     props: {
@@ -27,7 +37,11 @@ export default {
                 roundedSelection: false, // 右侧不显示编辑器预览框
                 autoIndent: true, // 自动缩进
                 language: 'javascript'
-
+            },
+            isMaximum: false,
+            originSize: {
+                width: '',
+                height: ''
             }
 
         }
@@ -49,6 +63,24 @@ export default {
             console.log('this.$refs.container')
         },
         init() {
+            self.MonacoEnvironment = {
+                getWorkerUrl: function (moduleId, label) {
+                    if (label === 'json') {
+                    return './json.worker.bundle.js';
+                    }
+                    if (label === 'css' || label === 'scss' || label === 'less') {
+                    return './css.worker.bundle.js';
+                    }
+                    if (label === 'html' || label === 'handlebars' || label === 'razor') {
+                    return './html.worker.bundle.js';
+                    }
+                    if (label === 'typescript' || label === 'javascript') {
+                    return './ts.worker.bundle.js';
+                    }
+                    return './editor.worker.bundle.js';
+                }
+            }
+
             // 初始化container的内容，销毁之前生成的编辑器
             this.$refs.container.innerHTML = ''
             
@@ -63,6 +95,30 @@ export default {
         // 供父组件调用手动获取值
         getVal() {
             return this.monacoEditor.getValue()
+        },
+         maxEditor () {
+            this.isMaximum = true
+            let dom = document.getElementById("mEditor")
+            this.originSize = {
+                width: dom.clientWidth,
+                height: dom.clientHeight
+            }
+  
+            dom.classList.add('editor-fullscreen')
+            this.monacoEditor.layout({
+                height: window.screen.height,
+                width: document.body.clientWidth
+            })
+            },
+            // 缩小
+            minEditor () {
+            this.isMaximum = false
+            let dom = document.getElementById("mEditor")
+            dom.classList.remove('editor-fullscreen')
+            this.monacoEditor.layout({
+                height: this.originSize.height,
+                width: this.originSize.width
+            })
         }
     }
 }

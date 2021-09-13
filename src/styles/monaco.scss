@@ -1,0 +1,32 @@
+.editor-fullscreen {
+    position: fixed !important;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100% !important;
+    z-index: 1000;
+}
+.the-code-editor-container {
+    width: 100%;
+    height: 300px;
+    position: relative;
+    [class^="el-icon"] {
+      font-size: 35px;
+      cursor: pointer;
+      position: absolute;
+      right: 10px;
+      top: 0;
+      z-index: 9999;
+      color: #fff;
+    }
+    .my-editor {
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+    }
+    .monaco-editor .scroll-decoration {
+      box-shadow: none;
+    }
+  }

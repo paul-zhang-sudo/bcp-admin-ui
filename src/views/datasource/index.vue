@@ -348,6 +348,9 @@ export default {
       let tmp = {};
       Object.assign(tmp, row)
       delete tmp.configValue
+      delete tmp.tenantId
+      delete tmp.type
+
       this.subFormData = {
         ...data,
         ...tmp

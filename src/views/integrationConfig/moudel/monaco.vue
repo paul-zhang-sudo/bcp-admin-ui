@@ -63,7 +63,8 @@ export default {
         },
         setValue(data){
             if(this.monacoEditor){
-                this.monacoEditor.setValue(data);
+                data = data=== undefined ?'':data
+                this.monacoEditor.setValue(data)
             }
         },
         init() {

@@ -55,7 +55,7 @@
         <!--新增界面的参数-->
         <el-form-item label="参数" prop="parameter">
           <!-- border=>使表格带边框 -->
-          <el-table ref="multipleTable" :data="tableData" border tooltip-effect="dark" style="width: 100%"   @select="handleSelectionChange">
+          <el-table :data="tableData" class="mt10" :cell-style="{padding:'10px 0px'}" :header-cell-style="{background:'#fafafa',color:'#606266',padding:'12px 0px'}" fit highlight-current-row style="width: 100%" @select="handleSelectionChange">
             <!-- align="center"使内容居中 -->
             <el-table-column label="参数名称" align="center">
               <!-- slot-scope="scope"获取表格到当前行的数据 -->
@@ -76,7 +76,7 @@
           </el-table>
           <!--参数的添加按钮-->
            <el-row>
-            <el-button style="width:100%;margin-top:10px;" @click="addParam" >添加</el-button>
+             <el-button type="text" @click="addParam" >添加</el-button>
           </el-row>
           <!-- <div @click="addParam">添加</div> -->
         </el-form-item>
@@ -87,7 +87,7 @@
         <!--新增界面的任务列表-->
         <el-form-item label="任务列表" >
           <!-- border=>使表格带边框 -->
-          <el-table ref="multipleTable" :data="jobList" border tooltip-effect="dark"style="width: 100%" @select="handleSelectionChange">
+          <el-table :data="jobList" class="mt10" :cell-style="{padding:'10px 0px'}" :header-cell-style="{background:'#fafafa',color:'#606266',padding:'12px 0px'}" fit highlight-current-row style="width: 100%" @select="handleSelectionChange">
             <!--任务列表的选择点击按钮-->
             <el-table-column type="selection"  width="55">
             </el-table-column>
@@ -175,7 +175,7 @@
           </el-table>
           <!--任务列表的按钮-->
           <el-row>
-            <el-button style="width:100%;margin-top:10px;" @click="addJob" >添加</el-button>
+            <el-button type="text" @click="addJob" >添加</el-button>
           </el-row>
         </el-form-item>
       </el-form>

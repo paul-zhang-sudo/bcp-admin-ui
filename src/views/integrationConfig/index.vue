@@ -509,9 +509,13 @@ export default {
     },
     affirmInNode() {
       //获取当前代码块的值
-      this.inNode.scriptContent = this.$refs.MonAco.getVal()
+      if(this.$refs.MonAco){
+        this.inNode.scriptContent = this.$refs.MonAco.getVal()
+      }
       this.jobList[this.currentRow].inNode.configValue = JSON.stringify(this.inNode)
-      this.$refs.MonAco.clearContent()
+      if(this.$refs.MonAco){
+        this.$refs.MonAco.clearContent()
+      }
       this.ShowInput_Database = false
     },
     affirmTransformNode() {

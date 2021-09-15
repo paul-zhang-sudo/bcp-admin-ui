@@ -4,9 +4,7 @@
     <el-table
       ref="multipleTable"
       :data="tableData"
-      tooltip-effect="dark"
-      style="width: 100%"
-      border
+      class="mt10" :cell-style="{padding:'5px 0px'}" :header-cell-style="{background:'#fafafa',color:'#606266',padding:'0px 0px'}" fit highlight-current-row style="width: 100%"
       @select="handleSelectionChange"
     >
       <el-table-column type="selection" width="55"> </el-table-column>

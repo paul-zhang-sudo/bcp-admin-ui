@@ -1,5 +1,5 @@
 <template>
-    <div class="the-code-editor-container" id="mEditor">
+    <div class="the-code-editor-container" ref="mEditor">
         <div>
         <i v-if="isMaximum" class="el-icon-rank" title="点击缩小" @click="minEditor"></i>
         <i v-else class="el-icon-full-screen" title="点击放大" @click="maxEditor"></i>
@@ -85,23 +85,25 @@ export default {
         },
          maxEditor () {
             this.isMaximum = true
-            let dom = document.getElementById("mEditor")
+            let dom = this.$refs.mEditor
             this.originSize = {
                 width: dom.clientWidth,
                 height: dom.clientHeight
             }
-  
+            console.log(JSON.stringify(this.originSize))
             dom.classList.add('editor-fullscreen')
+            console.log("h:"+window.screen.height+",w:"+document.body.clientWidth)
             this.monacoEditor.layout({
                 height: window.screen.height,
                 width: document.body.clientWidth
             })
             },
             // 缩小
-            minEditor () {
+        minEditor () {
             this.isMaximum = false
-            let dom = document.getElementById("mEditor")
+            let dom = this.$refs.mEditor
             dom.classList.remove('editor-fullscreen')
+            console.log(JSON.stringify(this.originSize))
             this.monacoEditor.layout({
                 height: this.originSize.height,
                 width: this.originSize.width

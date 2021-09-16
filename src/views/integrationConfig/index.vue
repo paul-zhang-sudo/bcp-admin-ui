@@ -20,14 +20,8 @@
         <!--新增界面的客户项-->
      <el-form-item label="客户" prop="tenantId">
         <el-select class="baseinfo" v-model="subFormData.tenantId" placeholder="请选择" size="mini">
-          <el-option
-              v-for="item in bcpTenantName"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-          <!-- <sxf-freelist v-model="subFormData.tenantId"   code="bcp.tenant.name" size="mini" placeholder="请选择客户项" /> -->
+          <el-option v-for="(optItem,optindex) in bcpTenantName" :key="optindex" :label="optItem" :value="optindex" />
+        </el-select>
      </el-form-item>
         <!--新增界面的模板选择-->
       <el-form-item label="模板选择" prop="templateId">
@@ -35,7 +29,7 @@
       </el-form-item>
       <!--新增界面的集成节点-->
       <el-form-item label="集成节点" prop="nodeId">
-        <el-input class="baseinfo" v-model="subFormData.nodeId" placeholder="集成节点" maxlength="20" size="mini" auto-complete="off" width="300px"></el-input>
+        <el-input class="baseinfo" v-model="subFormData.nodeId" placeholder="集成节点" maxlength="20" size="mini" auto-complete="off"></el-input>
       </el-form-item>
         <!--新增界面的参数-->
         <el-form-item label="参数" prop="parameter" style="margin-top:20px;">
@@ -84,12 +78,7 @@
                 <el-row>
                   <el-col :span='14'>
                     <el-select v-model="scope.row['inNode']['type']" placeholder="请选择">
-                      <el-option
-                        v-for="item in optionsInput"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
+                      <el-option v-for="(optItem,optindex) in optionsInput" :key="optindex" :label="optItem.propvalue" :value="optItem.propkey" />
                     </el-select>  
                   </el-col>
                   <el-col :span='10'>
@@ -104,12 +93,7 @@
                 <el-row>
                   <el-col :span='14'>
                     <el-select v-model="scope.row['transformNode']['type']" placeholder="请选择" >
-                      <el-option
-                        v-for="item in optionsTransform"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
+                      <el-option v-for="(optItem,optindex) in optionsTransform" :key="optindex" :label="optItem.propvalue" :value="optItem.propkey" />
                     </el-select>  
                   </el-col>
                   <el-col :span='10'>
@@ -124,12 +108,7 @@
                 <el-row>
                   <el-col :span="14">
                     <el-select v-model="scope.row['outNode']['type']" placeholder="请选择">
-                      <el-option
-                        v-for="item in optionsOutput"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
+                      <el-option v-for="(optItem,optindex) in optionsOutput" :key="optindex" :label="optItem.propvalue" :value="optItem.propkey" />
                     </el-select>
                   </el-col>
                   <el-col :span="10">
@@ -188,14 +167,8 @@
         </el-form-item>
         <el-form-item label="数据源" >
           <el-select v-model="inNode.dataSource" placeholder="请选择">
-            <el-option
-              v-for="item in bcpDatasourceName"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
+            <el-option v-for="(optItem,optindex) in bcpDatasourceName" :key="optindex" :label="optItem" :value="optindex" />
           </el-select>
-          <!-- <sxf-freelist v-model="inNode.dataSource" code="bcp.datasource.name" /> -->
         </el-form-item>
         <el-form-item label="增量标识字段" v-if="ShowInput_title=='数据库查询'">
           <el-input v-model="inNode.IncrementalField" placeholder="增量标识字段"></el-input>
@@ -250,6 +223,7 @@
 <script>
 import * as sel from "@/api/select";
 import * as api from "@/api/IntegratedConfig";
+import * as menuApi from '@/api/menu'
 //引入组件
 import multipleTable from "./moudel/multipleTable";
 import MonAco from "./moudel/monaco";
@@ -309,40 +283,9 @@ export default {
         tenantId: null,
         templateName:null,
       },
-      optionsInput: [
-        {
-          value: "1",
-          label: "数据库查询",
-        },
-        {
-          value: "2",
-          label: "API查询",
-        },
-        {
-          value: "3",
-          label: "API上报",
-        },
-      ],
-      optionsTransform: [
-        {
-          value: "1",
-          label: "脚本转换",
-        },
-      ],
-      optionsOutput: [
-        {
-          value: "1",
-          label: "API调用",
-        },
-        {
-          value: "2",
-          label: "数据库回写",
-        },
-        {
-          value: "3",
-          label: "自定义脚本",
-        },
-      ],
+      optionsInput: [],
+      optionsTransform: [],
+      optionsOutput: [],
       subFormDataRule: {
         name: [
           {
@@ -456,23 +399,28 @@ export default {
       temData:{}
     };
   },
-  created() {
-    // Dom 创建完成，由自己执行
-     sel.getFreelist({ code: 'bcp.tenant.name'}).then((res) => {
-      let arr = []
-      for (const item in res.model) {
-        this.bcpTenantName.push({ label: res.model[item], value: item });
-      }
-    })
-         sel.getFreelist({ code: 'bcp.datasource.name'}).then((res) => {
-      let arr = []
-      for (const item in res.model) {
-        this.bcpDatasourceName.push({ label: res.model[item], value: item });
-      }
-    });
-    
+  async created() {
+    this.initOptions()
   },
   methods: {
+    initOptions() {
+      sel.getFreelist({ code: 'bcp.tenant.name'}).then((res) => {
+        this.bcpTenantName = res.model
+      })
+      sel.getFreelist({ code: 'bcp.datasource.name'}).then((res) => {
+        this.bcpDatasourceName = res.model
+      })
+      menuApi.getSourceTypeOptions('md.bcp.input.type').then(res => {
+        this.optionsInput = res.model
+      })
+      menuApi.getSourceTypeOptions('md.bcp.transform.type').then(res => {
+        this.optionsTransform = res.model
+      })
+      menuApi.getSourceTypeOptions('md.bcp.output.type').then(res => {
+        this.optionsOutput = res.model
+      })
+      
+    },
     //导出
     derive(row){
       api.exportExcel(row.id).then(res=>{
@@ -489,16 +437,17 @@ export default {
       api.issueType(row).then(res=>{
         if(res.model.code==200){
           this.$message({
-          showClose: true,
-          message: res.model.msg,
-          type: 'success'
-        });
+            showClose: true,
+            message: '下发成功!',
+            type: 'success'
+          })
+          this.getData(this.datas)
         }else{
-        this.$message({
-          showClose: true,
-          message: res.model.msg,
-          type: 'warning'
-        });
+          this.$message({
+            showClose: true,
+            message: res.model.msg,
+            type: 'error'
+          })
         }    
     
       })
@@ -544,7 +493,7 @@ export default {
           this.$refs.MonAco.setValue(this.inNode.scriptContent)
         }
       })
-      this.ShowInput_title = this.optionsInput.find(val=>val.value==data.row.inNode.type).label
+      this.ShowInput_title = this.optionsInput.find(val=>val.propkey==data.row.inNode.type).propvalue
       this.ShowInput_Database = true;
     },
     //任务列表的转换节点的配置按钮方法
@@ -557,7 +506,7 @@ export default {
           this.$refs.MonAcoTransformNode.setValue(this.transformNode.scriptContent)
         }
       })
-      this.switchNode_title = this.optionsTransform.find(val=>val.value==data.row.transformNode.type).label
+      this.switchNode_title = this.optionsTransform.find(val=>val.propkey==data.row.transformNode.type).propvalue
       //返回
       this.switchNode = true;
     },
@@ -569,7 +518,7 @@ export default {
         this.$refs.outMonAco.$data.defaultOpts.value = this.outNode.scriptContent
         this.$refs.outMonAco.setValue(this.outNode.scriptContent)
       }
-      this.Showoutput_title = this.optionsOutput.find(val=>val.value==data.row.outNode.type).label
+      this.Showoutput_title = this.optionsOutput.find(val=>val.propkey==data.row.outNode.type).propvalue
       //返回
       this.Showoutput_Transfer = true;
     },
@@ -650,13 +599,12 @@ export default {
             .then((res) => {
               this.$message.success("保存成功")
               this.getData(this.datas)
-              console.log('res==>',res)
             })
             .catch(() => {})
         } else {
           return false
         }
-      });
+      })
     },
 
     // 新增或编辑页面
@@ -683,9 +631,8 @@ export default {
       this.jobList = data.jobList
       this.tableData = JSON.parse(data.configValue)
       let {id,name,nodeId,templateId,tenantId,templateName} = data
-      this.subFormData = {id,name,nodeId,templateId,templateName}
-      //客户的key是字符串的
-      this.subFormData.tenantId = tenantId + ""
+      tenantId = tenantId + ""
+      this.subFormData = {id,name,nodeId,templateId,tenantId,templateName}
       this.dialogFormVisible = true
     },
     getData(datas = this.datas) {

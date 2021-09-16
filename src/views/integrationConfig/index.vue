@@ -228,6 +228,7 @@ import * as menuApi from '@/api/menu'
 import multipleTable from "./moudel/multipleTable";
 import MonAco from "./moudel/monaco";
 import { deepEqual } from 'assert';
+import { connect } from 'tls';
 export default {
   //组件注册
   components: {
@@ -236,6 +237,7 @@ export default {
   },
   data() {
     return {
+      showEditor: 0,
       currentRow: 0,
       bcpDatasourceName:[],
       bcpTenantName:[],
@@ -487,12 +489,14 @@ export default {
     changeOptionsInput(data) {
       this.currentRow = data.$index
       this.inNode = JSON.parse(data.row.inNode.configValue)
-      this.$nextTick(()=>{
-        if(this.$refs.MonAco){
-          this.$refs.MonAco.$data.defaultOpts.value = this.inNode.scriptContent
-          this.$refs.MonAco.setValue(this.inNode.scriptContent)
-        }
-      })
+      setTimeout(()=>{
+        this.showEditor=1
+        this.$nextTick(()=>{
+          if(this.$refs.MonAco){
+            this.setValue(this.$refs.MonAco,this.inNode)
+          }
+        })
+      },50)
       this.ShowInput_title = this.optionsInput.find(val=>val.propkey==data.row.inNode.type).propvalue
       this.ShowInput_Database = true;
     },
@@ -500,12 +504,15 @@ export default {
     changeOptionsTransform(data) {
       this.currentRow = data.$index
       this.transformNode = JSON.parse(data.row.transformNode.configValue)
-      this.$nextTick(()=>{
-        if(this.$refs.MonAcoTransformNode){
-          this.$refs.MonAcoTransformNode.$data.defaultOpts.value = this.transformNode.scriptContent
-          this.$refs.MonAcoTransformNode.setValue(this.transformNode.scriptContent)
-        }
-      })
+      setTimeout(()=>{
+        this.showEditor=2
+        this.$nextTick(()=>{
+          if(this.$refs.MonAcoTransformNode){
+            this.setValue(this.$refs.MonAcoTransformNode,this.transformNode)
+          }
+        })
+      },50)
+      
       this.switchNode_title = this.optionsTransform.find(val=>val.propkey==data.row.transformNode.type).propvalue
       //返回
       this.switchNode = true;
@@ -514,13 +521,21 @@ export default {
     changeOptionsOutput(data) {
       this.currentRow = data.$index
       this.outNode = JSON.parse(data.row.outNode.configValue)
-      if(this.$refs.outMonAco){
-        this.$refs.outMonAco.$data.defaultOpts.value = this.outNode.scriptContent
-        this.$refs.outMonAco.setValue(this.outNode.scriptContent)
-      }
+      setTimeout(()=>{
+        this.showEditor=3
+        this.$nextTick(()=>{
+          if(this.$refs.outMonAco){
+            this.setValue(this.$refs.outMonAco,this.outNode)
+          }
+        })
+      },50)
       this.Showoutput_title = this.optionsOutput.find(val=>val.propkey==data.row.outNode.type).propvalue
       //返回
       this.Showoutput_Transfer = true;
+    },
+    setValue(monaco,node){
+        monaco.$data.defaultOpts.value = node.scriptContent
+        monaco.setValue(node.scriptContent)
     },
     //参数的删除
     delTableData(index) {

@@ -18,12 +18,12 @@
       <el-pagination
         background
         @size-change="handleSizeChange"
+        :total="total"
+        layout="total, sizes, prev, pager, next"
         @current-change="handleCurrentChange"
         :current-page="setData.currentPage"
         :page-sizes="[10, 20, 30]"
         :page-size="setData.pageSize"
-        layout="total, sizes, prev, pager, next"
-        :total="total"
       >
       </el-pagination>
     </div>
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import * as api from "@/api/addministrative";
+import * as api from '@/api/addministrative'
 export default {
   data() {
     return {
@@ -40,31 +40,31 @@ export default {
       total: null,
       setData: {
         currentPage: 1,
-        pageSize: 10,
+        pageSize: 10
       }
-    };
+    }
   },
   mounted() {
-    this.getList();
+    this.getList()
   },
   methods: {
     getList() {
       api.getPage({ ...this.setData }).then((res) => {
         this.tableData = res.model
         this.total = res.totalPage
-      });
+      })
     },
     handleSelectionChange(selection) {
-      if (selection.length == 1) {
+      if (selection.length === 1) {
         this.modelData = selection[0]
-        //发送出去的
-        this.$emit("templateData", this.modelData)
+        // 发送出去的
+        this.$emit('templateData', this.modelData)
       }
       if (selection.length > 1) {
-        let arr = selection
-        let del_row = arr.shift()
+        const arr = selection
+        const del_row = arr.shift()
         this.modelData = arr[0]
-        this.$emit("templateData", this.modelData)
+        this.$emit('templateData', this.modelData)
         this.$refs.multipleTable.toggleRowSelection(del_row, false)
       }
     },

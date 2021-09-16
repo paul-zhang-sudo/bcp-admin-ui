@@ -176,8 +176,8 @@
      <multipleTable @templateData="templateData" >
      </multipleTable>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="ShowMoule = false">取 消</el-button>
         <el-button size="mini" type="primary" @click="modelShow">确 定</el-button>
+        <el-button size="mini" @click="ShowMoule = false">取 消</el-button>
       </div>
     </el-dialog>
     <!--任务列表的输入节点-->
@@ -226,13 +226,13 @@
     </el-dialog>
     <!--任务列表的输出节点-->
     <el-dialog width="50%" :title="Showoutput_title" :visible.sync="Showoutput_Transfer" :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="outNode" :model="outNodeTypeData" label-width="100px" >
+      <el-form ref="outNode" :model="outNode" label-width="100px" >
         </el-form-item>
           <el-form-item label="数据源" v-if="Showoutput_title=='API调用'||Showoutput_title=='数据库回写'">
-          <sxf-freelist v-model="outNodeTypeData.dataSource" code="bcp.datasource.name" />
+          <sxf-freelist v-model="outNode.dataSource" code="bcp.datasource.name" />
         </el-form-item>
         <el-form-item label="访问路径" v-if="Showoutput_title=='API调用'">
-          <el-input v-model="outNodeTypeData.IncrementalField" placeholder="增量标识字段"></el-input>
+          <el-input v-model="outNode.IncrementalField" placeholder="增量标识字段"></el-input>
         </el-form-item>
         <el-form-item label="脚本" >
           <MonAco ref='outMonAco'></MonAco>
@@ -292,16 +292,12 @@ export default {
         cron: null, //定时设置
         IncrementalField: null, //增量标识字段
         dataSource: null, //增量标识字段
+        scriptContent: null
       },
       transformNode: {
-        cron: null, //定时设置
         IncrementalField: null, //增量标识字段
         dataSource: null, //增量标识字段
-      },
-      outNodeTypeData: {
-        scriptContent:'',
-        index:0,
-        IncrementalField: null, //访问路径
+        scriptContent: null
       },
       jobList: [],
       tableData: [{}],//使打开新增窗口时参数新增行数不为空
@@ -310,7 +306,7 @@ export default {
         name: null,
         nodeId: null,
         templateId: null,
-        tenantId: '',
+        tenantId: null,
         templateName:null,
       },
       optionsInput: [
@@ -506,7 +502,6 @@ export default {
         }    
     
       })
-      // location.href = `${process.env.VUE_APP_BASE_API}/services/fwcore/template/down/${row.id}`
     },
     templateData(val){
       //这个获取模板id
@@ -588,15 +583,15 @@ export default {
     },
     //参数的添加
     addParam() {
-      this.tableData.push({'key':'','value':''});
+      this.tableData.push({ 'key':'', 'value':'' });
     },
     //任务列表的添加
     addJob() {
       this.jobList.push({ valueName: "", 
       inNode:{
           //要什么就改成什么
-          classify:"in",
-          configValue:"{}",
+          classify: "in",
+          configValue: "{}",
           type:""
         },
           outNode: {
@@ -674,9 +669,9 @@ export default {
         //初始化数据
         Object.keys(this.subFormData).forEach((key) => (this.subFormData[key] = null))
         this.tableData = []
-        Object.keys(this.transformNodedata).forEach((key) => (this.transformNodedata[key] = null))
+        Object.keys(this.transformNode).forEach((key) => (this.transformNode[key] = null))
         Object.keys(this.inNode).forEach((key) => (this.inNode[key] = null))
-        Object.keys(this.outNodeTypeData).forEach((key) => (this.outNodeTypeData[key] = null))
+        Object.keys(this.outNode).forEach((key) => (this.outNode[key] = null))
         this.jobList=[]
         //显示窗口
         this.dialogFormVisible = true
@@ -718,10 +713,11 @@ export default {
   width: 400px;
 }
 
+//设置el-form的样式
 .el-form-item {
   margin-bottom: 5px;
 }
-
+//设置弹出窗口内容样式
 /deep/ .el-dialog__body {
     padding: 10px 20px;
     color: #606266;
@@ -729,6 +725,7 @@ export default {
     word-break: break-all;
 }
 
+//设置form-item中lable的样式
 /deep/ .el-form--label-top .el-form-item__label {
     float: none;
     display: inline-block;

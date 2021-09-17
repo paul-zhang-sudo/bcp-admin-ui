@@ -142,8 +142,8 @@
       </el-form>
       <!--新增界面的确定取消-->
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" type="primary" @click="subForm('configForm')">确 定</el-button>
-        <el-button size="mini" :disabled="subFormData.id==undefined"  type="primary" @click="issue(subFormData.id)">下发</el-button>
+        <el-button size="mini" type="primary" @click="subForm('configForm')" v-prevent-repeat-click>确 定</el-button>
+        <el-button size="mini" :disabled="subFormData.id==undefined"  type="primary" @click="issue(subFormData.id)" v-prevent-repeat-click>下发</el-button>
         <el-button size="mini" @click="dialogFormVisible = false">取 消</el-button>
       </div>
     </el-dialog>
@@ -229,6 +229,8 @@ import multipleTable from "./moudel/multipleTable";
 import MonAco from "./moudel/monaco";
 import { deepEqual } from 'assert';
 import { connect } from 'tls';
+import { preventRepeatClick } from "@/utils/directive.js"
+
 export default {
   //组件注册
   components: {
@@ -608,7 +610,6 @@ export default {
       obj.configValue = this.tableData
       this.$refs[formData].validate((valid) => {
         if (valid) {
-          console.log(this[formData])
           api
             .submitForm(obj)
             .then((res) => {

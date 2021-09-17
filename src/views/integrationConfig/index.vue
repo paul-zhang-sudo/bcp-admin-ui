@@ -333,19 +333,10 @@ export default {
           totalCount: 0
         },
         filterList: [
-             {
-            type: "input",
-            prop: "key",
-            conditionshow: true,
-            filedShow: false,
-            label: "名称",
-            placeholder: "关键词",
-            optList: []
-          },
           {
             type: "input",
             prop: "name",
-            conditionshow: false,
+            conditionshow: true,
             filedShow: true,
             label: "名称",
             placeholder: "名称",
@@ -620,6 +611,8 @@ export default {
             .submitForm(obj)
             .then((res) => {
               this.$message.success("保存成功")
+              console.log(res.model)
+              this.subFormData.id = res.model
               this.getData(this.datas)
             })
             .catch(() => {})
@@ -670,7 +663,7 @@ export default {
       this.$set(this, "params", datas.params)
       this.$set(this.datas.table, "loading", true)
       this.$set(this.params, "orgId", this.params.orgName)
-      api.getPage({...this.params}).then((res) => {
+      api.getPage({...this.params, key: this.datas.filterList[0].name}).then((res) => {
         this.$set(this.datas.resData, "rows", res.model)
         this.$set(this.datas.params, "currentPage", res.currentPage)
         this.$set(this.datas.params, "pageSize", res.pageSize)

@@ -29,6 +29,7 @@
           <el-input v-model="subFormData.remark" maxlength="500" size="mini" auto-complete="off"/>
         </el-form-item>
         <el-form-item label="模板" prop="fileUrl" v-if="!subFormData.id">
+          <el-input v-model="subFormData.fileUrl" v-show="false"  size="mini" auto-complete="off"/>
           <el-upload 
             :on-exceed="exceedFile"
             :file-list="fileList"
@@ -78,21 +79,28 @@ export default {
             required: true,
             message: "请填写名称",
             trigger: 'blur'
-          },
+          }
         ],
         code: [
           {
             required: true,
             message: "请填写编码",
             trigger: 'blur'
-          },
+          }
         ],
         type: [
           {
             required: true,
             message: "请填写类型",
             trigger: 'blur'
-          },
+          }
+        ],
+        fileUrl: [
+          {
+            required: true,
+            message: "请上传模板文件",
+            trigger: 'change'
+          }
         ]
       },
       params: {

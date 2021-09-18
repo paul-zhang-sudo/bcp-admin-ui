@@ -325,8 +325,9 @@ export default {
           pageSize: 10,
         },
         table: {
-          selection: true,
+          selection: false,
           loading: true,
+          orderNo: true
         },
         resData: {
           rows: [],

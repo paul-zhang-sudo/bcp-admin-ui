@@ -117,7 +117,7 @@ export default {
         },
         table: {
           orderNo: true,
-          selection: true,
+          selection: false,
           loading: true,
         },
         resData: {

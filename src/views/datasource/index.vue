@@ -57,7 +57,7 @@
               <el-input v-model="subFormData.username" placeholder="单行输入"  maxlength="50" size="mini" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="密码" prop="password" >
-            <el-input v-model="subFormData.password" placeholder="单行输入"  maxlength="50" size="mini" auto-complete="off"></el-input>
+            <el-input type="password" v-model="subFormData.password" placeholder="单行输入"  maxlength="50" size="mini" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="集成节点" prop="nodeId">
               <template>
@@ -119,7 +119,7 @@
               <el-input v-model="subFormData.username" placeholder="单行输入"  maxlength="20" size="mini" auto-complete="off"></el-input>
             </el-form-item> 
             <el-form-item label="密码" prop="password" >
-              <el-input v-model="subFormData.password" placeholder="单行输入"  maxlength="20" size="mini" auto-complete="off"></el-input>
+              <el-input type="password" v-model="subFormData.password" placeholder="单行输入"  maxlength="20" size="mini" auto-complete="off"></el-input>
             </el-form-item> 
             <el-form-item label="集成节点" prop="nodeId" >
               <el-input v-model="subFormData.nodeId" placeholder="节点ID"  maxlength="50" size="mini" auto-complete="off"></el-input>

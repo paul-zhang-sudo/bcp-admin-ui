@@ -142,7 +142,7 @@
       </el-form>
       <!--新增界面的确定取消-->
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" type="primary" @click="subForm('configForm')" v-prevent-repeat-click>确 定</el-button>
+        <el-button size="mini" type="primary" @click="subForm('configForm')" v-prevent-repeat-click>保存</el-button>
         <el-button size="mini" :disabled="subFormData.id==undefined"  type="primary" @click="issue(subFormData.id)" v-prevent-repeat-click>下发</el-button>
         <el-button size="mini" @click="dialogFormVisible = false">取 消</el-button>
       </div>
@@ -160,60 +160,62 @@
       </div>
     </el-dialog>
     <!--任务列表的输入节点-->
-    <el-dialog width="50%" :title="ShowInput_title" :visible.sync="ShowInput_Database" :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="inNode" :model="inNode" label-width="100px" >
-        <el-form-item label="定时设置" v-if="ShowInput_title!='API上报'">
-          <el-input v-model="inNode.cron" placeholder="请输入定时设置"></el-input>
+    <el-dialog width="60%" :title="ShowInput_title" :visible.sync="ShowInput_Database" :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-form ref="inNodeForm" :model="inNode" label-width="100px" size="mini" :rules="inNodeFormRule" inline-message label-position="top">
+        <el-form-item prop="cron" label="定时设置" v-if="ShowInput_title!='API上报'" >
+          <el-input v-model="inNode.cron" placeholder="请输入" class="baseinfo"></el-input>
         </el-form-item>
-        <el-form-item label="数据源" >
-          <el-select v-model="inNode.dataSource" placeholder="请选择">
+        <el-form-item prop="dataSource" label="数据源">
+          <el-select v-model="inNode.dataSource" placeholder="请选择" class="baseinfo"> 
             <el-option v-for="(optItem,optindex) in bcpDatasourceName" :key="optindex" :label="optItem" :value="optindex" />
           </el-select>
         </el-form-item>
         <el-form-item label="增量标识字段" v-if="ShowInput_title=='数据库查询'">
-          <el-input v-model="inNode.IncrementalField" placeholder="增量标识字段"></el-input>
+          <el-input v-model="inNode.IncrementalField" placeholder="请输入" class="baseinfo"></el-input>
         </el-form-item>
-        <el-form-item label="访问路径" v-if="ShowInput_title=='API查询'||ShowInput_title=='API上报'">
-          <el-input v-model="inNode.IncrementalField" placeholder="增量标识字段"></el-input>
+        <el-form-item prop="path" label="访问路径" v-if="ShowInput_title=='API查询'||ShowInput_title=='API上报'">
+          <el-input v-model="inNode.path" placeholder="请输入" class="baseinfo"></el-input>
         </el-form-item>
-        <el-form-item label="脚本" v-if="ShowInput_title!='API上报'">
+        <el-form-item required label="脚本" v-if="ShowInput_title!='API上报'" >
           <MonAco ref='MonAco'></MonAco>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="ShowInput_Database = false">取 消</el-button>
         <el-button size="mini" type="primary" @click="affirmInNode">确 定</el-button>
+        <el-button size="mini" @click="ShowInput_Database = false">取 消</el-button>
       </div>
     </el-dialog>
     <!--任务列表的转换节点-->
-    <el-dialog width="50%" :title="switchNode_title" :visible.sync="switchNode" :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="transformNode"   label-width="100px" >
-        <el-form-item label="脚本" >
+    <el-dialog width="60%" :title="switchNode_title" :visible.sync="switchNode" :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-form ref="transformNodeForm" label-width="100px" size="mini" inline-message label-position="top">
+        <el-form-item label="脚本" required>
           <MonAco ref='MonAcoTransformNode'></MonAco>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="switchNode = false">取 消</el-button>
         <el-button size="mini" type="primary" @click="affirmTransformNode">确 定</el-button>
+        <el-button size="mini" @click="switchNode = false">取 消</el-button>
       </div>
     </el-dialog>
     <!--任务列表的输出节点-->
-    <el-dialog width="50%" :title="Showoutput_title" :visible.sync="Showoutput_Transfer" :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="outNode" :model="outNode" label-width="100px" >
+    <el-dialog width="60%" :title="Showoutput_title" :visible.sync="Showoutput_Transfer" :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-form ref="outNodeForm" :rules="outNodeFormRule" :model="outNode" label-width="100px" size="mini" inline-message label-position="top">
         </el-form-item>
-          <el-form-item label="数据源" v-if="Showoutput_title=='API调用'||Showoutput_title=='数据库回写'">
-          <sxf-freelist v-model="outNode.dataSource" code="bcp.datasource.name" />
+          <el-form-item prop="dataSource" label="数据源" v-if="Showoutput_title=='API调用'||Showoutput_title=='数据库回写'">
+          <el-select v-model="outNode.dataSource" placeholder="请选择" class="baseinfo"> 
+            <el-option v-for="(optItem,optindex) in bcpDatasourceName" :key="optindex" :label="optItem" :value="optindex" />
+          </el-select>
         </el-form-item>
-        <el-form-item label="访问路径" v-if="Showoutput_title=='API调用'">
-          <el-input v-model="outNode.IncrementalField" placeholder="增量标识字段"></el-input>
+        <el-form-item label="访问路径" v-if="Showoutput_title=='API调用'" prop="path">
+          <el-input v-model="outNode.path" placeholder="请输入" class="baseinfo"></el-input>
         </el-form-item>
-        <el-form-item label="脚本" >
+        <el-form-item label="脚本" required>
           <MonAco ref='outMonAco'></MonAco>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="Showoutput_Transfer = false">取 消</el-button>
         <el-button size="mini" type="primary" @click="affirmOutNode">确 定</el-button>
+        <el-button size="mini" @click="Showoutput_Transfer = false">取 消</el-button>
       </div>
     </el-dialog>
 <!-------------------------------------------------------------------------------------------------------->
@@ -311,6 +313,52 @@ export default {
           {
             required: true,
             message: "请选择模板"
+          }
+        ]
+      },
+      inNodeFormRule: {
+        dataSource: [
+          {
+            required: true,
+            message: "请选择数据源",
+            trigger: 'change'
+          }
+        ],
+        cron: [
+          {
+            required: true,
+            message: "请填写定时配置",
+            trigger: 'blur'
+          }
+        ],
+        IncrementalField: [
+          {
+            required: true,
+            message: "请填写自增字段",
+            trigger: 'blur'
+          }
+        ],
+        path: [
+          {
+            required: true,
+            message: "请填写访问路径",
+            trigger: 'blur'
+          }
+        ]
+      },
+      outNodeFormRule: {
+        dataSource: [
+          {
+            required: true,
+            message: "请选择数据源",
+            trigger: 'change'
+          }
+        ],
+        path: [
+          {
+            required: true,
+            message: "请填写访问路径",
+            trigger: 'blur'
           }
         ]
       },
@@ -464,34 +512,65 @@ export default {
       this.temData = {...val}
     },
     affirmInNode() {
-      //获取当前代码块的值
-      if(this.$refs.MonAco){
-        this.inNode.scriptContent = this.$refs.MonAco.getVal()
-      }
-      this.jobList[this.currentRow].inNode.configValue = JSON.stringify(this.inNode)
-      if(this.$refs.MonAco){
-        this.$refs.MonAco.clearContent()
-      }
-      this.ShowInput_Database = false
+      this.$refs.inNodeForm.validate((valid) => {
+        if (valid) {
+          //获取当前代码块的值
+          if(this.$refs.MonAco){
+            this.inNode.scriptContent = this.$refs.MonAco.getVal()
+            if(!this.scriptNotNull(this.inNode)){
+              return false
+            }
+          }
+          this.jobList[this.currentRow].inNode.configValue = JSON.stringify(this.inNode)
+          if(this.$refs.MonAco){
+            this.$refs.MonAco.clearContent()
+          }
+          this.ShowInput_Database = false
+        }
+      })
+    },
+    scriptNotNull(node){
+      if(node.scriptContent===''){
+        this.$message({
+          showClose: true,
+          message: '脚本为必填项',
+          type: 'error'
+        })
+        return false
+      } 
+      return true
     },
     affirmTransformNode() {
       //赋值操作
-      this.transformNode.scriptContent = this.$refs.MonAcoTransformNode.getVal()   
+      this.transformNode.scriptContent = this.$refs.MonAcoTransformNode.getVal()  
+      if(!this.scriptNotNull(this.transformNode)){
+        return false
+      }
       this.jobList[this.currentRow].transformNode.configValue = JSON.stringify(this.transformNode)
       this.$refs.MonAcoTransformNode.clearContent()
       //返回新增弹窗
       this.switchNode = false
     },
     affirmOutNode() {
-      //获取当前代码块的值
-      this.outNode.scriptContent = this.$refs.outMonAco.getVal()
-      this.jobList[this.currentRow].outNode.configValue = JSON.stringify(this.outNode)
-      //返回新增弹窗
-      this.$refs.outMonAco.clearContent()
-      this.Showoutput_Transfer = false
+      this.$refs.outNodeForm.validate((valid) => {
+        if (valid) {
+           //获取当前代码块的值
+          this.outNode.scriptContent = this.$refs.outMonAco.getVal()
+          if(!this.scriptNotNull(this.outNode)){
+            return false
+          }
+          this.jobList[this.currentRow].outNode.configValue = JSON.stringify(this.outNode)
+          //返回新增弹窗
+          this.$refs.outMonAco.clearContent()
+          this.Showoutput_Transfer = false
+        }
+      })
     },
     //输入节点配置按钮方法
     changeOptionsInput(data) {
+      if(this.$refs.inNodeForm){
+        this.$refs.inNodeForm.clearValidate()
+      }
       this.currentRow = data.$index
       this.inNode = JSON.parse(data.row.inNode.configValue)
       if(this.inNode.scriptContent===undefined){
@@ -510,6 +589,9 @@ export default {
     },
     //任务列表的转换节点的配置按钮方法
     changeOptionsTransform(data) {
+      if(this.$refs.transformNodeForm){
+        this.$refs.transformNodeForm.clearValidate()
+      }
       this.currentRow = data.$index
       this.transformNode = JSON.parse(data.row.transformNode.configValue)
       if(this.transformNode.scriptContent===undefined){
@@ -530,6 +612,9 @@ export default {
     },
     //任务列表的输出节点的配置按钮方法
     changeOptionsOutput(data) {
+      if(this.$refs.outNodeForm){
+        this.$refs.outNodeForm.clearValidate()
+      }
       this.currentRow = data.$index
       this.outNode = JSON.parse(data.row.outNode.configValue)
       if(this.outNode.scriptContent===undefined){

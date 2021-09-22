@@ -17,7 +17,7 @@
 </template>
     </mod-filter>
     <!--新增/编辑界面-->
-    <el-dialog width="50%" :title="subFormData.id?'编辑':'新增'" :visible.sync="dialogFormVisible">
+    <el-dialog width="50%" :title="subFormData.id?'编辑':'新增'" :visible.sync="dialogFormVisible" :close-on-click-modal="false"  :close-on-press-escape="false">
       <el-form ref="subFormData" :model="subFormData" :rules="subFormDataRule" class="subFormData" label-width="100px">
         <el-form-item label="编码" prop="code">
           <el-input v-model="subFormData.code" maxlength="20" size="mini" auto-complete="off"/>

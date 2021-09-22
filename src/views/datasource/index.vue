@@ -14,7 +14,7 @@
     </mod-filter>
     <!--新增/编辑界面-->
     <!-- todo1 -->
-    <el-dialog width="50%" :title="subFormData.id?'编辑':'新增'" :visible.sync="dialogFormVisible">
+    <el-dialog width="50%" :title="subFormData.id?'编辑':'新增'" :visible.sync="dialogFormVisible" :close-on-click-modal="false"  :close-on-press-escape="false">
       <el-form ref="subFormData" :model="subFormData" :rules="subFormDataRule" class="subFormData" label-width="100px" size="mini">
         <el-form-item label="客户" prop="tenantId" v-if="cur_user.userType=='admin'">
             <el-select v-model="subFormData.tenantId" placeholder="请选择" >

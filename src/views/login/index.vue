@@ -62,6 +62,11 @@
       </el-row>
 
     </el-form>
+    <div class="copyright-container">
+        <div class="copyright">
+          Copyright@2017-2021 深圳市商软信息科技有限公司 版权所有
+        </div>
+    </div>
 
     <el-dialog width="30%" title="修改密码" :visible.sync="dialogFormVisible">
       <el-form ref="subFormData" :model="subFormData" :rules="subFormDataRule" class="subFormData" label-width="140px">
@@ -266,7 +271,7 @@ export default {
 
 // $bg:#283443;
 $light_gray:#fff;
-$cursor: #fff;
+$cursor: #403434;
 
 
 
@@ -327,10 +332,12 @@ $light_gray:#eee;
 
 .unamestyle{
       display: inline-block;
+      font-size: 22px;
       height: 56px;
       width: 83%;
       padding-left: 22px;
-      padding-top: 5px;     
+      padding-top: 5px;  
+      color: rgb(0, 0, 0);   
   } 
 
 .login-container {
@@ -384,6 +391,16 @@ $light_gray:#eee;
     .title {
     font-size: 45px;
     color: #fff;
+    margin: 55px auto 70px auto;
+    text-align: center;
+    }
+  }
+  .copyright-container {
+    position: relative;
+
+    .copyright {
+    font-size: 14px;
+    color: #2d2727;
     margin: 55px auto 70px auto;
     text-align: center;
     }

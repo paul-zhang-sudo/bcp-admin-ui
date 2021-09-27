@@ -62,18 +62,19 @@
         </el-form-item> -->
         <!--新增界面的任务列表-->
         <el-form-item label="任务列表" style="margin-top:20px;">
-          <el-table :data="jobList" class="mt10" :cell-style="{padding:'5px 0px'}" :header-cell-style="{background:'#fafafa',color:'#606266',padding:'0px 0px'}" fit highlight-current-row style="width: 100%">
+          <!-- 任务列表的滚动条 -->
+          <el-table :data="jobList" height="200px" class="mt10" :cell-style="{padding:'5px 0px'}" :header-cell-style="{background:'#fafafa',color:'#606266',padding:'0px 0px'}" fit highlight-current-row style="width: 100%">
             <!--任务列表的选择点击按钮-->
             <el-table-column type="selection"  width="45">
             </el-table-column>
             <!--任务列表的名称-->
-            <el-table-column prop="jobName" label="名称" align="center" width="120">
+            <el-table-column prop="jobName" label="名称" align="center" width="210">
               <template slot-scope="scope">
                 <el-input v-model="scope.row['jobName']" />
               </template>
             </el-table-column>
             <!--任务列表的输入节点-->
-            <el-table-column prop="inNode"  label="输入节点" align="center" width="220">
+            <el-table-column prop="inNode"  label="输入节点" align="center" width="190">
               <template slot-scope="scope">
                 <el-row>
                   <el-col :span='14'>
@@ -88,7 +89,7 @@
               </template>
             </el-table-column>
             <!--任务列表的转换节点-->
-            <el-table-column prop="transformNode" label="转换节点" align="center" width="220">
+            <el-table-column prop="transformNode" label="转换节点" align="center" width="190">
               <template slot-scope="scope">
                 <el-row>
                   <el-col :span='14'>
@@ -103,7 +104,7 @@
               </template>
             </el-table-column>
             <!--任务列表的输出节点-->
-            <el-table-column prop="outNode" label="输出节点" align="center" width="220">
+            <el-table-column prop="outNode" label="输出节点" align="center" width="190">
               <template slot-scope="scope">
                 <el-row>
                   <el-col :span="14">
@@ -122,7 +123,7 @@
             <!-- <el-table-column prop="status" label="状态" align="center" width="80"> -->
             <!-- </el-table-column> -->
             <!--任务列表的操作-->
-            <el-table-column prop="oper" label="操作" align="center" width="300">
+            <el-table-column prop="oper" label="操作" align="center" width="230">
               <template slot-scope="scope">
                <div style="text-align:left">
                   <el-button type="text" disabled width="30">复制</el-button>
@@ -807,4 +808,24 @@ export default {
     text-align: left;
     padding: 0 0 1px;
 }
+// //滚动条全局样式
+// ::v-deep .el-scrollbar__wrap{
+//   overflow-x: hidden;
+// }
+// // 滚动条的宽度
+// .el-table__body-wrapper::-webkit-scrollbar {
+//   width: 0px; // 横向滚动条
+//   height: 0px; // 纵向滚动条 必写
+// }
+//   // 滚动条的滑块
+// .el-table__body-wrapper::-webkit-scrollbar-thumb {
+//   background-color: #ddd;
+//   border-radius: 3px;
+// }
+// .gutter{
+//   background-color: rgb(232, 232, 232);   // 这里是填充上未被填充的右侧表头空白
+// }
+// .el-table__body{
+//   width: 100% !important;        // 这里一定要!important哦，来覆盖掉之前的宽度
+// }
 </style>

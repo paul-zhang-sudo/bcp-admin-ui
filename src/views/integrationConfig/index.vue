@@ -63,7 +63,7 @@
         <!--新增界面的任务列表-->
         <el-form-item label="任务列表" style="margin-top:20px;">
           <!-- 任务列表的滚动条 -->
-          <el-table :data="jobList" height="200px" class="mt10" :cell-style="{padding:'5px 0px'}" :header-cell-style="{background:'#fafafa',color:'#606266',padding:'0px 0px'}" fit highlight-current-row style="width: 100%">
+          <el-table :data="jobList" height="250px" class="mt10" :cell-style="{padding:'5px 0px'}" :header-cell-style="{background:'#fafafa',color:'#606266',padding:'0px 0px'}" fit highlight-current-row style="width: 100%">
             <!--任务列表的选择点击按钮-->
             <el-table-column type="selection"  width="45">
             </el-table-column>

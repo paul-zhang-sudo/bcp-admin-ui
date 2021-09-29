@@ -6,7 +6,7 @@
       style="width: 100%"
       :header-cell-style="{background:'rgb(250 250 250)'}"
       header-align="center">
-      <el-table-column align="center">
+      <el-table-column align="left">
         <template slot="header">
           <a @click="seeDetail" >查看详情</a>
         </template>

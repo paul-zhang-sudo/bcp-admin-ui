@@ -8,7 +8,7 @@
       header-align="center">
       <el-table-column align="left">
         <template slot="header">
-          <a @click="seeDetail" >查看详情</a>
+          <a @click="seeDetail" class="digitalFactory">数字工厂接入点模型</a>
         </template>
       <el-table-column
         prop="code"
@@ -95,5 +95,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .digitalFactory{
+    font: 2em sans-serif;
+  }
 </style>
 

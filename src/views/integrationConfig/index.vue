@@ -784,11 +784,6 @@ export default {
 
 <style lang="scss" scoped>
 
-
-}
-
-
-
 .baseinfo {
   width: 400px;
 }

@@ -30,6 +30,7 @@
         </el-form-item>
         <el-form-item label="模板" prop="fileUrl" v-if="!subFormData.id">
           <el-input v-model="subFormData.fileUrl" v-show="false"  size="mini" auto-complete="off"/>
+          <!--on-exceed文件超出个数；:limit最大允许上传个数；http-request实现自定义上传；	action必选参数，上传的地址；before-upload 限制用户上传的图片格式和大小-->
           <el-upload 
             :on-exceed="exceedFile"
             :file-list="fileList"
@@ -71,7 +72,7 @@ export default {
         name: null,
         code: null,
         remark: null,
-        fileUrl: null,
+        fileUrl:"bcp-template#custom.txt",
       },
       subFormDataRule: {
         name: [
@@ -97,7 +98,7 @@ export default {
         ],
         fileUrl: [
           {
-            required: true,
+            required: false,
             message: "请上传模板文件",
             trigger: 'change'
           }
@@ -281,6 +282,7 @@ export default {
       }
       //解构赋值id丢失，所以在这里单独设置一下id，原因待查找
       // this.subFormData.id = row.id
+      console.log("row",this.subFormData);
     },
     getData(datas = this.datas) {
       this.$set(this, "datas", datas);

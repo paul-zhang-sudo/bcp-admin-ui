@@ -11,7 +11,7 @@
       </template>
     </mod-filter>
     <!--新增/编辑界面-->
-    <el-dialog  class="pub_dialog"  :close-on-click-modal="false"  :close-on-press-escape="false" width="1100px"   :title="subFormData.id?'编辑':'新增'" :visible.sync="dialogFormVisible">
+    <el-dialog  class="pub_dialog"  :close-on-click-modal="false"  :close-on-press-escape="false" width="1120px"   :title="subFormData.id?'编辑':'新增'" :visible.sync="dialogFormVisible">
     <el-form label-position="top" inline-message size="mini" ref="configForm" :model="subFormData"  :rules="subFormDataRule" class="subFormData " label-width="100px">
         <!--新增界面的集成名称项-->
     <el-form-item label="集成名称" prop="name">
@@ -68,13 +68,21 @@
             <el-table-column type="selection"  width="45">
             </el-table-column>
             <!--任务列表的名称-->
-            <el-table-column prop="jobName" label="名称" align="center" width="210">
+            <el-table-column prop="jobName" label="名称" align="center" width="240">
               <template slot-scope="scope">
-                <el-input v-model="scope.row['jobName']" />
+                <el-col :span='20'>
+                  <el-input v-model="scope.row['jobName']" />
+                </el-col>
+                <el-col :span='2'>
+                <el-button type="text" width="30" @click="moveUp(scope.$index,scope.row)" icon="el-icon-top"></el-button>
+                </el-col>
+                <el-col :span='2'>
+                <el-button type="text"  width="30" @click="moveDown(scope.$index,scope.row)" icon="el-icon-bottom"></el-button>
+                </el-col>
               </template>
             </el-table-column>
             <!--任务列表的输入节点-->
-            <el-table-column prop="inNode"  label="输入节点" align="center" width="190">
+            <el-table-column prop="inNode"  label="输入节点" align="center" width="180">
               <template slot-scope="scope">
                 <el-row>
                   <el-col :span='14'>
@@ -89,7 +97,7 @@
               </template>
             </el-table-column>
             <!--任务列表的转换节点-->
-            <el-table-column prop="transformNode" label="转换节点" align="center" width="190">
+            <el-table-column prop="transformNode" label="转换节点" align="center" width="180">
               <template slot-scope="scope">
                 <el-row>
                   <el-col :span='14'>
@@ -104,7 +112,7 @@
               </template>
             </el-table-column>
             <!--任务列表的输出节点-->
-            <el-table-column prop="outNode" label="输出节点" align="center" width="190">
+            <el-table-column prop="outNode" label="输出节点" align="center" width="180">
               <template slot-scope="scope">
                 <el-row>
                   <el-col :span="14">
@@ -126,11 +134,11 @@
             <el-table-column prop="oper" label="操作" align="center" width="230">
               <template slot-scope="scope">
               <div style="text-align:left">
-                  <el-button type="text" disabled width="30">复制</el-button>
                   <el-button type="text" @click="deljobList(scope)" width="30">删除</el-button>
-                  <el-button type="text" disabled>调试</el-button>
-                  <el-button type="text" disabled>全量</el-button>
-                  <el-button type="text" disabled>日志</el-button>
+                  <el-button type="text" disabled width="30">复制</el-button>
+                  <el-button type="text" disabled width="30">调试</el-button>
+                  <el-button type="text" disabled width="30">全量</el-button>
+                  <el-button type="text" disabled width="30">日志</el-button>
                 </div>
               </template>
             </el-table-column>
@@ -506,8 +514,33 @@ export default {
             type: 'error'
           })
         }    
-    
       })
+    },
+    //任务列表的上移
+    moveUp(index, row) {
+      var that = this;
+      console.log('上移', index, row);
+      console.log(that.jobList[index]);
+      if (index > 0) {
+        let upDate = that.jobList[index - 1];
+        that.jobList.splice(index - 1, 1);
+        that.jobList.splice(index, 0, upDate);
+      } else {
+        alert('已经是第一条，不可上移');
+      }
+    },
+    //任务列表的下移
+    moveDown(index, row) {
+      var that = this;
+      console.log('下移', index, row);
+      if ((index + 1) === that.jobList.length) {
+        alert('已经是最后一条，不可下移');
+      } else {
+        console.log(index);
+        let downDate = that.jobList[index + 1];
+        that.jobList.splice(index + 1, 1);
+        that.jobList.splice(index, 0, downDate);
+      }
     },
     templateData(val){
       //这个获取模板id
@@ -749,8 +782,6 @@ export default {
         //客户默认当前用户所属租户
         this.subFormData.tenantId = this.cur_user.tenantId+'';
         // this.subFormData.tenantId = Object.keys(this.bcpTenantName)[0]
-        
-             
         //显示窗口
         this.dialogFormVisible = true
         return  
@@ -781,6 +812,28 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+
+.app-container .el-dialog {
+  margin-top: 10vh !important;
+  position: relative;
+  margin: 0 auto 0px;
+  background: #FFFFFF;
+  border-radius: 2px;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 50%;
+  height: 80%;
+}
+
+.app-container .el-dialog .el-dialog__body {
+  max-height:80%  !important;
+  overflow-y: auto;
+}
+
+</style>
 
 <style lang="scss" scoped>
 
@@ -793,6 +846,9 @@ export default {
   margin-bottom: 5px;
 }
 
+.debug{
+margin-left: 0px;
+}
 
 //设置form-item中lable的样式
 /deep/ .el-form--label-top .el-form-item__label {
@@ -810,26 +866,4 @@ export default {
 }
 
 
-.pub_dialog {
-    display: flex;
-    justify-content: center;
-    align-items: Center;
-    overflow: hidden;
-    .el-dialog {
-        margin: 0 auto !important;
-        height: 90% !important;
-        overflow: hidden;
-        .el-dialog__body {
-            position: absolute;
-            left: 0;
-            top: 54px;
-            bottom: 0;
-            right: 0;
-            padding: 0;
-            z-index: 1;
-            overflow: hidden;
-            overflow-y: auto;
-        }
-    }
-}
 </style>

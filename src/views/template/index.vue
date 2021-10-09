@@ -62,7 +62,7 @@ import {
 export default {
   data() {
     return {
-      fileList:[{name: 'food.jpeg', url: 'bcp-template#custom.txt'}],
+      fileList:[],
       typeOptions: [],
       nameOptions: [],
       dialogFormVisible: false,

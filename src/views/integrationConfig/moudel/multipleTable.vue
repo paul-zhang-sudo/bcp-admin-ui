@@ -10,8 +10,15 @@
       fit 
       style="width: 100%"
       @current-change="handleSelectionChange"
+      @row-click="rowClick"
+      @row-dblclick="handleSelectionChange"
     >
       <!-- <el-table-column type="selection" width="55"> </el-table-column> -->
+      <el-table-column  width="55">
+　　　  <template slot-scope="scope">
+　　　　　<el-radio :label="scope.row.name" v-model="radioId">&nbsp;</el-radio>
+　　　  </template>
+　　   </el-table-column>
       <el-table-column type="index" width="55"> </el-table-column>
       <el-table-column prop="name" align="center" label="模板名称">
       </el-table-column>
@@ -52,6 +59,13 @@ export default {
     this.getList()
   },
   methods: {
+    modelShow(){
+
+    },
+    //表格单选按钮
+    rowClick(row){
+				this.radioId=row.name;
+		},
     // 去除表头全选选项
     // cellClass(row){     
     //   if (row.columnIndex === 0) {           
@@ -100,7 +114,7 @@ export default {
 //   display: none !important;
 // }
 
-// // 修改全选框文本内容，目前忽略
+// 修改全选框文本内容，目前忽略
 // ::v-deep .el-table .disabledCheck .cell::before {
 //   content: '';
 //   text-align: center;

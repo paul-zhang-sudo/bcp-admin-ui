@@ -15,7 +15,7 @@
     <!--新增/编辑界面-->
     <!-- todo1 -->
     <el-dialog width="50%" :title="subFormData.id?'编辑':'新增'" :visible.sync="dialogFormVisible" :close-on-click-modal="false"  :close-on-press-escape="false">
-      <el-form ref="subFormData" :model="subFormData" :rules="subFormDataRule" class="subFormData" label-width="100px" size="mini">
+      <el-form ref="subFormData" :model="subFormData" :rules="subFormDataRule" class="subFormData" label-width="120px" size="mini">
         <el-form-item label="客户" prop="tenantId" v-if="cur_user.userType=='admin'">
             <el-select v-model="subFormData.tenantId" placeholder="请选择" >
                 <el-option v-for="(optItem,optindex) in customerOptions" :key="optindex" :label="optItem" :value="optindex" />
@@ -124,7 +124,78 @@
             <el-form-item label="集成节点" prop="nodeId" >
               <el-input v-model="subFormData.nodeId" placeholder="节点ID"  maxlength="50" size="mini" auto-complete="off"></el-input>
             </el-form-item>
-        </div>
+          </div>
+
+          <!--类型是Webservice  （临时待完善）-->
+          <div v-if="subFormData.type === 'webService'">
+            <el-form-item label="WSDL访问路径" prop="xxx1" >
+              <el-input v-model="subFormData.xxx1" placeholder="请填写"  maxlength="100" size="mini" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="认证方式" prop="xxx2">
+              <template>
+                <el-select id="xxx2_id" v-model="subFormData.xxx2" placeholder="请选择" >
+                  <el-option v-for="item in xxx2Options" :label="item.label" :value="item.value" />
+                </el-select>
+              </template>
+            </el-form-item> 
+            <!-- 认证方式为BAsic Auth -->
+            <div id="xxx2Token" v-if="subFormData.xxx2 === 'BAsic Auth'">
+              <el-form-item label="用户名" prop="username" >
+                <el-input v-model="subFormData.username" placeholder="请填写"  maxlength="20" size="mini" auto-complete="off"></el-input>
+              </el-form-item> 
+              <el-form-item label="密码" prop="password" >
+                <el-input type="password" v-model="subFormData.password" placeholder="请填写"  maxlength="20" size="mini" auto-complete="off"></el-input>
+              </el-form-item> 
+            </div>
+          </div>
+          <!--类型是SAP RFC （临时待完善）-->
+          <div v-if="subFormData.type === 'sapRFC'">
+            <el-form-item label="应用服务器IP" prop="xxxx1" >
+              <el-input v-model="subFormData.xxxx1" placeholder="请填写"  maxlength="100" size="mini" auto-complete="off"></el-input>
+            </el-form-item> 
+            <el-form-item label="服务端编号" prop="xxxx2" >
+              <el-input v-model="subFormData.xxxx2" placeholder="请填写"  maxlength="100" size="mini" auto-complete="off"></el-input>
+            </el-form-item> 
+            <el-form-item label="客户端编号" prop="xxxx3" >
+              <el-input v-model="subFormData.xxxx3" placeholder="请填写"  maxlength="100" size="mini" auto-complete="off"></el-input>
+            </el-form-item> 
+            <el-form-item label="用户名" prop="username" >
+              <el-input v-model="subFormData.username" placeholder="请填写"  maxlength="20" size="mini" auto-complete="off"></el-input>
+            </el-form-item> 
+            <el-form-item label="密码" prop="password" >
+              <el-input type="password" v-model="subFormData.password" placeholder="请填写"  maxlength="20" size="mini" auto-complete="off"></el-input>
+            </el-form-item> 
+          </div>
+          <!--类型是消息队列  （临时待完善）-->
+          <div v-if="subFormData.type === 'mq'">
+            <el-form-item label="分类" prop="xxxxx1">
+              <template>
+                <el-select id="xxxxx1_id" v-model="subFormData.xxxxx1" placeholder="请选择" >
+                  <el-option v-for="item in xxxxx1Options" :label="item.label" :value="item.value" />
+                </el-select>
+              </template>
+            </el-form-item> 
+            <!-- 认证方式为BAsic Auth -->
+            <div id="xxxxx1Token" v-if="subFormData.xxxxx1 === 'mqtt'">
+              <el-form-item label="实例ID" prop="xxxxx2" >
+                <el-input v-model="subFormData.xxxxx2" placeholder="请填写"  maxlength="100" size="mini" auto-complete="off"></el-input>
+              </el-form-item> 
+            </div>
+            <el-form-item label="broker" prop="xxxxx3" >
+              <el-input v-model="subFormData.xxxxx3" placeholder="请填写"  maxlength="100" size="mini" auto-complete="off"></el-input>
+            </el-form-item> 
+            <el-form-item label="是否SSL" prop="xxxxx4" >
+              <el-radio v-model="subFormData.xxxxx4" label="1">是</el-radio>
+              <el-radio v-model="subFormData.xxxxx4" label="2">否</el-radio>
+            </el-form-item> 
+            <el-form-item label="SSL用户名" prop="xxxxx5" >
+              <el-input v-model="subFormData.xxxxx5" placeholder="请填写"  maxlength="100" size="mini" auto-complete="off"></el-input>
+            </el-form-item> 
+            <el-form-item label="SSL密码" prop="xxxxx6" >
+              <el-input v-model="subFormData.xxxxx6" placeholder="请填写"  maxlength="100" size="mini" auto-complete="off"></el-input>
+            </el-form-item> 
+          </div>
+
 
 
       </el-form>
@@ -145,6 +216,25 @@ import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
+      /* xxx2Options,xxxxx1Options都是临时建立的数组 */
+      xxx2Options:[
+        {
+          value: 'noauth',
+          label: '无需认证'
+        }, {
+          value: 'BAsic Auth',
+          label: 'BAsic Auth'
+        }, 
+      ],
+      xxxxx1Options:[
+        {
+          value: 'kafka',
+          label: 'kafka'
+        }, {
+          value: 'mqtt',
+          label: 'mqtt'
+        },
+      ],
       planOptions: [],
       userCaseOptions: [],
       typeOptions: [],
@@ -344,13 +434,12 @@ export default {
       if( !!this.$refs.subFormData ){
         this.$refs.subFormData.clearValidate()
       }
-      
       this.dialogFormVisible = true
       //如果是新增
       if (row===0) {
         //清空属性值
         Object.keys(this.subFormData).forEach((key) => (this.subFormData[key] = null));
-              //客户默认当前用户所属租户
+        //客户默认当前用户所属租户
         this.subFormData.tenantId = this.cur_user.tenantId+'';
         return
       }

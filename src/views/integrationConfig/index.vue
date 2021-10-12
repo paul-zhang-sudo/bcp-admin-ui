@@ -600,7 +600,7 @@ export default {
         }
       })
     },
-    //输入节点配置按钮方法
+    //任务列表的输入节点配置按钮方法
     changeOptionsInput(data) {
       if(this.$refs.inNodeForm){
         this.$refs.inNodeForm.clearValidate()

@@ -714,8 +714,7 @@ export default {
       this.subFormData.templateId = this.temData.id
       //加载模板内容
       api.getTemplateContent(this.temData.id).then(res=>{
-        // this.jobList = res.jobList
-        this.jobList = res.jobList!=null?JSON.parse(res.jobList):[]
+        this.jobList = res.jobList
         this.tableData = res.configValue!=null?JSON.parse(res.configValue):[]
         console.log(this.res);
       })

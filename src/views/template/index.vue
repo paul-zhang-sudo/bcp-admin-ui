@@ -5,16 +5,16 @@
         <el-button type="primary" size="mini" @click="edit(0)">新增</el-button>
       </template>
       <template slot="enable" slot-scope="scope">
-  <span>{{ scope.value.enable ? "启用" : "禁用" }}</span>
-</template>
-<template slot="oper" slot-scope="scope">
-  <el-button size="mini" type="text" @click="edit(scope.value)">编辑</el-button>
-  <el-button size="mini" type="text" @click="disableType(scope.value)">
-    {{scope.value.enable ? "禁用" : "启用"}}
-  </el-button>
-  <!-- <el-button size="mini" type="text" @click="remove(scope.value)">删除</el-button> -->
-  <el-button size="mini" type="text" @click="download(scope.value)">下载</el-button>
-</template>
+        <span>{{ scope.value.enable ? "启用" : "禁用" }}</span>
+      </template>
+      <template slot="oper" slot-scope="scope">
+        <el-button size="mini" type="text" @click="edit(scope.value)">编辑</el-button>
+        <el-button size="mini" type="text" @click="disableType(scope.value)">
+          {{scope.value.enable ? "禁用" : "启用"}}
+        </el-button>
+        <!-- <el-button size="mini" type="text" @click="remove(scope.value)">删除</el-button> -->
+        <el-button size="mini" type="text" @click="download(scope.value)">下载</el-button>
+      </template>
     </mod-filter>
     <!--新增/编辑界面-->
     <el-dialog width="50%" :title="subFormData.id?'编辑':'新增'" :visible.sync="dialogFormVisible" :close-on-click-modal="false"  :close-on-press-escape="false">
@@ -291,7 +291,7 @@ export default {
       this.$set(this.datas.table, "loading", true);
       this.$set(this.params, "orgId", this.params.orgName);
  
-      api.getPage({ key:this.params.name}).then((res) => {
+      api.getPage({ ...this.params,key:this.params.name}).then((res) => {
           this.$set(this.datas.resData, "rows", res.model);
           this.$set(this.datas.params, "currentPage", res.currentPage);
           this.$set(this.datas.params, "pageSize", res.pageSize);

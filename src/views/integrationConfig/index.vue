@@ -8,6 +8,7 @@
         <el-button size="mini" type="text" @click="edit(scope.value)">编辑</el-button>
         <el-button size="mini" type="text" @click="remove(scope.value)">删除</el-button>
         <el-button size="mini" type="text" @click="derive(scope.value)">导出</el-button>
+        <el-button size="mini" type="text" @click="expForIot(scope.value)">导出iot</el-button>
       </template>
     </mod-filter>
     <!--新增/编辑界面  -->
@@ -495,7 +496,16 @@ export default {
           link.click();
           link.remove();
       })
-      console.log(row)
+    },
+    expForIot(row){
+      alert('开发中')
+      // api.expForIot(row.id).then(res=>{
+      //     let blob = new Blob([res], { type: `${res.type}` });
+      //     let link = document.createElement("a");
+      //     link.href = window.URL.createObjectURL(blob);
+      //     link.click();
+      //     link.remove();
+      // })
     },
     //下发（存在前端这边已向后台发送id，但是后台报500的错误）
     issue(row){

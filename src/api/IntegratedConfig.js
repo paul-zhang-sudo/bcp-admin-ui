@@ -88,6 +88,16 @@ export function exportExcel(param) {
     responseType:'blob'//必须是blob 否则导出的excel打不开
   })
 }
+
+export function expForIot(param) {
+  return request({
+    url: `${URL.role}/iot/down/${param}`,
+    method: 'get',
+    data: param,
+    responseType:'blob'//必须是blob 否则导出的excel打不开
+  })
+}
+
 // 下发集成配置
 export function issueType(param) {
   return request({

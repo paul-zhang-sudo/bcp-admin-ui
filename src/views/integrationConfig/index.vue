@@ -498,14 +498,13 @@ export default {
       })
     },
     expForIot(row){
-      alert('开发中')
-      // api.expForIot(row.id).then(res=>{
-      //     let blob = new Blob([res], { type: `${res.type}` });
-      //     let link = document.createElement("a");
-      //     link.href = window.URL.createObjectURL(blob);
-      //     link.click();
-      //     link.remove();
-      // })
+      api.expForIot(row.id).then(res=>{
+          let blob = new Blob([res], { type: `${res.type}` });
+          let link = document.createElement("a");
+          link.href = window.URL.createObjectURL(blob);
+          link.click();
+          link.remove();
+      })
     },
     //下发（存在前端这边已向后台发送id，但是后台报500的错误）
     issue(row){

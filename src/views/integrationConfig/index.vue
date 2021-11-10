@@ -135,9 +135,9 @@
             <!--任务列表的操作-->
             <el-table-column prop="oper" label="操作" align="center" width="230">
               <template slot-scope="scope">
-              <div style="text-align:left">
-                  <el-button type="text" @click="deljobList(scope)" width="30">删除</el-button>
-                  <el-button type="text" disabled width="30">复制</el-button>
+                <div style="text-align:left">
+                  <el-button type="text" @click="copyJob(scope)" width="30">复制</el-button>
+                  <el-button type="text" @click="deljobList(scope)" width="30">删除</el-button>     
                   <el-button type="text" disabled width="30">调试</el-button>
                   <el-button type="text" disabled width="30">全量</el-button>
                   <el-button type="text" disabled width="30">日志</el-button>
@@ -685,15 +685,25 @@ export default {
     },
     //参数的删除
     delTableData(index) {
-      this.tableData.splice(index.$index, 1);
+      this.tableData.splice(index.$index, 1)
     },
     //任务列表的删除
     deljobList(data) {
-      this.jobList.splice(data.$index, 1);
+      this.jobList.splice(data.$index, 1)
+    },
+    copyJob(data){
+      let copyRow = {}
+      Object.assign(copyRow,data.row)
+      copyRow.jobName = copyRow.jobName+"_COPY"
+      copyRow.id = ""
+      copyRow.inNode.id=""
+      copyRow.outNode.id=""
+      copyRow.transformNode.id=""
+      this.jobList.push( copyRow )
     },
     //参数的添加
     addParam() {
-      this.tableData.push({ 'key':'', 'value':'' });
+      this.tableData.push({ 'key':'', 'value':'' })
     },
     //任务列表的添加
     addJob() {

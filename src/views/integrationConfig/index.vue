@@ -70,7 +70,7 @@
             <el-table-column type="selection"  width="45">
             </el-table-column>
             <!--任务列表的名称-->
-            <el-table-column prop="jobName" label="名称" align="center" width="240">
+            <el-table-column prop="jobName" label="名称" align="center" width="210">
               <template slot-scope="scope">
                 <el-col :span='20'>
                   <el-input v-model="scope.row['jobName']" />
@@ -130,8 +130,18 @@
               </template>
             </el-table-column>
             <!--任务列表的状态-->
-            <!-- <el-table-column prop="status" label="状态" align="center" width="80"> -->
-            <!-- </el-table-column> -->
+            <el-table-column prop="status" label="状态" align="center" width="100">
+               <template slot-scope="scope">
+                <el-row>
+                  <el-col :span="24">
+                    <el-select v-model="scope.row['enable']">
+                      <el-option label="启用" value="true"></el-option>
+                      <el-option label="禁用" value="false"></el-option>
+                    </el-select>
+                  </el-col>
+                </el-row>
+              </template>
+            </el-table-column>
             <!--任务列表的操作-->
             <el-table-column prop="oper" label="操作" align="center" width="230">
               <template slot-scope="scope">
@@ -282,13 +292,13 @@ export default {
       },
       outNode: {
         cron: null, //定时设置
-        IncrementalField: null, //增量标识字段
-        dataSource: null, //增量标识字段
+        IncrementalField: null, 
+        dataSource: null, 
         scriptContent: null
       },
       transformNode: {
         IncrementalField: null, //增量标识字段
-        dataSource: null, //增量标识字段
+        dataSource: null, 
         scriptContent: null
       },
       jobList: [],
@@ -708,6 +718,7 @@ export default {
     //任务列表的添加
     addJob() {
       this.jobList.push({ valueName: "", 
+      enable:"true",
       inNode:{
           //要什么就改成什么
           classify: "in",
@@ -885,6 +896,5 @@ margin-left: 0px;
   max-height:80%  !important;
   overflow-y: auto;
 }
-
 
 </style>

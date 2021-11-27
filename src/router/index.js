@@ -37,7 +37,11 @@ export const constantRoutes = [
     //component: () => import('@/views/login/index'),
     hidden: true
   },
-
+  {
+    path: '/authLogin',
+    component: (resolve) => require(["@/views/authLogin/index"], resolve),
+    hidden: true
+  },
   {
     path: '/404',
     component: (resolve) => require(["@/views/404"], resolve),

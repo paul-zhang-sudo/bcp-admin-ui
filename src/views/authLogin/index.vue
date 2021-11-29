@@ -1,7 +1,9 @@
 <template lang="html">
   <div class="app-container">
      <div class="background" align="center">
-      <img :src="loadSrc" width="508" height="381" alt="" />
+      <img :src="loadSrc" alt="" />
+      <span style="display:inherit;font-size: 22px;margin-top: 30px">身份认证中</span>
+      <span style="display:inherit;font-size: 15px;margin-top: 10px">请勿关闭页面，稍后会进行跳转</span>
     </div>
   </div>
 </template>
@@ -15,11 +17,10 @@ export default {
     }
   },
   created() {
-    this.ssoLogin()
+    //this.ssoLogin()
   },
   methods: {
     ssoLogin(){
-      console.log(this.$route.query)
       let params = {
         "tenant":this.$route.query.tenant,
         "code":this.$route.query.code

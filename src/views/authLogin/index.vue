@@ -17,7 +17,7 @@ export default {
     }
   },
   created() {
-    //this.ssoLogin()
+    this.ssoLogin()
   },
   methods: {
     ssoLogin(){

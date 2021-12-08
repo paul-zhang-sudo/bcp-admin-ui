@@ -7,8 +7,8 @@
       <template slot="oper" slot-scope="scope">
         <el-button size="mini" type="text" @click="edit(scope.value)">编辑</el-button>
         <el-button size="mini" type="text" @click="remove(scope.value)">删除</el-button>
-        <el-button size="mini" type="text" @click="derive(scope.value)">导出</el-button>
-        <el-button size="mini" type="text" @click="expForIot(scope.value)">导出iot</el-button>
+        <el-button v-if="menuURL.indexOf('IMC')<0" size="mini" type="text" @click="derive(scope.value)">导出</el-button>
+        <el-button v-if="menuURL.indexOf('IMC')<0" size="mini" type="text" @click="expForIot(scope.value)">导出iot</el-button>
       </template>
     </mod-filter>
     <!--新增/编辑界面  -->
@@ -298,6 +298,7 @@ export default {
         scriptContent:'',
         index:0,
       },
+      menuURL: this.$route.path, //菜单链接
       rerun_falg: false, //补数页面
       ShowInput_Reported: false, //“任务列表的输入节点=>API上报”模态窗的显示隐藏
       ShowInput_Database: false, //“                =>数据库查询”模态窗的显示隐藏

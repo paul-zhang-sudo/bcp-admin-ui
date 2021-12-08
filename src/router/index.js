@@ -52,7 +52,7 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/config-center/integrationConfig',
+    redirect: '/config-center/datasource',
     children: [{
       path: 'dashboard',
       name: '首页',

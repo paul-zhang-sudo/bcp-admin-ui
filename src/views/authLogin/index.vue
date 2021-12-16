@@ -25,9 +25,12 @@ export default {
         "tenant":this.$route.query.tenant,
         "code":this.$route.query.code
       }
+      console.log('开始调用登录接口，参数:'+params)
       api.ssoLogin(params).then(res => {
+        console.log('登录接口调用完毕，返回结果:'+res)
         console.log(res)
-        this.$store.dispatch('user/token', res.msg).then(res => {
+        this.$store.dispatch('user/token', res.msg).then(rs => {
+          console.log('cookie保存完毕,准备进入首页,rs:'+rs)
           this.$router.push({ path: this.redirect || '/' })
           this.loading = false
         })

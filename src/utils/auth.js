@@ -9,13 +9,13 @@ export function getToken() {
 export function setToken(token) {
   //return Cookies.set(TokenKey, token)
   //解决https跨域问题
-  console.log("设置token")
-  const result = Cookies.set(TokenKey, token, { secure: true,sameSite: 'None' })
-  console.log("设置token结果:"+result)
-  console.log(Cookies.get(TokenKey))
-  console.log("调试")
-  debugger
-  console.log(document.cookie)
+  let result
+  console.log(process.env.NODE_ENV==='production')
+  if( process.env.NODE_ENV==='production' ){
+    result = Cookies.set(TokenKey, token)
+  }else{
+    result = Cookies.set(TokenKey, token, { secure: true,sameSite: 'None' })
+  }
   return result
 }
 

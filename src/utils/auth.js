@@ -13,6 +13,7 @@ export function setToken(token) {
   const result = Cookies.set(TokenKey, token, { secure: true,sameSite: 'None' })
   console.log("设置token结果:"+result)
   console.log(Cookies.get(TokenKey))
+  console.log("调试")
   debugger
   console.log(document.cookie)
   return result

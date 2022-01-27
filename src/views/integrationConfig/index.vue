@@ -65,6 +65,11 @@
         <!--新增界面的任务列表-->
         <el-form-item label="任务列表" style="margin-top:20px;">
           <!-- 任务列表的滚动条 -->
+          <div style="float:right;margin-bottom:10px;">
+            <el-button size="mini" type="primary" @click="batchSetParams">批量设置</el-button>
+            <el-button size="mini" type="primary" @click="enableAll('true')">一键启用</el-button>
+            <el-button size="mini" type="primary" @click="enableAll('false')">一键禁用</el-button>
+          </div>
           <el-table :data="jobList"  class="mt10" :cell-style="{padding:'5px 0px'}" :header-cell-style="{background:'#fafafa',color:'#606266',padding:'0px 0px'}" fit highlight-current-row style="width: 100%">
             <!--任务列表的选择点击按钮-->
             <el-table-column type="selection"  width="45">
@@ -276,6 +281,42 @@
         <el-button size="mini" @click="rerun_falg = false">取 消</el-button>
       </div>
     </el-dialog>
+
+    <!--批量设置界面-->
+    <el-dialog class="dialog-skip" width="60%" title="批量设置" :visible.sync="batch_falg" :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-table
+        :data="batchTableData"
+        max-height="380"
+        class="mt10"
+        :cell-style="{padding:'10px 0px'}"
+        :header-cell-style="{background:'#fafafa',color:'#606266'}"
+        highlight-current-row
+        fit 
+        style="width: 100%"
+      >
+        <el-table-column prop="sourceType" align="center" label="数据源类型">
+          <template slot-scope="scope">
+            <span>{{ scope.row.sourceTypeName }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="节点">
+          <template slot-scope="scope">
+            <span>{{ scope.row.nodeTypeName }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="数据源">
+          <template slot-scope="scope">
+            <el-select v-model="scope.row.dataSource" placeholder="请选择" > 
+              <el-option v-for="(optItem,optindex) in bcpDatasourceName" :key="optindex" :label="optItem" :value="optindex" />
+            </el-select>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="mini" type="primary" @click="batchSetConfirm">确 定</el-button>
+        <el-button size="mini" @click="batch_falg = false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -291,6 +332,7 @@ import { deepEqual } from 'assert';
 import { connect } from 'tls';
 import { mapGetters } from 'vuex'
 import path from 'path';
+import { group } from 'console';
 
 export default {
   //组件注册
@@ -306,6 +348,7 @@ export default {
       bcpTenantName:[],
       pathMap: new Map(),
       exampleData:[], //示例数据
+      batchTableData:[],//批量设置的数据
       value: "",
       ShowInput_title: "",
       switchNode_title: "",
@@ -317,6 +360,7 @@ export default {
       },
       menuURL: this.$route.path, //菜单链接
       rerun_falg: false, //补数页面
+      batch_falg: false, //批量设置
       ShowInput_Reported: false, //“任务列表的输入节点=>API上报”模态窗的显示隐藏
       ShowInput_Database: false, //“                =>数据库查询”模态窗的显示隐藏
       ShowInput_Inquire: false, //“                 =>API查询”模态窗的显示隐藏
@@ -630,7 +674,6 @@ export default {
         that.jobList.splice(index, 0, downDate);
       }
     },
-    
     templateData(val,type){
       this.temData = {...val}
       if(type==2){
@@ -801,9 +844,65 @@ export default {
       copyRow.transformNode.id=""
       this.jobList.push( copyRow )
     },
+    enableAll(flag){
+      this.jobList.forEach(a=>{
+        a.enable = flag
+      })
+    },
     //参数的添加
     addParam() {
       this.tableData.push({ 'key':'', 'value':'' })
+    },
+    batchSetParams(){
+      this.batch_falg = true
+      if(!this.jobList){
+        return
+      }
+      this.batchTableData = []
+      let inSet = new Set()
+      let outSet = new Set()
+      this.jobList.forEach(a=>{
+        inSet.add(a.inNode.type)
+        outSet.add(a.outNode.type)
+      })
+      inSet.forEach(inObj=>{
+        let obj = {
+                    "sourceType":inObj, //数据源类型
+                    "sourceTypeName":this.optionsInput.find(val=>val.propkey===inObj).propvalue,
+                    "nodeType":"in",   //节点
+                    "nodeTypeName":"输入节点",
+                    "dataSource":""     //数据源
+        }
+        this.batchTableData.push(obj)
+      })
+      outSet.forEach(outObj=>{
+        let obj = {
+                    "sourceType":outObj, //数据源类型
+                    "sourceTypeName":this.optionsOutput.find(val=>val.propkey===outObj).propvalue,
+                    "nodeType":"out",   //节点
+                    "nodeTypeName":"输出节点",
+                    "dataSource":""     //数据源
+        }
+        this.batchTableData.push(obj)
+      })
+    },
+    batchSetConfirm(){
+      this.jobList.forEach(a=>{
+         let inDs = this.batchTableData.find(val=>val.nodeType===a.inNode.classify && val.sourceType===a.inNode.type).dataSource
+         let outDs = this.batchTableData.find(val=>val.nodeType===a.outNode.classify && val.sourceType===a.outNode.type).dataSource
+         let inConfigValue = JSON.parse(a.inNode.configValue)
+         let outConfigValue = JSON.parse(a.outNode.configValue)
+         inConfigValue.dataSource = inDs
+         outConfigValue.dataSource = outDs
+         a.inNode.configValue = JSON.stringify( inConfigValue )
+         a.outNode.configValue = JSON.stringify( outConfigValue )
+      })
+      this.batch_falg = false
+      this.$message({
+          showClose: true,
+          message: '批量设置成功，请点击保存完成数据更新',
+          type: 'success'
+      })
     },
     //任务列表的添加
     addJob() {

@@ -66,6 +66,7 @@
         <el-form-item label="任务列表" style="margin-top:20px;">
           <!-- 任务列表的滚动条 -->
           <div style="float:right;margin-bottom:10px;">
+            <el-button size="mini" type="primary" @click="import_flag=true">导入</el-button>
             <el-button size="mini" type="primary" @click="batchSetParams">批量设置</el-button>
             <el-button size="mini" type="primary" @click="enableAll('true')">一键启用</el-button>
             <el-button size="mini" type="primary" @click="enableAll('false')">一键禁用</el-button>
@@ -89,15 +90,15 @@
               </template>
             </el-table-column>
             <!--任务列表的输入节点-->
-            <el-table-column prop="inNode"  label="输入节点" align="center" width="180">
+            <el-table-column prop="inNode"  label="输入节点" align="center" width="190">
               <template slot-scope="scope">
                 <el-row>
-                  <el-col :span='14'>
+                  <el-col :span='16'>
                     <el-select v-model="scope.row['inNode']['type']" placeholder="请选择">
                       <el-option v-for="(optItem,optindex) in optionsInput" :key="optindex" :label="optItem.propvalue" :value="optItem.propkey" />
                     </el-select>  
                   </el-col>
-                  <el-col :span='10'>
+                  <el-col :span='8'>
                     <el-button type="text" :disabled="scope.row['inNode']['type']==''" @click="changeOptionsInput(scope)">配置</el-button>
                   </el-col>
                 </el-row>
@@ -107,27 +108,27 @@
             <el-table-column prop="transformNode" label="转换节点" align="center" width="180">
               <template slot-scope="scope">
                 <el-row>
-                  <el-col :span='14'>
+                  <el-col :span='16'>
                     <el-select v-model="scope.row['transformNode']['type']" placeholder="请选择" >
                       <el-option v-for="(optItem,optindex) in optionsTransform" :key="optindex" :label="optItem.propvalue" :value="optItem.propkey" />
                     </el-select>  
                   </el-col>
-                  <el-col :span='10'>
+                  <el-col :span='8'>
                     <el-button type="text" :disabled="scope.row['transformNode']['type']==''" @click="changeOptionsTransform(scope)">配置</el-button>
                   </el-col>
                 </el-row>
               </template>
             </el-table-column>
             <!--任务列表的输出节点-->
-            <el-table-column prop="outNode" label="输出节点" align="center" width="180">
+            <el-table-column prop="outNode" label="输出节点" align="center" width="190">
               <template slot-scope="scope">
                 <el-row>
-                  <el-col :span="14">
+                  <el-col :span="16">
                     <el-select v-model="scope.row['outNode']['type']" placeholder="请选择">
                       <el-option v-for="(optItem,optindex) in optionsOutput" :key="optindex" :label="optItem.propvalue" :value="optItem.propkey" />
                     </el-select>
                   </el-col>
-                  <el-col :span="10">
+                  <el-col :span="8">
                     <!-- 不选择则不能点击=>:disabled="jobList[scope.$index].outputType==undefined" -->
                     <el-button type="text" :disabled="scope.row['outNode']['type']==''" @click="changeOptionsOutput(scope)">配置</el-button>
                   </el-col>
@@ -148,13 +149,13 @@
               </template>
             </el-table-column>
             <!--任务列表的操作-->
-            <el-table-column prop="oper" label="操作" align="center" width="230">
+            <el-table-column prop="oper" label="操作" align="center" width="210">
               <template slot-scope="scope">
                 <div style="text-align:left">
                   <el-button type="text" @click="copyJob(scope)" width="30">复制</el-button>
                   <el-button type="text" @click="deljobList(scope)" width="30">删除</el-button>     
                   <el-button type="text" @click="runAgain(scope)" width="30">补数</el-button>
-                  <el-button type="text" disabled width="30">全量</el-button>
+                  <!-- <el-button type="text" disabled width="30">全量</el-button> -->
                   <el-button type="text" disabled width="30">日志</el-button>
                 </div>
               </template>
@@ -317,6 +318,24 @@
         <el-button size="mini" @click="batch_falg = false">取 消</el-button>
       </div>
     </el-dialog>
+    <!-- 导入 -->
+    <el-dialog class="dialog-skip" width="400px" title="导入" :visible.sync="import_flag" :close-on-click-modal="false" :close-on-press-escape="false">
+        <div class="align:center">
+           <el-upload
+            ref="impUpload"
+            class="upload-demo"
+            action="#"
+            :auto-upload="false"
+            :limit="1"
+            :on-change="importFile"
+            drag
+            >
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+            <div class="el-upload__tip" slot="tip">只能上传文本文件，且不超过5MB</div>
+          </el-upload>
+        </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -324,6 +343,7 @@
 import * as sel from "@/api/select";
 import * as api from "@/api/IntegratedConfig";
 import * as menuApi from '@/api/menu'
+import { Loading } from 'element-ui'
 
 //引入组件
 import multipleTable from "./moudel/multipleTable";
@@ -361,6 +381,7 @@ export default {
       menuURL: this.$route.path, //菜单链接
       rerun_falg: false, //补数页面
       batch_falg: false, //批量设置
+      import_flag: false, //导入标识
       ShowInput_Reported: false, //“任务列表的输入节点=>API上报”模态窗的显示隐藏
       ShowInput_Database: false, //“                =>数据库查询”模态窗的显示隐藏
       ShowInput_Inquire: false, //“                 =>API查询”模态窗的显示隐藏
@@ -903,6 +924,22 @@ export default {
           message: '批量设置成功，请点击保存完成数据更新',
           type: 'success'
       })
+    },
+    importFile(event){
+      let that = this
+      this.import_flag = false
+      let loading = Loading.service({ fullscreen: true,text: '导入中',background:'rgba(0, 0, 0, 0.7)',spinner: 'el-icon-loading' })
+      let reader = new FileReader()
+      reader.readAsText(event.raw,"utf-8")//发起异步请求
+      reader.onload = function(){
+        var res = JSON.parse(reader.result)
+        that.jobList = res.jobList
+        that.tableData = res.configValue!=null?JSON.parse(res.configValue):[]
+        setTimeout(() => {
+          that.$refs.impUpload.clearFiles()
+          loading.close()
+        }, 1000)
+      }
     },
     //任务列表的添加
     addJob() {

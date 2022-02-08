@@ -613,20 +613,22 @@ export default {
     //导出
     derive(row){
       api.exportExcel(row.id).then(res=>{
-          let blob = new Blob([res], { type: `${res.type}` });
-          let link = document.createElement("a");
-          link.href = window.URL.createObjectURL(blob);
-          link.click();
-          link.remove();
+          let blob = new Blob([res], { type: `${res.type}` })
+          let link = document.createElement("a")
+          link.href = window.URL.createObjectURL(blob)
+          link.download = row.name+".json"
+          link.click()
+          link.remove()
       })
     },
     expForIot(row){
       api.expForIot(row.id).then(res=>{
-          let blob = new Blob([res], { type: `${res.type}` });
-          let link = document.createElement("a");
-          link.href = window.URL.createObjectURL(blob);
-          link.click();
-          link.remove();
+          let blob = new Blob([res], { type: `${res.type}` })
+          let link = document.createElement("a")
+          link.href = window.URL.createObjectURL(blob)
+          link.download = row.name+".json"
+          link.click()
+          link.remove()
       })
     },
     runAgain(data){

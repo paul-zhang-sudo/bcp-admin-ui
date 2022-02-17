@@ -269,6 +269,9 @@ export default {
       }, {
         value: 'oracle',
         label: 'oracle'
+      },{
+        value: 'postgresql',
+        label: 'postgresql'
       }],
       rowData: {
         id: null,

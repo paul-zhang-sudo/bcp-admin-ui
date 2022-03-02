@@ -260,7 +260,7 @@
       </div>
     </el-dialog>
     <!--补数界面-->
-    <el-dialog class="dialog-skip" width="60%" title="补数" :visible.sync="rerun_falg" :close-on-click-modal="false" :close-on-press-escape="false">
+    <el-dialog class="dialog-skip" width="1120px" title="补数" :visible.sync="rerun_falg" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="reRunForm" :model="reRun" label-width="100px" size="mini" inline-message label-position="top">
         </el-form-item>
           <el-form-item prop="runTime" label="运行时间">
@@ -277,10 +277,23 @@
           <el-input type="textarea" :rows="3" v-model="reRun.runParams" placeholder="请输入" class="baseinfo" maxlength="2000"></el-input>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" type="primary" @click="runTask">确 定</el-button>
+      <br>
+      <div>
+        <el-button size="mini" type="primary" v-prevent-repeat-click @click="runTask">确 定</el-button>
         <el-button size="mini" @click="rerun_falg = false">取 消</el-button>
       </div>
+      <br>
+      <el-switch
+        v-model="logFlag"
+        active-text="开启"
+        inactive-text="关闭">
+      </el-switch>
+      <div v-if="this.logFlag" style="height:300px;background:black">
+        <ul style="list-style-type:none;overflow:auto;height:300px;color:white;padding:0;">
+          <li v-for="lg in logList">{{ lg.message }}</li>
+        </ul>
+      </div>
+
     </el-dialog>
 
     <!--批量设置界面-->
@@ -409,6 +422,9 @@ export default {
   },
   data() {
     return {
+      logLoading: null,
+      queryLogTask: null,
+      logFlag: false,
       showEditor: 0,
       currentRow: 0,
       bcpDatasourceName:[],
@@ -451,6 +467,7 @@ export default {
         pageSize: 20, //每页条数
         currentPage: 0, //当前页数
         totalCount: 0, //总条数
+        repairFlag: false, //是否补数
       },
       logList: [],
       inNode: {
@@ -640,12 +657,7 @@ export default {
   async created() {
     //初始化下拉框
     this.initOptions()
-    //初始化日期默认值，默认当天
-    var curDate = new Date()
-    var startDate = curDate.format('yyyy-MM-dd 00:00:00')
-    var endDate = curDate.format('yyyy-MM-dd 23:59:59')
-    this.log.runTime.push(startDate)
-    this.log.runTime.push(endDate)
+    this.initData(false)
   },
   computed: {
     ...mapGetters([
@@ -674,6 +686,20 @@ export default {
       })
       
     },
+  //初始化日期默认值，默认当天
+    initData(curFlag){
+      this.log.runTime = []
+      let curDate = new Date()
+      let pattern = 'yyyy-MM-dd 00:00:00'
+      if(curFlag){
+        pattern = 'yyyy-MM-dd hh:mm:ss'
+        this.log.pageSize = 500
+      }
+      let startDate = curDate.format(pattern)
+      let endDate = curDate.format('yyyy-MM-dd 23:59:59')
+      this.log.runTime.push(startDate)
+      this.log.runTime.push(endDate)
+    },
     //导出
     derive(row){
       api.exportExcel(row.id).then(res=>{
@@ -699,11 +725,15 @@ export default {
       this.reRun = {}
       this.reRun.taskId = data.row.id
       this.reRun.configId = this.subFormData.id
+      this.logList = []
+      this.log.taskId = data.row.id
       this.rerun_falg = true
     },
     logSearch(data){
-      this.logList = []
       this.log.totalCount = 0
+      this.log.pageSize = 20
+      this.initData(false)
+      this.logList = []
       this.log.message = ""
       this.log.taskId = data.row.id
       this.log_flag = true
@@ -712,6 +742,15 @@ export default {
       api.getTaskLog(this.log).then((res) => {
         this.logList = res.model
         this.log.totalCount = res.totalCount
+      })
+    },
+    logload(){
+      this.log.repairFlag = true
+      api.getTaskLog(this.log).then((res) => {
+        this.logList = res.model
+        this.log.totalCount = res.totalCount
+        // this.logLoading = false
+        this.logLoading.close()
       })
     },
     handleSizeChange(val) {
@@ -725,19 +764,22 @@ export default {
       this.getTaskLog()
     },
     runTask(){
+      this.initData(true)
+      this.logList = []
+      this.logLoading  = Loading.service({ fullscreen: true,text: '任务执行中，请等待...',background:'rgba(0, 0, 0, 0.7)',spinner: 'el-icon-loading' })
       api.runTask(this.reRun).then(res=>{
-        this.$message({
-          showClose: true,
-          message: '任务执行完毕',
-          type: 'success'
-        })
-        console.log(res)
+        //采集日志
+        if(this.logFlag){
+          this.logLoading.text = '日志加载中，请等待...'
+          setTimeout(() => {
+            this.logload()
+          }, 10000)
+        }else{
+          this.logLoading.text = '任务执行完毕'
+          this.logLoading.close()
+        }
+       
       })
-      this.$message({
-          showClose: true,
-          message: '任务执行中，请等待...',
-          type: 'success'
-        })
     },
     //下发（存在前端这边已向后台发送id，但是后台报500的错误）
     issue(row){
@@ -1094,7 +1136,6 @@ export default {
             .submitForm(obj)
             .then((res) => {
               this.$message.success("保存成功")
-              console.log(res.model)
               this.subFormData.id = res.model
               this.getData(this.datas)
             })

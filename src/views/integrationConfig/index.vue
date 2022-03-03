@@ -737,6 +737,7 @@ export default {
       this.log.message = ""
       this.log.taskId = data.row.id
       this.log_flag = true
+      this.log.repairFlag = false
     },
     getTaskLog() {
       api.getTaskLog(this.log).then((res) => {

@@ -59,10 +59,11 @@
           <!-- <div @click="addParam">添加</div> -->
         </el-form-item>
         <!--新增界面的插件文件（暂不需）-->
-        <el-form-item label="插件文件" v-if="subFormData.id">
+        <el-form-item label="插件文件">
           <!--on-exceed文件超出个数；:limit最大允许上传个数；http-request实现自定义上传；	action必选参数，上传的地址；before-upload 限制用户上传的图片格式和大小-->
           <el-upload 
             ref="pluginsUpload"
+            :disabled="!subFormData.id"
             :on-preview="handlePreview"
             :on-exceed="exceedFile"
             :file-list="fileList"
@@ -70,7 +71,7 @@
             :http-request="handleUpload"
             action='undefined'
             :beforeUpload="beforeUpload">
-              <el-button size="small" type="text">上传插件<i class="el-icon-upload el-icon--right"></i></el-button>
+              <el-button v-if="subFormData.id" size="small" type="text">上传插件<i class="el-icon-upload el-icon--right"></i></el-button>
           </el-upload>
         </el-form-item>
         <!--新增界面的任务列表-->
@@ -434,6 +435,7 @@ export default {
   data() {
     return {
       fileList: [],
+      fileMap: {},
       logLoading: null,
       queryLogTask: null,
       logFlag: false,
@@ -1124,8 +1126,27 @@ export default {
       api.getTemplateContent(this.temData.id).then(res=>{
         this.jobList = res.jobList
         this.tableData = res.configValue!=null?JSON.parse(res.configValue):[]
+        this.pathMap.clear()
+        this.jobList.forEach(job=>{
+          if("apiUp"===job.inNode.type){
+              let conf = JSON.parse(job.inNode.configValue)
+              this.pathMap.set(conf.path,job.inNode.id)
+          }
+        })
+
+        this.fileMap = {}
+        this.fileList = []
+        if(res.pluginsList){
+          res.pluginsList.forEach(ps=>{
+            let pluginFile = {
+              name:ps.name
+            }
+            this.fileList.push(pluginFile)
+            this.fileMap[ps.name] = ps.fileUrl
+          })
+        }
       })
-      this.ShowMoule = false;
+       this.ShowMoule = false;
     },
     // 删除
     remove(row) {
@@ -1161,10 +1182,11 @@ export default {
             message: `文件大小不得超过2M`
           });
       }else{
-        const formData = new FormData();
-        formData.append("file", file);
+        const formData = new FormData()
+        formData.append("file", file)
         api.upload(formData,this.subFormData.id).then((res) => {
-        });
+          this.fileMap[file.name] = res.model
+        })
       }
     },
     handleUpload(file, fileList) {
@@ -1177,13 +1199,14 @@ export default {
       }
       obj.configValue = this.tableData
       //如果上传了插件则把插件保存到数据库
-      if( this.$refs.pluginsUpload.uploadFiles.length>0 ){
+      if( this.$refs.pluginsUpload && this.$refs.pluginsUpload.uploadFiles.length>0 ){
          obj.pluginsList = []
         this.$refs.pluginsUpload.uploadFiles.forEach(a=>{
           let file = {
             name:a.name,
             configId:this.subFormData.id,
-            fileUrl:`%s#${this.subFormData.id}/${a.name}`
+            //fileUrl:`%s#${this.subFormData.id}/${a.name}`
+            fileUrl:this.fileMap[a.name]
           }
           obj.pluginsList.push(file)
         })
@@ -1245,7 +1268,7 @@ export default {
             this.pathMap.set(conf.path,job.inNode.id)
          }
       })
-      debugger
+      this.fileMap = {}
       this.fileList = []
       if(data.pluginsList){
         data.pluginsList.forEach(ps=>{
@@ -1253,6 +1276,7 @@ export default {
             name:ps.name
           }
           this.fileList.push(pluginFile)
+          this.fileMap[ps.name] = ps.fileUrl
         })
       }
       this.tableData = JSON.parse(data.configValue)

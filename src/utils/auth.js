@@ -9,8 +9,8 @@ export function getToken() {
 export function setToken(token) {
   //return Cookies.set(TokenKey, token)
   //解决https跨域问题
+  console.log(process.env.NODE_ENV)
   let result
-  console.log(process.env.NODE_ENV==='production')
   if( process.env.NODE_ENV==='production' ){
     result = Cookies.set(TokenKey, token)
   }else{

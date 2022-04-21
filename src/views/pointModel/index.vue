@@ -8,7 +8,7 @@
       header-align="center">
       <el-table-column align="left">
         <template slot="header">
-          <a @click="seeDetail" class="digitalFactory">数字工厂接入点模型</a>
+          <a @click="seeDetail" class="digitalFactory">华为数字工厂数采建模</a>
         </template>
       <el-table-column
         prop="code"

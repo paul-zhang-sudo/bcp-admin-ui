@@ -89,8 +89,8 @@ export default {
         },
         {
           type: "MES",
-          business: "精工",
-          product: "精工MES",
+          business: "万腾",
+          product: "万腾MES",
           link: "https://kdocs.cn/l/cnJszJJv60Z3",
         },
         {

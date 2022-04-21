@@ -159,7 +159,7 @@ export default {
         },
         {
           type: "MES",
-          business: "精工MES",
+          business: "万腾MES",
           system: "U8",
           link: "https://kdocs.cn/l/cnYZbuda6QFa",
           guide: "https://kdocs.cn/l/cpPJAroyUMoW",

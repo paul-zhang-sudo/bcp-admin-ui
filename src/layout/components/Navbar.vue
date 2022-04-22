@@ -3,7 +3,7 @@
     <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
     <breadcrumb class="breadcrumb-container" />
-    <span class="nav" style="line-height: 38px;">欢迎您,{{ cur_user.name }}</span>
+    <span class="nav" style="line-height: 38px;">欢迎您,{{ cur_user.orgName }},{{ cur_user.name }}</span>
     <div class="right-menu">
 
       <el-dropdown slot="dropdown" class="avatar-container" trigger="click">

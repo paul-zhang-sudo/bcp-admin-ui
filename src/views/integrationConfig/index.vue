@@ -235,11 +235,13 @@
         <el-form-item prop="cron" label="定时设置" v-if="ShowInput_title!='API上报'" >
           <el-input v-model="inNode.cron" placeholder="请输入" class="baseinfo"></el-input>
         </el-form-item>
-        <el-form-item prop="dataSource" label="数据源">
-          <el-select v-model="inNode.dataSource" placeholder="请选择" class="baseinfo"> 
-            <el-option v-for="(optItem,optindex) in bcpDatasourceName" :key="optindex" :label="optItem" :value="optindex" />
-          </el-select>
-        </el-form-item>
+        <div v-if="ShowInput_title!='自定义脚本'">
+          <el-form-item prop="dataSource" label="数据源">
+            <el-select v-model="inNode.dataSource" placeholder="请选择" class="baseinfo"> 
+              <el-option v-for="(optItem,optindex) in bcpDatasourceName" :key="optindex" :label="optItem" :value="optindex" />
+            </el-select>
+          </el-form-item>
+        </div>
         <div v-if="ShowInput_title=='API上报'">
           <el-form-item prop="protocol" label="协议" >
             <el-select v-model="inNode.protocol" class="baseinfo">

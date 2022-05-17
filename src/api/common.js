@@ -36,3 +36,34 @@ export function deepClone(obj) {
   }
   return objClone
 }
+
+/**
+ * 数据去重
+ * @param {*} dataArray 数据
+ * @param {*} keyFunc key
+ * @param {*} compareFunc function
+ * @returns
+ */
+export function distinct(dataArray, keyFunc , compareFunc){
+    let resMap = {};
+    dataArray.forEach(
+        function(val){
+            let key = keyFunc(val);
+            if( resMap[key] == null
+                || (
+                    compareFunc != null && typeof compareFunc == 'function'
+                    && compareFunc(val,resMap[key]) === true
+                )
+            ){
+                resMap[key] = val;
+            }
+        }
+    )
+    let resArray = [];
+    Object.keys(resMap).forEach(
+        function(key){
+            resArray.push(resMap[key])
+        }
+    )
+    return resArray;
+}

@@ -311,7 +311,7 @@ export default {
           return false
         })
         // 邮箱配置默认服务器、用户名、密码
-        this.subFormData_email.type = emailConfOptions.type
+        this.subFormData.type = emailConfOptions.type
         this.subFormData_email.host = emailConfOptions.host
         this.subFormData_email.userName = emailConfOptions.account
         this.subFormData_email.password = emailConfOptions.password

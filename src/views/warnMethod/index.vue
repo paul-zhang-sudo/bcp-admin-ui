@@ -84,7 +84,6 @@ export default {
       planOptions: [],
       userCaseOptions: [],
       typeOptions: [],
-      authOptions: [],
       customerOptions: [],
       planCheckWay: 1,
       tenants: [],
@@ -301,6 +300,22 @@ export default {
         Object.keys(this.subFormData_tel).forEach((key) => (this.subFormData_tel[key] = null))
         // 客户默认当前用户所属租户
         this.subFormData.tenantId = this.cur_user.tenantId + ''
+
+        // 查询邮箱配置
+        const emailConfOptions = {}
+        await menuApi.getSourceTypeOptions('fw.email.config').then(res => {
+          res.model.forEach(function(val) {
+            emailConfOptions[val.propkey] = val.propvalue
+          })
+        }).catch(e => {
+          return false
+        })
+        // 邮箱配置默认服务器、用户名、密码
+        this.subFormData_email.type = emailConfOptions.type
+        this.subFormData_email.host = emailConfOptions.host
+        this.subFormData_email.userName = emailConfOptions.account
+        this.subFormData_email.password = emailConfOptions.password
+        this.subFormData_email.receiver = emailConfOptions.receiver
         return
       }
       // 如果是更新

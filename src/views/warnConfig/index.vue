@@ -23,14 +23,23 @@
                    :close-on-click-modal="false" :close-on-press-escape="false">
             <el-form ref="subFormData" :model="subFormData" :rules="subFormDataRule" class="subFormData"
                      label-width="120px" size="mini">
-                <el-form-item label="集成配置" prop="tenantId">
+                <el-form-item label="客户" prop="tenantId" v-if="cur_user.userType==='admin'">
+                    <el-select v-model="subFormData.tenantId" @change="getSourceTypeOptions" placeholder="请选择">
+                        <el-option v-for="(optItem,optindex) in customerOptions" :key="optindex" :label="optItem"
+                                   :value="optindex"/>
+                    </el-select>
+                    <!-- <sxf-freelist v-model="subFormData.tenantId" code="bcp.tenant.name" /> -->
+                </el-form-item>
+
+                <el-form-item label="集成配置" prop="configId">
                     <template>
-                        <el-select id="config_id" v-model="subFormData.configId" @change="subFormData.taskId = null" placeholder="请选择">
+                        <el-select id="config_id" v-model="subFormData.configId" @change="subFormData.taskId = null"
+                                   placeholder="请选择">
                             <el-option v-for="item in integrationConfigs" :label="item.name" :value="item.id"/>
                         </el-select>
                     </template>
                 </el-form-item>
-                <el-form-item label="任务" prop="tenantId">
+                <el-form-item label="任务" prop="taskId">
                     <template>
                         <el-select id="task_id" value-key="id" v-model="subFormData.taskId" placeholder="请选择">
                             <el-option v-for="item in getConfigTask" :label="item.taskName" :value="item.taskId"/>
@@ -38,7 +47,7 @@
                     </template>
                 </el-form-item>
 
-                <el-form-item label="告警方式" prop="warnMethod">
+                <el-form-item label="告警方式" prop="warnMethodId">
                     <el-select v-model="subFormData.warnMethodId" placeholder="请选择">
                         <el-option v-for="item in warnMethods" :label="item.name" :value="item.id"/>
                     </el-select>
@@ -68,6 +77,7 @@
 import * as commonApi from '@/api/common'
 import { mapGetters } from 'vuex'
 import * as api from '@/api/warnConfig'
+import * as sel from '@/api/select'
 
 export default {
     data() {
@@ -106,6 +116,11 @@ export default {
                 enable: true
             },
             subFormDataRule: {
+                'tenantId': [{
+                    required: true,
+                    message: '请选择客户',
+                    trigger: 'blur'
+                }],
                 'configId': [{
                     required: true,
                     message: '请选择集成配置',
@@ -113,11 +128,13 @@ export default {
                 }],
                 'taskId': [{
                     required: true,
-                    message: '请选择任务'
+                    message: '请选择任务',
+                    trigger: 'blur'
                 }],
                 'warnMethodId': [{
                     required: true,
-                    message: '请选择告警方式'
+                    message: '请选择告警方式',
+                    trigger: 'blur'
                 }]
             },
             tableData: [],
@@ -295,8 +312,8 @@ export default {
             showCronBox: false
         }
     },
-    async created() {
-        this.getSourceTypeOptions()
+    created() {
+        this.baseLoad()
     },
     mounted() {
     },
@@ -313,6 +330,7 @@ export default {
             )
         }
     },
+
     methods: {
         input(data) {
             console.log('data===>', data)
@@ -330,8 +348,8 @@ export default {
             }
             api.submitForm(obj).then(
                 res => {
-                  row.enable = !(row.enable)
-                  this.getData(this.datas)
+                    row.enable = !(row.enable)
+                    this.getData(this.datas)
                 }
             ).catch(
                 e => console.log(e.message)
@@ -350,7 +368,7 @@ export default {
                     } else {
                         this.$message({
                             showClose: true,
-                            message: res.model == null ? "下发失败" : res.model,
+                            message: res.model == null ? '下发失败' : res.model,
                             type: 'error'
                         })
                     }
@@ -375,13 +393,14 @@ export default {
             }
             //如果是更新
             Object.keys(this.subFormData).forEach((key) => (this.subFormData[key] = row[key]))
+            this.subFormData.tenantId += ''
         },
         getData(datas = this.datas) {
             this.$set(this, 'datas', datas)
             this.$set(this, 'params', datas.params)
             this.$set(this.datas.table, 'loading', true)
             this.$set(this.params, 'orgId', this.params.orgName)
-            this.params[this.datas.filterList[0].prop] = undefined;
+            this.params[this.datas.filterList[0].prop] = undefined
             api.getPage({ ...this.params, key: this.datas.filterList[0].name }).then(res => {
                     this.$set(this.datas.resData, 'rows', res.model)
                     this.$set(this.datas.params, 'currentPage', res.currentPage)
@@ -395,7 +414,7 @@ export default {
             this.showCronBox = false
             this.$refs.subFormData.validate((valid) => {
                 if (valid) {
-                    api.submitForm(this.subFormData).then(res => {
+                    api.submitForm({...this.subFormData, nodeId: this.subFormData.nodeId == null ? '' : this.subFormData.nodeId }).then(res => {
                         this.$message.success('保存成功')
                         this.getData(this.datas)
                         this.dialogFormVisible = false
@@ -405,11 +424,25 @@ export default {
                 }
             })
         },
+        baseLoad() {
+            if (this.cur_user.userType === 'admin') {
+                sel.getFreelist({ code: 'bcp.tenant.name', params: '' }).then(res => {
+                    this.customerOptions = res.model
+                })
+            }
+            this.getSourceTypeOptions()
+        },
         getSourceTypeOptions() {
             let thisObj = this
-            api.getBaseConfig({ ...this.params, key: this.datas.filterList[0].name }).then(
+            if (this.subFormData.tenantId == null) {
+                this.subFormData.tenantId = this.cur_user.tenantId + ''
+            }
+            this.subFormData.configId = null
+            this.subFormData.taskId = null
+            this.subFormData.warnMethodId = null
+            api.getBaseConfig({ tenantId: this.subFormData.tenantId }).then(
                 res => {
-                    thisObj.integrationConfigTasks = res.model
+                    this.$set(this, 'integrationConfigTasks', res.model)
                     let arr = res.model.map(
                         function(val) {
                             return {
@@ -418,14 +451,14 @@ export default {
                             }
                         }
                     )
-                    thisObj.integrationConfigs = commonApi.distinct(arr, val => val.id, null)
+                    this.$set(this, 'integrationConfigs', commonApi.distinct(arr, val => val.id, null))
                 }
             ).catch(e => {
                     console.log(e.message())
                     return false
                 }
             )
-            api.getWarnMethodsByTenantId(this.cur_user.tenantId + '').then(
+            api.getWarnMethodsByTenantId(this.subFormData.tenantId).then(
                 res => {
                     thisObj.warnMethods = res.model
                 }

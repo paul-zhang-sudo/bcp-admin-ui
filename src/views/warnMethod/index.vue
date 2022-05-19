@@ -43,7 +43,7 @@
               <el-input v-model="subFormData_email.userName" placeholder="单行输入" maxlength="100" size="mini" auto-complete="off" />
             </el-form-item>
             <el-form-item label="密码" prop="password">
-              <el-input v-model="subFormData_email.password" placeholder="单行输入" maxlength="100" size="mini" auto-complete="off" />
+              <el-input v-model="subFormData_email.password" placeholder="单行输入" maxlength="100" size="mini" show-password auto-complete="new-password" />
             </el-form-item>
             <el-form-item label="邮件标题" prop="title">
               <el-input v-model="subFormData_email.title" placeholder="单行输入" maxlength="100" size="mini" auto-complete="off" />
@@ -102,7 +102,8 @@ export default {
       subFormData: {
         id: null,
         name: null,
-        type: null
+        type: null,
+        tenantId: null
       },
       subFormData_email: {
         host: null,
@@ -204,6 +205,15 @@ export default {
             filedShow: true,
             label: '类型',
             placeholder: '类型',
+            optList: []
+          },
+          {
+            type: 'input',
+            prop: 'tenantName',
+            conditionshow: false,
+            filedShow: true,
+            label: '客户',
+            placeholder: '客户',
             optList: []
           },
           {

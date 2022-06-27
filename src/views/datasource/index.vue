@@ -150,20 +150,23 @@
           </div>
           <!--类型是SAP RFC （临时待完善）-->
           <div v-if="subFormData.type === 'sapRFC'">
-            <el-form-item label="应用服务器IP" prop="xxxx1" >
-              <el-input v-model="subFormData.xxxx1" placeholder="请填写"  maxlength="100" size="mini" auto-complete="off"></el-input>
+            <el-form-item label="应用服务器IP" prop="serverIp" >
+              <el-input v-model="subFormData.serverIp" placeholder="请填写"  maxlength="100" size="mini" auto-complete="off"></el-input>
             </el-form-item> 
-            <el-form-item label="服务端编号" prop="xxxx2" >
-              <el-input v-model="subFormData.xxxx2" placeholder="请填写"  maxlength="100" size="mini" auto-complete="off"></el-input>
+            <el-form-item label="服务端编号" prop="serverNo" >
+              <el-input v-model="subFormData.serverNo" placeholder="请填写"  maxlength="100" size="mini" auto-complete="off"></el-input>
             </el-form-item> 
-            <el-form-item label="客户端编号" prop="xxxx3" >
-              <el-input v-model="subFormData.xxxx3" placeholder="请填写"  maxlength="100" size="mini" auto-complete="off"></el-input>
+            <el-form-item label="客户端编号" prop="clientNo" >
+              <el-input v-model="subFormData.clientNo" placeholder="请填写"  maxlength="100" size="mini" auto-complete="off"></el-input>
             </el-form-item> 
-            <el-form-item label="用户名" prop="username" >
-              <el-input v-model="subFormData.username" placeholder="请填写"  maxlength="20" size="mini" auto-complete="off"></el-input>
+            <el-form-item label="用户名" prop="userName" >
+              <el-input v-model="subFormData.userName" placeholder="请填写"  maxlength="20" size="mini" auto-complete="off"></el-input>
             </el-form-item> 
             <el-form-item label="密码" prop="password" >
               <el-input type="password" v-model="subFormData.password" placeholder="请填写"  maxlength="20" size="mini" auto-complete="off"></el-input>
+            </el-form-item>
+           <el-form-item label="其他参数" prop="otherParam" >
+             <el-input type="textarea" :rows="3" v-model="subFormData.otherParam" placeholder="请输入" class="baseinfo" maxlength="2000"></el-input>
             </el-form-item> 
             <el-form-item label="集成节点" prop="nodeId" >
               <el-input v-model="subFormData.nodeId" placeholder="节点ID"  maxlength="50" size="mini" auto-complete="off"></el-input>

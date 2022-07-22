@@ -91,7 +91,7 @@ export function exportExcel(param) {
 
 export function expForIot(param) {
   return request({
-    url: `${URL.role}/iot/down/${param}`,
+    url: `${URL.role}/down/${param.type}/${param.id}`,
     method: 'get',
     data: param,
     responseType:'blob'//必须是blob 否则导出的excel打不开

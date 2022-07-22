@@ -8,7 +8,8 @@
         <el-button size="mini" type="text" @click="edit(scope.value)">编辑</el-button>
         <el-button size="mini" type="text" @click="remove(scope.value)">删除</el-button>
         <el-button v-if="menuURL.indexOf('IMC')<0" size="mini" type="text" @click="derive(scope.value)">导出</el-button>
-        <el-button v-if="menuURL.indexOf('IMC')<0" size="mini" type="text" @click="expForIot(scope.value)">导出iot</el-button>
+        <el-button v-if="menuURL.indexOf('IMC')<0" size="mini" type="text" @click="expForIot('it',scope.value)">导出it</el-button>
+        <el-button v-if="menuURL.indexOf('IMC')<0" size="mini" type="text" @click="expForIot('ot',scope.value)">导出ot</el-button>
       </template>
     </mod-filter>
     <!--新增/编辑界面  -->
@@ -711,6 +712,7 @@ export default {
             slot: true,
             label: "操作",
             placeholder: "操作",
+            minWidth:120,
             optList: []
           }
         ],
@@ -800,8 +802,8 @@ export default {
           link.remove()
       })
     },
-    expForIot(row){
-      api.expForIot(row.id).then(res=>{
+    expForIot(type,row){
+      api.expForIot({"type":type,"id":row.id}).then(res=>{
           let blob = new Blob([res], { type: `${res.type}` })
           let link = document.createElement("a")
           link.href = window.URL.createObjectURL(blob)

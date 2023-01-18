@@ -134,7 +134,7 @@ export default {
           "type": "MES",
           "business": "语祯",
           "system": "鼎捷易飞",
-          "link": "https://kdocs.cn/l/ceofBYQioRLZ"
+          "link": "https://kdocs.cn/l/caR8Vyw9pBmp"
         },
         {
           "type": "MES",
@@ -158,7 +158,7 @@ export default {
           "type": "MES",
           "business": "甄一",
           "system": "SAP",
-          "link": "https://kdocs.cn/l/caCpgmILVRsW"
+          "link": "https://www.kdocs.cn/l/cuAaTszz1Aib"
         },
         {
           "type": "MES",

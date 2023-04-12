@@ -13,6 +13,14 @@ export function getDetail() {
   })
 }
 
+// 获取序列号
+export function getLicDetail() {
+  return request({
+    url: URL.psd + '/license',
+    method: 'GET'
+  })
+}
+
 // 修改密码策略
 export function submitFormEdit(data) {
   return request({

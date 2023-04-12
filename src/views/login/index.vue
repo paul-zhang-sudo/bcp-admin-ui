@@ -165,6 +165,11 @@ export default {
         containsUpper: null,
         containsLower: null
       },
+      license:{
+        license: null,
+        limitTime: null,
+        limitDay: null
+      },
       dialogFormVisible: false,
       subFormData: {
         oldPassword: null,
@@ -199,6 +204,7 @@ export default {
   },
   created() {
     this.getPasswordStrategy()
+    this.getLicense()
   },
   methods: {
     // 重置
@@ -223,6 +229,11 @@ export default {
         this.passwordStrategy = res.model
       })
     },
+     getLicense() {
+      pwdApi.getLicDetail().then(res => {
+        this.license = res.model
+      })
+    },
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -235,6 +246,18 @@ export default {
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
+        console.log(this.license)
+        //序列号检测
+        if(this.license){
+          debugger
+          if(this.license.limitDay<0){
+            this.$message.error('序列号已到期，登录失败！请联系客服续期.')
+            return false
+          }
+          if(this.license.limitDay>0 && this.license.limitDay<=10){
+            this.$message.info('序列号还有'+this.license.limitDay+'天就要到期了。请注意续费，以免影响正常使用.')
+          }
+        }
         if (valid) {
           this.loading = true
           const userInfo = Object.assign({}, this.loginForm)

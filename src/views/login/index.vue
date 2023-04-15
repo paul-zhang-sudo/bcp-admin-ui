@@ -51,9 +51,11 @@
             @keyup.enter.native="handleLogin"
             class="unamestyle"
           />
+          <!--
           <span class="show-pwd" @click="showPwd">
             <svg-icon  :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" class="showPwdstyle"/>
           </span>
+          -->
         </el-form-item>
 
         <el-button :loading="loading" type="primary" style="width:108%;margin-bottom:30px;" @click.native.prevent="handleLogin">

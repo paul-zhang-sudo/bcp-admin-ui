@@ -388,6 +388,18 @@ export default {
         filterList: [
           {
             type: 'input',
+            prop: 'id',
+            // 控制设置内部 复选框勾选的默认值
+            conditionshow: false,
+            // 控制该字段是否出现在表格里
+            filedShow: true,
+            // 控制搜索框的label显示与否
+            label: '数据源ID',
+            optList: [],
+            align:"center"
+          },
+          {
+            type: 'input',
             prop: 'name',
             // 控制设置内部 复选框勾选的默认值
             conditionshow: true,

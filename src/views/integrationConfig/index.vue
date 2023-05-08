@@ -341,7 +341,7 @@
                :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="outNodeForm" :rules="outNodeFormRule" :model="outNode" label-width="100px" size="mini"
                inline-message label-position="top">
-        <el-form-item prop="dataSource" label="数据源" v-if="Showoutput_title=='API调用'||Showoutput_title=='数据库回写'">
+        <el-form-item prop="dataSource" label="数据源" v-if="Showoutput_title!='自定义脚本'"">
           <el-select v-model="outNode.dataSource" placeholder="请选择" class="baseinfo">
             <el-option v-for="(optItem,optindex) in bcpDatasourceName" :key="optindex" :label="optItem"
                        :value="optindex"/>

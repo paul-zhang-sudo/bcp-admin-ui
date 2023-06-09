@@ -179,6 +179,7 @@
                 <el-select v-model="subFormData.classify" placeholder="请选择" >
                   <el-option label="kafka" value="kafka" />
                   <el-option label="pulsar" value="pulsar" />
+                  <el-option label="mqtt" value="mqtt" />
                 </el-select>
               </template>
             </el-form-item> 

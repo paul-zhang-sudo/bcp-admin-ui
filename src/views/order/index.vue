@@ -28,7 +28,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="云商店订单ID" prop="orderId">
+        <el-form-item label="订单ID" prop="orderId">
           <!--maxlength 属性规定输入字段的最大长度-->
           <el-input v-model="subFormData.orderId" placeholder="单行输入" maxlength="20" size="mini"
                     auto-complete="off"
@@ -93,7 +93,7 @@
                     auto-complete="off"
           />
         </el-form-item>
-        <el-form-item label="客户ID" prop="customerId">
+        <el-form-item label="客户ID" prop="customerId" required>
           <el-input v-model="subFormData.customerId" placeholder="单行输入" maxlength="50" size="mini"
                     auto-complete="off"
           />

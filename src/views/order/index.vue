@@ -30,7 +30,7 @@
         </el-form-item>
         <el-form-item label="订单ID" prop="orderId">
           <!--maxlength 属性规定输入字段的最大长度-->
-          <el-input v-model="subFormData.orderId" placeholder="单行输入" maxlength="20" size="mini"
+          <el-input v-model="subFormData.orderId" placeholder="单行输入" maxlength="200" size="mini"
                     auto-complete="off"
           />
         </el-form-item>
@@ -94,7 +94,7 @@
           />
         </el-form-item>
         <el-form-item label="客户ID" prop="customerId" required>
-          <el-input v-model="subFormData.customerId" placeholder="单行输入" maxlength="50" size="mini"
+          <el-input v-model="subFormData.customerId" placeholder="单行输入" maxlength="200" size="mini"
                     auto-complete="off"
           />
         </el-form-item>
@@ -103,7 +103,11 @@
                     auto-complete="off"
           />
         </el-form-item>
-
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="subFormData.remark" placeholder="单行输入" maxlength="500" size="mini"
+                    auto-complete="off"
+          />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button v-prevent-repeat-click size="mini" type="primary" @click="subForm('subFormData')">确 定</el-button>

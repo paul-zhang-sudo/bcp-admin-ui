@@ -321,12 +321,15 @@ export default {
       }, {
         value: 'oracle',
         label: 'oracle'
-      },{
+      }, {
         value: 'postgresql',
         label: 'postgresql'
-      },{
+      }, {
         value: 'mysql',
         label: 'mysql'
+      }, {
+        value: 'guassdb',
+        lable: 'guassdb'
       }],
       rowData: {
         id: null,

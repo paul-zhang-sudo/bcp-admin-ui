@@ -469,12 +469,12 @@ export default {
     },
     handleSelectionChange(val) {
       this.selectionTemplateList = []
-       //val是选中的数据的数组
-       val.forEach(item => {
-           const id = item.templateId
-           const obj = {"tenantId":this.selectionTenantId,"templateId":item.templateId}
-           this.selectionTemplateList.push(obj)
-       })
+      //val是选中的数据的数组
+      val.forEach(item => {
+        const id = item.templateId
+        const obj = {"tenantId":this.selectionTenantId,"templateId":item.templateId}
+        this.selectionTemplateList.push(obj)
+      })
     },
     saveTemplateList(){
       api.saveTemplate(this.selectionTenantId,this.selectionTemplateList).then(

@@ -5,7 +5,7 @@
     </div>
     <div class="title-container">
         <div class="title">
-          BCP Cloud后台管理
+          工业物联网平台数采IDE
         </div>
     </div>
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form " auto-complete="on" label-position="left">
@@ -67,7 +67,7 @@
     </el-form>
     <div class="copyright-container">
         <div class="copyright">
-          Copyright@2017-{{currentYear}} 工业子系统数采平台
+          <!--Copyright@2017-{{currentYear}} 工业子系统数采平台 -->
         </div>
     </div>
 

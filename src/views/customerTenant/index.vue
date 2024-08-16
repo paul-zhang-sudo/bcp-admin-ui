@@ -272,11 +272,6 @@ export default {
         this.bcpTenantArr = res.model
         const arr = {}
         res.model.forEach((item, key) => {
-          // var tmp = {
-          //   'label': item.name,
-          //   'value': item.id
-          // }
-          // arr.push(tmp)
           arr[item.id + ''] = item.name
         })
         this.$set(this.datas.filterList[3], 'conv', arr)

@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'BCP Cloud',
+  title: '数采IDE',
 
   /**
    * @type {boolean} true | false

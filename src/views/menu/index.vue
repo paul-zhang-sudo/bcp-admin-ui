@@ -42,7 +42,7 @@
                 <el-input v-model="editForm.name" maxlength="50" style="width:50%" />
               </el-form-item>
               <el-form-item label="编码" prop="code">
-                <el-input v-model="editForm.code" maxlength="20" style="width:50%" />
+                <el-input v-model="editForm.code" maxlength="100" style="width:50%" />
               </el-form-item>
               <!-- <el-form-item label="上级菜单" prop="parentId">
                 <el-input v-model="editForm.parentId | filterParentName" style="width:50%" />
@@ -97,7 +97,7 @@ style="width:50%"></el-input>
           <el-input v-model="addForm.name" maxlength="50" style="width:50%" />
         </el-form-item>
         <el-form-item label="编码" prop="code">
-          <el-input v-model="addForm.code" maxlength="20" style="width:50%" />
+          <el-input v-model="addForm.code" maxlength="100" style="width:50%" />
         </el-form-item>
         <el-form-item label="资源类型" prop="sourceType">
           <!-- <el-input v-model="addForm.sourceType" style="width:50%" /> -->

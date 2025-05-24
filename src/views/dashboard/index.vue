@@ -46,19 +46,19 @@
           <div class="metrics-grid">
             <div class="metric">
               <p>今日同步总量</p>
-              <h4>{{ taskStats.dayTotalValidSize }}</h4>
+              <h4>{{ taskStats.dayTotalValidSize.toLocaleString() }}</h4>
             </div>
             <div class="metric">
               <p>本月同步总量</p>
-              <h4>{{ taskStats.monthTotalValidSize }}</h4>
+              <h4>{{ taskStats.monthTotalValidSize.toLocaleString() }}</h4>
             </div>
             <div class="metric success">
               <p>今日成功数量</p>
-              <h4>{{ taskStats.dayTotalSuccessSize }}</h4>
+              <h4>{{ taskStats.dayTotalSuccessSize.toLocaleString() }}</h4>
             </div>
             <div class="metric success">
               <p>本月成功数量</p>
-              <h4>{{ taskStats.monthTotalSuccessSize }}</h4>
+              <h4>{{ taskStats.monthTotalSuccessSize.toLocaleString() }}</h4>
             </div>
           </div>
         </div>

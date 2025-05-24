@@ -17,34 +17,34 @@
     <br>
     <div>
       <el-table :data="tableData" class="mt10" :cell-style="{padding:'10px 0px'}" :header-cell-style="{background:'#fafafa',color:'#606266',padding:'12px 0px','text-align':'center'}" fit
-                highlight-current-row style="width: 100%" max-height="660"
+                highlight-current-row style="width: 100%" max-height="660" :default-sort="{ prop: 'validSize_sum', order: 'descending' }"
       >
         <el-table-column prop="index" label="序号" width="50">
           <template slot-scope="scope">
             {{ scope.$index + 1 }}
           </template>
         </el-table-column>
-        <el-table-column prop="sourceType" align="left" label="任务名称" width="400">
+        <el-table-column prop="taskName" align="left" label="任务名称" width="400" sortable>
           <template slot-scope="scope">
             <span>{{ scope.row.taskName }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="运行方式">
+        <el-table-column prop="execType" align="center" label="运行方式">
           <template slot-scope="scope">
             <span>{{ scope.row.execType }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="right" label="总记录数(实例数*执行次数)">
+        <el-table-column prop="validSize_sum" align="right" label="总记录数(实例数*执行次数)" sortable>
           <template slot-scope="scope">
             <span>{{ scope.row.validSize_sum.toLocaleString() }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="right" label="成功数(实例数*执行次数)">
+        <el-table-column prop="successSize_sum" align="right" label="成功数(实例数*执行次数)" sortable>
           <template slot-scope="scope">
             <span>{{ scope.row.successSize_sum.toLocaleString() }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="right" label="失败数(实例数*执行次数)">
+        <el-table-column prop="failSize" align="right" label="失败数(实例数*执行次数)" sortable>
           <template slot-scope="scope">
             <span>{{ (Number(scope.row.validSize_sum || 0) - Number(scope.row.successSize_sum || 0)).toLocaleString() }}</span>
           </template>
@@ -75,18 +75,28 @@ export default {
       tableData: []
     }
   },
+  computed: {
+    ...mapGetters([
+      'cur_user'
+    ])
+  },
   async created() {
     this.initData()
     this.getData()
   },
   mounted() {
   },
-  computed: {
-    ...mapGetters([
-      'cur_user'
-    ])
-  },
   methods: {
+    // 按字符串排序（字母顺序）
+    sortByTaskName(a, b) {
+      return a.taskName.localeCompare(b.taskName)
+    },
+
+    // 可选：监听排序变化
+    handleSortChange({ column, prop, order }) {
+      debugger
+      console.log('当前排序:', { column, prop, order })
+    },
     input(data) {
       console.log('data===>', data)
     },

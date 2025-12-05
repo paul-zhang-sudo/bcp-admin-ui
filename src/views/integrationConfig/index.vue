@@ -16,50 +16,59 @@
     </mod-filter>
     <!--新增/编辑界面  -->
     <el-dialog class="pub_dialog" :close-on-click-modal="false" :close-on-press-escape="false" width="1120px"
-               :title="subFormData.id?'编辑':'新增'" :visible.sync="dialogFormVisible">
-      <el-form label-position="top" inline-message size="mini" ref="configForm" :model="subFormData"
-               :rules="subFormDataRule" class="subFormData " label-width="100px">
+               :title="subFormData.id?'编辑':'新增'" :visible.sync="dialogFormVisible"
+    >
+      <el-form ref="configForm" label-position="top" inline-message size="mini" :model="subFormData"
+               :rules="subFormDataRule" class="subFormData " label-width="100px"
+      >
         <!--新增界面的集成名称项-->
         <el-form-item label="集成名称" prop="name">
-          <el-input class="baseinfo" v-model="subFormData.name" placeholder="集成名称" maxlength="200" size="mini"
-                     auto-complete="off"/>
+          <el-input v-model="subFormData.name" class="baseinfo" placeholder="集成名称" maxlength="200" size="mini"
+                    auto-complete="off"
+          />
         </el-form-item>
         <!--新增界面的客户项-->
-        <el-form-item label="客户" prop="tenantId" v-if="cur_user.userType=='admin'">
-          <el-select class="baseinfo" v-model="subFormData.tenantId" placeholder="请选择" size="mini">
-            <el-option v-for="(optItem,optindex) in bcpTenantName" :key="optindex" :label="optItem" :value="optindex"/>
+        <el-form-item v-if="cur_user.userType=='admin'" label="客户" prop="tenantId">
+          <el-select v-model="subFormData.tenantId" class="baseinfo" placeholder="请选择" size="mini">
+            <el-option v-for="(optItem,optindex) in bcpTenantName" :key="optindex" :label="optItem" :value="optindex" />
           </el-select>
         </el-form-item>
         <!--新增界面的模板选择-->
-              
+
         <el-form-item
-           label="模板选择"  prop="templateId">
+           label="模板选择"  prop="templateId"
+        >
           <el-input class="baseinfo"  v-model="subFormData.templateName"  disabled placeholder="模板选择"  maxlength="20"
-                     size="mini"  ></el-input>
-          <el-button style="margin-left:5px" size="mini" @click="ShowMoule=true" :disabled="!!subFormData.id">选择模板
+                     size="mini"
+          />
+          <el-button style="margin-left:5px" size="mini" :disabled="!!subFormData.id" @click="ShowMoule=true">选择模板
           </el-button>
-                
+
         </el-form-item>
         <!--新增界面的集成节点-->
-             
+
         <el-form-item
-           label="集成节点"  prop="nodeId">
+           label="集成节点"  prop="nodeId"
+        >
           <el-input class="baseinfo"  v-model="subFormData.nodeId"  placeholder="集成节点"  maxlength="20"  size="mini"
-                     auto-complete="off"></el-input>
-                
+                     auto-complete="off"
+          />
+
         </el-form-item>
         <!--新增界面的参数-->
-                
+
         <el-form-item
-           label="参数"  prop="parameter" style="margin-top:20px;">
+           label="参数"  prop="parameter" style="margin-top:20px;"
+        >
           <el-table :data="tableData" class="mt10" :cell-style="{padding:'10px 0px'}"
                     :header-cell-style="{background:'#fafafa',color:'#606266',padding:'0px 0px'}" fit
-                    highlight-current-row style="width: 100%">
+                    highlight-current-row style="width: 100%"
+          >
             <!-- align="center"使内容居中 -->
             <el-table-column label="参数名称" align="center" width="300">
               <!-- slot-scope="scope"获取表格到当前行的数据 -->
               <template slot-scope="scope">
-                <el-input v-model="scope.row.key"/>
+                <el-input v-model="scope.row.key" />
               </template>
             </el-table-column>
 
@@ -68,12 +77,13 @@
                 <el-tooltip placement="right-start">
                   <!-- :content="" -->
                   <div slot="content">
-                  <pre
-                    style="max-width: 300px;white-space: pre-wrap;word-wrap: break-word;"><code>{{
+                    <pre
+                      style="max-width: 300px;white-space: pre-wrap;word-wrap: break-word;"
+                    ><code>{{
                       formatContent(scope.row.value)
                     }}</code></pre>
                   </div>
-                  <el-input v-model="scope.row.value"/>
+                  <el-input v-model="scope.row.value" />
                 </el-tooltip>
 
               </template>
@@ -86,13 +96,14 @@
             </el-table-column>
           </el-table>
           <!--参数的添加按钮-->
-          <el-button type="text" @click="addParam" style="margin-top:5px">添加</el-button>
+          <el-button type="text" style="margin-top:5px" @click="addParam">添加</el-button>
           <!-- <div @click="addParam">添加</div> -->
-                  
+
         </el-form-item>
         <!--新增界面的插件文件（暂不需）-->
         <el-form-item
-           label="插件文件">
+          label="插件文件"
+        >
           <!--on-exceed文件超出个数；:limit最大允许上传个数；http-request实现自定义上传；	action必选参数，上传的地址；before-upload 限制用户上传的图片格式和大小-->
           <el-upload
             ref="pluginsUpload"
@@ -102,16 +113,18 @@
             :file-list="fileList"
             :limit="5"
             :http-request="handleUpload"
-            action='undefined'
-            :beforeUpload="beforeUpload">
-            <el-button v-if="subFormData.id" size="small" type="text">上传插件<i class="el-icon-upload el-icon--right"></i>
+            action="undefined"
+            :before-upload="beforeUpload"
+          >
+            <el-button v-if="subFormData.id" size="small" type="text">上传插件<i class="el-icon-upload el-icon--right" />
             </el-button>
           </el-upload>
         </el-form-item>
         <!--新增界面的任务列表-->
-                
+
         <el-form-item
-           label="任务列表" style="margin-top:20px;">
+          label="任务列表" style="margin-top:20px;"
+        >
           <!-- 任务列表的滚动条 -->
           <div style="float:right;margin-bottom:10px;">
             <el-button size="mini" type="primary" @click="import_flag=true">导入</el-button>
@@ -121,27 +134,30 @@
           </div>
           <el-table :data="jobList" class="mt10" :cell-style="{padding:'5px 0px'}"
                     :header-cell-style="{background:'#fafafa',color:'#606266',padding:'0px 0px'}" fit
-                    highlight-current-row style="width: 100%">
+                    highlight-current-row style="width: 100%"
+          >
             <!--任务列表的选择点击按钮-->
             <!-- <el-table-column type="selection"  width="45">
             </el-table-column> -->
             <!--任务列表的名称-->
             <el-table-column prop="jobName" label="名称" align="center" width="210">
               <template slot-scope="scope">
-                <el-popover placement="left-start" trigger="hover" :ref="`popover-${scope.$index}`"
-                            :content="scope.row['jobName']">
-                </el-popover>
-                <el-col :span='20'>
-                  <el-input v-model="scope.row['jobName']" v-popover="`popover-${scope.$index}`"/>
+                <el-popover :ref="`popover-${scope.$index}`" placement="left-start" trigger="hover"
+                            :content="scope.row['jobName']"
+                />
+                <el-col :span="20">
+                  <el-input v-model="scope.row['jobName']" v-popover="`popover-${scope.$index}`" />
                 </el-col>
 
-                <el-col :span='2'>
-                  <el-button type="text" width="30" @click="moveUp(scope.$index,scope.row)"
-                             icon="el-icon-top"></el-button>
+                <el-col :span="2">
+                  <el-button type="text" width="30" icon="el-icon-top"
+                             @click="moveUp(scope.$index,scope.row)"
+                  />
                 </el-col>
-                <el-col :span='2'>
-                  <el-button type="text" width="30" @click="moveDown(scope.$index,scope.row)"
-                             icon="el-icon-bottom"></el-button>
+                <el-col :span="2">
+                  <el-button type="text" width="30" icon="el-icon-bottom"
+                             @click="moveDown(scope.$index,scope.row)"
+                  />
                 </el-col>
 
               </template>
@@ -150,15 +166,17 @@
             <el-table-column prop="inNode" label="输入节点" align="center" width="190">
               <template slot-scope="scope">
                 <el-row>
-                  <el-col :span='16'>
+                  <el-col :span="16">
                     <el-select v-model="scope.row['inNode']['type']" placeholder="请选择">
                       <el-option v-for="(optItem,optindex) in optionsInput" :key="optindex" :label="optItem.propvalue"
-                                 :value="optItem.propkey"/>
+                                 :value="optItem.propkey"
+                      />
                     </el-select>
                   </el-col>
-                  <el-col :span='8'>
+                  <el-col :span="8">
                     <el-button type="text" :disabled="scope.row['inNode']['type']==''"
-                               @click="changeOptionsInput(scope)">
+                               @click="changeOptionsInput(scope)"
+                    >
                       配置
                     </el-button>
                   </el-col>
@@ -169,16 +187,18 @@
             <el-table-column prop="transformNode" label="转换节点" align="center" width="180">
               <template slot-scope="scope">
                 <el-row>
-                  <el-col :span='16'>
+                  <el-col :span="16">
                     <el-select v-model="scope.row['transformNode']['type']" placeholder="请选择">
                       <el-option v-for="(optItem,optindex) in optionsTransform" :key="optindex"
                                  :label="optItem.propvalue"
-                                 :value="optItem.propkey"/>
+                                 :value="optItem.propkey"
+                      />
                     </el-select>
                   </el-col>
-                  <el-col :span='8'>
+                  <el-col :span="8">
                     <el-button type="text" :disabled="scope.row['transformNode']['type']==''"
-                               @click="changeOptionsTransform(scope)">配置
+                               @click="changeOptionsTransform(scope)"
+                    >配置
                     </el-button>
                   </el-col>
                 </el-row>
@@ -191,13 +211,15 @@
                   <el-col :span="16">
                     <el-select v-model="scope.row['outNode']['type']" placeholder="请选择">
                       <el-option v-for="(optItem,optindex) in optionsOutput" :key="optindex" :label="optItem.propvalue"
-                                 :value="optItem.propkey"/>
+                                 :value="optItem.propkey"
+                      />
                     </el-select>
                   </el-col>
                   <el-col :span="8">
                     <!-- 不选择则不能点击=>:disabled="jobList[scope.$index].outputType==undefined" -->
                     <el-button type="text" :disabled="scope.row['outNode']['type']==''"
-                               @click="changeOptionsOutput(scope)">配置
+                               @click="changeOptionsOutput(scope)"
+                    >配置
                     </el-button>
                   </el-col>
                 </el-row>
@@ -209,8 +231,8 @@
                 <el-row>
                   <el-col :span="24">
                     <el-select v-model="scope.row['enable']">
-                      <el-option label="启用" value="true"></el-option>
-                      <el-option label="禁用" value="false"></el-option>
+                      <el-option label="启用" value="true" />
+                      <el-option label="禁用" value="false" />
                     </el-select>
                   </el-col>
                 </el-row>
@@ -221,20 +243,20 @@
               <template slot-scope="scope">
                 <div style="text-align:left;">
                   <el-popconfirm
-                    confirm-button-text='复制一行'
-                    cancel-button-text='复制到内存'
+                    confirm-button-text="复制一行"
+                    cancel-button-text="复制到内存"
                     icon="el-icon-info"
                     icon-color="red"
                     title="请选择复制方式"
                     @confirm="copyJob(scope)"
                     @cancel="copyJobJson(scope)"
                   >
-                    <el-button style="margin-right:10px;" type="text" slot="reference" width="30">复制</el-button>
+                    <el-button slot="reference" style="margin-right:10px;" type="text" width="30">复制</el-button>
                   </el-popconfirm>
-                  <el-button type="text" @click="deljobList(scope)" width="30">删除</el-button>
-                  <el-button type="text" @click="runAgain(scope)" width="30">补数</el-button>
+                  <el-button type="text" width="30" @click="deljobList(scope)">删除</el-button>
+                  <el-button type="text" width="30" @click="runAgain(scope)">补数</el-button>
                   <!-- <el-button type="text" disabled width="30">全量</el-button> -->
-                  <el-button type="text" @click="logSearch(scope)" width="30" >日志</el-button>
+                  <el-button type="text" width="30" @click="logSearch(scope)">日志</el-button>
                 </div>
               </template>
             </el-table-column>
@@ -242,25 +264,26 @@
           <!--任务列表的按钮-->
           <el-row>
             <el-popconfirm
-              confirm-button-text='添加空行'
-              cancel-button-text='通过Json添加'
+              confirm-button-text="添加空行"
+              cancel-button-text="通过Json添加"
               icon="el-icon-info"
               icon-color="red"
               title="请选择添加方式"
               @confirm="addJob()"
               @cancel="addByJson()"
             >
-              <el-button type="text" slot="reference" style="margin-top:5px">添加</el-button>
+              <el-button slot="reference" type="text" style="margin-top:5px">添加</el-button>
             </el-popconfirm>
           </el-row>
-                  
+
         </el-form-item>
       </el-form>
       <!--新增界面的确定取消-->
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" type="primary" @click="subForm('configForm')" v-prevent-repeat-click>保存</el-button>
-        <el-button size="mini" :disabled="subFormData.id==undefined" type="primary" @click="issue(subFormData.id)"
-                   v-prevent-repeat-click>下发
+        <el-button v-prevent-repeat-click size="mini" type="primary" @click="subForm('configForm')">保存</el-button>
+        <el-button v-prevent-repeat-click size="mini" :disabled="subFormData.id==undefined" type="primary"
+                   @click="issue(subFormData.id)"
+        >下发
         </el-button>
         <el-button size="mini" @click="dialogFormVisible = false">取 消</el-button>
       </div>
@@ -270,9 +293,9 @@
     <!--:visible.sync="ShowMoule"的功能为控制当前模态窗的显示和隐藏-->
     <!-- :close-on-click-modal="false"和:close-on-press-escape="false"的功能为控制窗口不会被点击或是ESC按键关闭 -->
     <el-dialog :close-on-click-modal="false" :close-on-press-escape="false" width="50%" title="选择模板"
-               :visible.sync="ShowMoule">
-      <multipleTable @templateData="templateData">
-      </multipleTable>
+               :visible.sync="ShowMoule"
+    >
+      <multipleTable @templateData="templateData" />
       <div slot="footer" class="dialog-footer">
         <el-button size="mini" type="primary" @click="modelShow">确 定</el-button>
         <el-button size="mini" @click="ShowMoule = false">取 消</el-button>
@@ -280,42 +303,45 @@
     </el-dialog>
     <!--任务列表的输入节点-->
     <el-dialog class="dialog-skip" width="60%" :title="ShowInput_title" :visible.sync="ShowInput_Database"
-               :close-on-click-modal="false" :close-on-press-escape="false">
+               :close-on-click-modal="false" :close-on-press-escape="false"
+    >
       <el-form ref="inNodeForm" :model="inNode" label-width="100px" size="mini" :rules="inNodeFormRule" inline-message
-               label-position="top">
-        <el-form-item prop="cron" label="定时设置" v-if="ShowInput_title!='API上报'">
-          <el-input v-model="inNode.cron" placeholder="请输入" class="baseinfo"></el-input>
+               label-position="top"
+      >
+        <el-form-item v-if="ShowInput_title!='API上报'" prop="cron" label="定时设置">
+          <el-input v-model="inNode.cron" placeholder="请输入" class="baseinfo" />
         </el-form-item>
         <div v-if="ShowInput_title!='自定义脚本'">
           <el-form-item prop="dataSource" label="数据源">
             <el-select v-model="inNode.dataSource" placeholder="请选择" class="baseinfo">
               <el-option v-for="(optItem,optindex) in bcpDatasourceName" :key="optindex" :label="optItem"
-                         :value="optindex"/>
+                         :value="optindex"
+              />
             </el-select>
           </el-form-item>
         </div>
         <div v-if="ShowInput_title=='API上报'">
           <el-form-item prop="protocol" label="协议">
             <el-select v-model="inNode.protocol" class="baseinfo">
-              <el-option label="http" value="http"></el-option>
+              <el-option label="http" value="http" />
               <!-- <el-option label="https" value="https"></el-option> -->
             </el-select>
           </el-form-item>
           <el-form-item prop="authFlag" label="是否认证">
             <el-select v-model="inNode.authFlag" class="baseinfo">
-              <el-option label="是" value="y"></el-option>
-              <el-option label="否" value="n"></el-option>
+              <el-option label="是" value="y" />
+              <el-option label="否" value="n" />
             </el-select>
           </el-form-item>
         </div>
-        <el-form-item label="增量标识字段" v-if="ShowInput_title=='数据库查询'">
-          <el-input v-model="inNode.IncrementalField" placeholder="请输入" class="baseinfo"></el-input>
+        <el-form-item v-if="ShowInput_title=='数据库查询'" label="增量标识字段">
+          <el-input v-model="inNode.IncrementalField" placeholder="请输入" class="baseinfo" />
         </el-form-item>
-        <el-form-item prop="path" label="访问路径" v-if="ShowInput_title=='API查询'||ShowInput_title=='API上报'">
-          <el-input v-model="inNode.path" placeholder="请输入" class="baseinfo" :title="inNode.path"></el-input>
+        <el-form-item v-if="ShowInput_title=='API查询'||ShowInput_title=='API上报'" prop="path" label="访问路径">
+          <el-input v-model="inNode.path" placeholder="请输入" class="baseinfo" :title="inNode.path" />
         </el-form-item>
         <el-form-item required label="脚本">
-          <MonAco ref='MonAco'></MonAco>
+          <MonAco ref="MonAco" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dg-footer">
@@ -328,10 +354,11 @@
     </el-dialog>
     <!--任务列表的转换节点-->
     <el-dialog class="dialog-skip" width="60%" :title="switchNode_title" :visible.sync="switchNode"
-               :close-on-click-modal="false" :close-on-press-escape="false">
+               :close-on-click-modal="false" :close-on-press-escape="false"
+    >
       <el-form ref="transformNodeForm" label-width="100px" size="mini" inline-message label-position="top">
         <el-form-item label="脚本" required>
-          <MonAco ref='MonAcoTransformNode'></MonAco>
+          <MonAco ref="MonAcoTransformNode" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dg-footer">
@@ -344,20 +371,23 @@
     </el-dialog>
     <!--任务列表的输出节点-->
     <el-dialog class="dialog-skip" width="60%" :title="Showoutput_title" :visible.sync="Showoutput_Transfer"
-               :close-on-click-modal="false" :close-on-press-escape="false">
+               :close-on-click-modal="false" :close-on-press-escape="false"
+    >
       <el-form ref="outNodeForm" :rules="outNodeFormRule" :model="outNode" label-width="100px" size="mini"
-               inline-message label-position="top">
-        <el-form-item prop="dataSource" label="数据源" v-if="Showoutput_title!='自定义脚本'"">
+               inline-message label-position="top"
+      >
+        <el-form-item v-if="Showoutput_title!='自定义脚本'" prop="dataSource" label="数据源"">
           <el-select v-model="outNode.dataSource" placeholder="请选择" class="baseinfo">
             <el-option v-for="(optItem,optindex) in bcpDatasourceName" :key="optindex" :label="optItem"
-                       :value="optindex"/>
+                       :value="optindex"
+            />
           </el-select>
         </el-form-item>
-        <el-form-item label="访问路径" v-if="Showoutput_title=='API调用'" prop="path">
-          <el-input v-model="outNode.path" placeholder="请输入" class="baseinfo"></el-input>
+        <el-form-item v-if="Showoutput_title=='API调用'" label="访问路径" prop="path">
+          <el-input v-model="outNode.path" placeholder="请输入" class="baseinfo" />
         </el-form-item>
         <el-form-item label="脚本" required>
-          <MonAco ref='outMonAco'></MonAco>
+          <MonAco ref="outMonAco" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dg-footer">
@@ -369,8 +399,9 @@
       </div>
     </el-dialog>
     <!--补数界面-->
-    <el-dialog class="dialog-skip" width="1120px" title="补数" :visible.sync="rerun_falg" :close-on-click-modal="false"
-               :close-on-press-escape="false">
+    <el-dialog class="dialog-skip" width="1120px" :title="foot_job_name" :visible.sync="rerun_falg" :close-on-click-modal="false"
+               :close-on-press-escape="false"
+    >
       <el-form ref="reRunForm" :model="reRun" label-width="100px" size="mini" inline-message label-position="top">
         <el-form-item prop="runTime" label="运行时间">
           <el-date-picker
@@ -379,24 +410,24 @@
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            align="right">
-          </el-date-picker>
+            align="right"
+          />
         </el-form-item>
         <el-form-item label="运行参数" prop="runParams">
-          <el-input type="textarea" :rows="3" v-model="reRun.runParams" placeholder="请输入" class="baseinfo"
-                    maxlength="2000"></el-input>
+          <el-input v-model="reRun.runParams" type="textarea" :rows="3" placeholder="请输入" class="baseinfo"
+                    maxlength="2000"
+          />
         </el-form-item>
 
-<!--        <el-form-item label="运行结果">-->
-<!--          <el-input type="textarea" :rows="3" v-model="reRun.responseMsg" placeholder="请输入" class="baseinfo"-->
-<!--                    maxlength="2000"></el-input>-->
-<!--        </el-form-item>-->
+        <!--        <el-form-item label="运行结果">-->
+        <!--          <el-input type="textarea" :rows="3" v-model="reRun.responseMsg" placeholder="请输入" class="baseinfo"-->
+        <!--                    maxlength="2000"></el-input>-->
+        <!--        </el-form-item>-->
       </el-form>
-
 
       <br>
       <div>
-        <el-button size="mini" type="primary" v-prevent-repeat-click @click="runTask">确 定</el-button>
+        <el-button v-prevent-repeat-click size="mini" type="primary" @click="runTask">确 定</el-button>
         <el-button size="mini" @click="rerun_falg = false">取 消</el-button>
       </div>
       <br>
@@ -416,7 +447,8 @@
 
     <!--批量设置界面-->
     <el-dialog class="dialog-skip" width="60%" title="批量设置" :visible.sync="batch_falg" :close-on-click-modal="false"
-               :close-on-press-escape="false">
+               :close-on-press-escape="false"
+    >
       <el-table
         :data="batchTableData"
         max-height="380"
@@ -441,7 +473,8 @@
           <template slot-scope="scope">
             <el-select v-model="scope.row.dataSource" placeholder="请选择">
               <el-option v-for="(optItem,optindex) in bcpDatasourceName" :key="optindex" :label="optItem"
-                         :value="optindex"/>
+                         :value="optindex"
+              />
             </el-select>
           </template>
         </el-table-column>
@@ -453,7 +486,8 @@
     </el-dialog>
     <!-- 导入 -->
     <el-dialog class="dialog-skip" width="400px" title="导入" :visible.sync="import_flag" :close-on-click-modal="false"
-               :close-on-press-escape="false">
+               :close-on-press-escape="false"
+    >
       <div class="align:center">
         <el-upload
           ref="impUpload"
@@ -464,32 +498,35 @@
           :on-change="importFile"
           drag
         >
-          <i class="el-icon-upload"></i>
+          <i class="el-icon-upload" />
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-          <div class="el-upload__tip" slot="tip">只能上传文本文件，且不超过5MB</div>
+          <div slot="tip" class="el-upload__tip">只能上传文本文件，且不超过5MB</div>
         </el-upload>
       </div>
     </el-dialog>
 
     <!-- 从json字符串新增数据 -->
     <el-dialog class="dialog-skip" width="650px" title="" :visible.sync="new_flag" :close-on-click-modal="false"
-               :close-on-press-escape="false">
+               :close-on-press-escape="false"
+    >
       <el-form ref="newTaskForm" :model="jsonTask" label-width="100px" size="mini" inline-message label-position="top">
         <el-form-item label="JSON串">
-          <el-input type="textarea" :rows="5" v-model="jsonTask.newJson" placeholder="请输入"
-                    style="width:550px"></el-input>
+          <el-input v-model="jsonTask.newJson" type="textarea" :rows="5" placeholder="请输入"
+                    style="width:550px"
+          />
         </el-form-item>
       </el-form>
       <br>
       <div>
-        <el-button size="mini" type="primary" v-prevent-repeat-click @click="addJobJson">确 定</el-button>
+        <el-button v-prevent-repeat-click size="mini" type="primary" @click="addJobJson">确 定</el-button>
         <el-button size="mini" @click="new_flag = false">取 消</el-button>
       </div>
     </el-dialog>
 
     <!--日志查询界面-->
     <el-dialog class="dialog-skip" width="1120px" title="日志" :visible.sync="log_flag" :close-on-click-modal="false"
-               :close-on-press-escape="false">
+               :close-on-press-escape="false"
+    >
       <el-form ref="logForm" :model="log" label-width="100px" size="mini" inline-message label-position="top">
         <el-form-item>
           <el-date-picker
@@ -498,9 +535,9 @@
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            align="right">
-          </el-date-picker>
-          <el-input v-model="log.message" placeholder="请输入要搜索的日志内容" class="baseinfo" maxlength="50"></el-input>
+            align="right"
+          />
+          <el-input v-model="log.message" placeholder="请输入要搜索的日志内容" class="baseinfo" maxlength="50" />
           <el-button size="mini" @click="getTaskLog">搜索</el-button>
         </el-form-item>
       </el-form>
@@ -508,7 +545,8 @@
       <div>
         <el-table :data="logList" :height="650+'px'" class="mt10" :cell-style="{padding:'5px 0px'}"
                   :header-cell-style="{background:'#fafafa',color:'#606266',padding:'0px 0px'}" fit
-                  highlight-current-row style="width: 100%">
+                  highlight-current-row style="width: 100%"
+        >
           <el-table-column prop="sourceType" align="center" label="时间" width="200">
             <template slot-scope="scope">
               <span>{{ scope.row.timestamp }}</span>
@@ -531,8 +569,8 @@
             layout="slot,total, sizes, prev, pager, next, jumper"
             :total="log.totalCount"
             @size-change="handleSizeChange"
-            @current-change="handleCurrentChange">
-          </el-pagination>
+            @current-change="handleCurrentChange"
+          />
         </div>
       </div>
     </el-dialog>
@@ -544,7 +582,7 @@ import * as sel from '@/api/select'
 import * as api from '@/api/IntegratedConfig'
 import * as menuApi from '@/api/menu'
 import { Loading } from 'element-ui'
-//引入组件
+// 引入组件
 import multipleTable from './moudel/multipleTable'
 import MonAco from './moudel/monaco'
 import { deepEqual } from 'assert'
@@ -554,7 +592,7 @@ import path from 'path'
 import { group } from 'console'
 
 export default {
-  //组件注册
+  // 组件注册
   components: {
     multipleTable,
     MonAco
@@ -571,8 +609,8 @@ export default {
       bcpDatasourceName: [],
       bcpTenantName: [],
       pathMap: new Map(),
-      exampleData: [], //示例数据
-      batchTableData: [],//批量设置的数据
+      exampleData: [], // 示例数据
+      batchTableData: [], // 批量设置的数据
       value: '',
       ShowInput_title: '',
       foot_job_name: '',
@@ -583,60 +621,60 @@ export default {
         scriptContent: '',
         index: 0
       },
-      menuURL: this.$route.path, //菜单链接
-      rerun_falg: false, //补数页面
-      batch_falg: false, //批量设置
-      import_flag: false, //导入标识
-      new_flag: false, //新增标识 json
+      menuURL: this.$route.path, // 菜单链接
+      rerun_falg: false, // 补数页面
+      batch_falg: false, // 批量设置
+      import_flag: false, // 导入标识
+      new_flag: false, // 新增标识 json
       jsonTask: {
-        newJson: ''  //新增的json串
+        newJson: '' // 新增的json串
       },
-      log_flag: false, //日志标识
-      ShowInput_Reported: false, //“任务列表的输入节点=>API上报”模态窗的显示隐藏
-      ShowInput_Database: false, //“                =>数据库查询”模态窗的显示隐藏
-      ShowInput_Inquire: false, //“                 =>API查询”模态窗的显示隐藏
-      switchNode: false, //“转换节点=>脚本转换”模态窗的显示隐藏
-      Showoutput_Transfer: false, //“输出节点=>API调用”模态窗的显示隐藏
-      Showoutput_Writeback: false, //“      =>数据库回写”模态窗的显示隐藏
-      Showoutput_Script: false, //“         =>自定义脚本”模态窗的显示隐藏
-      ShowMoule: false, //模态窗的显示隐藏
-      Reported: false, //模态窗的显示隐藏
+      log_flag: false, // 日志标识
+      ShowInput_Reported: false, // “任务列表的输入节点=>API上报”模态窗的显示隐藏
+      ShowInput_Database: false, // “                =>数据库查询”模态窗的显示隐藏
+      ShowInput_Inquire: false, // “                 =>API查询”模态窗的显示隐藏
+      switchNode: false, // “转换节点=>脚本转换”模态窗的显示隐藏
+      Showoutput_Transfer: false, // “输出节点=>API调用”模态窗的显示隐藏
+      Showoutput_Writeback: false, // “      =>数据库回写”模态窗的显示隐藏
+      Showoutput_Script: false, // “         =>自定义脚本”模态窗的显示隐藏
+      ShowMoule: false, // 模态窗的显示隐藏
+      Reported: false, // 模态窗的显示隐藏
       reRun: {
-        taskId: '', //任务id
-        runTime: '', //允许时间段
-        runParams: '',//允许参数
+        taskId: '', // 任务id
+        runTime: '', // 允许时间段
+        runParams: '', // 允许参数
         responseMsg: ''
       },
       log: {
-        taskId: '', //任务id
-        runTime: [], //允许时间段
-        message: '', //日志内容
-        pageSize: 20, //每页条数
-        currentPage: 0, //当前页数
-        totalCount: 0, //总条数
-        repairFlag: false //是否补数
+        taskId: '', // 任务id
+        runTime: [], // 允许时间段
+        message: '', // 日志内容
+        pageSize: 20, // 每页条数
+        currentPage: 0, // 当前页数
+        totalCount: 0, // 总条数
+        repairFlag: false // 是否补数
       },
       logList: [],
       inNode: {
-        cron: null, //定时设置
-        IncrementalField: null, //增量标识字段
-        dataSource: null, //增量标识字段
-        protocol: 'http', //协议
-        authFlag: 'Y' //是否认证
+        cron: null, // 定时设置
+        IncrementalField: null, // 增量标识字段
+        dataSource: null, // 增量标识字段
+        protocol: 'http', // 协议
+        authFlag: 'Y' // 是否认证
       },
       outNode: {
-        cron: null, //定时设置
+        cron: null, // 定时设置
         IncrementalField: null,
         dataSource: null,
         scriptContent: null
       },
       transformNode: {
-        IncrementalField: null, //增量标识字段
+        IncrementalField: null, // 增量标识字段
         dataSource: null,
         scriptContent: null
       },
       jobList: [],
-      tableData: [{}],//使打开新增窗口时参数新增行数不为空
+      tableData: [{}], // 使打开新增窗口时参数新增行数不为空
       dialogFormVisible: false,
       subFormData: {
         id: null,
@@ -803,7 +841,7 @@ export default {
     }
   },
   async created() {
-    //初始化下拉框
+    // 初始化下拉框
     this.initOptions()
     this.initData(false)
   },
@@ -814,10 +852,10 @@ export default {
   },
   methods: {
     formatContent(content) {
-      var stack = [] //栈-用于括号匹配
-      var tmpStr = ''    //新格式化JSON字符串
-      var len = Object.keys(content).length   //原始JSON长度
-      //遍历每一个字符
+      var stack = [] // 栈-用于括号匹配
+      var tmpStr = '' // 新格式化JSON字符串
+      var len = Object.keys(content).length // 原始JSON长度
+      // 遍历每一个字符
       for (let i = 0; i < len; i++) {
         if (content[i] == '{' || content[i] === '[') {
           tmpStr += content[i] + '\n'
@@ -854,27 +892,26 @@ export default {
       menuApi.getSourceTypeOptions('md.bcp.output.type').then(res => {
         this.optionsOutput = res.model
       })
-
     },
-    //初始化日期默认值，默认当天
+    // 初始化日期默认值，默认当天
     initData(curFlag) {
       this.log.runTime = []
-      let curDate = new Date()
+      const curDate = new Date()
       let pattern = 'yyyy-MM-dd 00:00:00'
       if (curFlag) {
         pattern = 'yyyy-MM-dd hh:mm:ss'
         this.log.pageSize = 500
       }
-      let startDate = curDate.format(pattern)
-      let endDate = curDate.format('yyyy-MM-dd 23:59:59')
+      const startDate = curDate.format(pattern)
+      const endDate = curDate.format('yyyy-MM-dd 23:59:59')
       this.log.runTime.push(startDate)
       this.log.runTime.push(endDate)
     },
-    //导出
+    // 导出
     derive(row) {
       api.exportExcel(row.id).then(res => {
-        let blob = new Blob([res], { type: `${res.type}` })
-        let link = document.createElement('a')
+        const blob = new Blob([res], { type: `${res.type}` })
+        const link = document.createElement('a')
         link.href = window.URL.createObjectURL(blob)
         link.download = row.name + '.json'
         link.click()
@@ -883,8 +920,8 @@ export default {
     },
     expForIot(type, row) {
       api.expForIot({ 'type': type, 'id': row.id }).then(res => {
-        let blob = new Blob([res], { type: `${res.type}` })
-        let link = document.createElement('a')
+        const blob = new Blob([res], { type: `${res.type}` })
+        const link = document.createElement('a')
         link.href = window.URL.createObjectURL(blob)
         link.download = row.name + '.json'
         link.click()
@@ -897,11 +934,12 @@ export default {
       this.reRun.configId = this.subFormData.id
       this.logList = []
       this.log.taskId = data.row.id
+      this.foot_job_name = data.row.jobName
       this.rerun_falg = true
     },
     logSearch(data) {
-      alert("建设中...")
-      /*this.log.totalCount = 0
+      alert('建设中...')
+      /* this.log.totalCount = 0
       this.log.pageSize = 20
       this.initData(false)
       this.logList = []
@@ -945,8 +983,8 @@ export default {
         spinner: 'el-icon-loading'
       })
       api.runTask(this.reRun).then(res => {
-        //this.$set(this.reRun, 'responseMsg', res.msg)
-        //采集日志
+        // this.$set(this.reRun, 'responseMsg', res.msg)
+        // 采集日志
         if (this.logFlag) {
           this.logLoading.text = '日志加载中，请等待...'
           setTimeout(() => {
@@ -956,10 +994,10 @@ export default {
           this.logLoading.text = '任务执行完毕'
           this.logLoading.close()
         }
-        //console.log(JSON.stringify(this.reRun))
+        // console.log(JSON.stringify(this.reRun))
       })
     },
-    //下发（存在前端这边已向后台发送id，但是后台报500的错误）
+    // 下发（存在前端这边已向后台发送id，但是后台报500的错误）
     issue(row) {
       api.issueType(row).then(res => {
         if (res.model.code == 200) {
@@ -978,20 +1016,20 @@ export default {
         }
       })
     },
-    //任务列表的上移
+    // 任务列表的上移
     moveUp(index, row) {
       var that = this
       console.log('上移', index, row)
       console.log(that.jobList[index])
       if (index > 0) {
-        let upDate = that.jobList[index - 1]
+        const upDate = that.jobList[index - 1]
         that.jobList.splice(index - 1, 1)
         that.jobList.splice(index, 0, upDate)
       } else {
         alert('已经是第一条，不可上移')
       }
     },
-    //任务列表的下移
+    // 任务列表的下移
     moveDown(index, row) {
       var that = this
       console.log('下移', index, row)
@@ -999,7 +1037,7 @@ export default {
         alert('已经是最后一条，不可下移')
       } else {
         console.log(index)
-        let downDate = that.jobList[index + 1]
+        const downDate = that.jobList[index + 1]
         that.jobList.splice(index + 1, 1)
         that.jobList.splice(index, 0, downDate)
       }
@@ -1013,8 +1051,8 @@ export default {
     affirmInNode() {
       this.$refs.inNodeForm.validate((valid) => {
         if (valid) {
-          //如果是api上报类型，则需要判断访问路径是否唯一
-          if ('apiUp' === this.jobList[this.currentRow].inNode.type) {
+          // 如果是api上报类型，则需要判断访问路径是否唯一
+          if (this.jobList[this.currentRow].inNode.type === 'apiUp') {
             let nodeId = this.pathMap.get(this.inNode.path)
             if (nodeId != undefined && nodeId != this.jobList[this.currentRow].inNode.id) {
               this.$message.error({
@@ -1025,9 +1063,8 @@ export default {
               nodeId = nodeId === undefined ? -99 : nodeId
               this.pathMap.set(this.inNode.path, nodeId)
             }
-
           }
-          //获取当前代码块的值
+          // 获取当前代码块的值
           if (this.$refs.MonAco) {
             this.inNode.scriptContent = this.$refs.MonAco.getVal()
             if (!this.scriptNotNull(this.inNode)) {
@@ -1054,26 +1091,26 @@ export default {
       return true
     },
     affirmTransformNode() {
-      //赋值操作
+      // 赋值操作
       this.transformNode.scriptContent = this.$refs.MonAcoTransformNode.getVal()
       if (!this.scriptNotNull(this.transformNode)) {
         return false
       }
       this.jobList[this.currentRow].transformNode.configValue = JSON.stringify(this.transformNode)
       this.$refs.MonAcoTransformNode.clearContent()
-      //返回新增弹窗
+      // 返回新增弹窗
       this.switchNode = false
     },
     affirmOutNode() {
       this.$refs.outNodeForm.validate((valid) => {
         if (valid) {
-          //获取当前代码块的值
+          // 获取当前代码块的值
           this.outNode.scriptContent = this.$refs.outMonAco.getVal()
           if (!this.scriptNotNull(this.outNode)) {
             return false
           }
           this.jobList[this.currentRow].outNode.configValue = JSON.stringify(this.outNode)
-          //返回新增弹窗
+          // 返回新增弹窗
           this.$refs.outMonAco.clearContent()
           this.Showoutput_Transfer = false
         }
@@ -1101,13 +1138,13 @@ export default {
       this.foot_job_name = data.row.jobName
       // 设置默认值
       // api上报设置默认值
-      if ('apiUp' === data.row.inNode.type) {
-        this.inNode.protocol = !!this.inNode.protocol ? this.inNode.protocol : this.$set(this.inNode, 'protocol', 'http')
-        this.inNode.authFlag = !!this.inNode.authFlag ? this.inNode.authFlag : this.$set(this.inNode, 'authFlag', 'y')
+      if (data.row.inNode.type === 'apiUp') {
+        this.inNode.protocol = this.inNode.protocol ? this.inNode.protocol : this.$set(this.inNode, 'protocol', 'http')
+        this.inNode.authFlag = this.inNode.authFlag ? this.inNode.authFlag : this.$set(this.inNode, 'authFlag', 'y')
       }
       this.ShowInput_Database = true
     },
-    //任务列表的转换节点的配置按钮方法
+    // 任务列表的转换节点的配置按钮方法
     changeOptionsTransform(data) {
       if (this.$refs.transformNodeForm) {
         this.$refs.transformNodeForm.clearValidate()
@@ -1127,10 +1164,10 @@ export default {
       }, 50)
       this.foot_job_name = data.row.jobName
       this.switchNode_title = this.optionsTransform.find(val => val.propkey == data.row.transformNode.type).propvalue
-      //返回
+      // 返回
       this.switchNode = true
     },
-    //任务列表的输出节点的配置按钮方法
+    // 任务列表的输出节点的配置按钮方法
     changeOptionsOutput(data) {
       if (this.$refs.outNodeForm) {
         this.$refs.outNodeForm.clearValidate()
@@ -1157,11 +1194,11 @@ export default {
       monaco.$data.defaultOpts.value = node.scriptContent
       monaco.setValue(node.scriptContent)
     },
-    //参数的删除
+    // 参数的删除
     delTableData(index) {
       this.tableData.splice(index.$index, 1)
     },
-    //任务列表的删除
+    // 任务列表的删除
     deljobList(data) {
       this.$confirm('是否删除?删除之后点击保存才会生效', '提示', {
         confirmButtonText: '确定',
@@ -1173,10 +1210,9 @@ export default {
         })
         .catch(() => {
         })
-
     },
     copyJob(data) {
-      let copyRow = JSON.parse(JSON.stringify(data.row))
+      const copyRow = JSON.parse(JSON.stringify(data.row))
       copyRow.jobName = copyRow.jobName + '_COPY'
       copyRow.id = ''
       copyRow.inNode.id = ''
@@ -1190,14 +1226,14 @@ export default {
       })
     },
     copyJobJson(data) {
-      let copyRow = JSON.parse(JSON.stringify(data.row))
+      const copyRow = JSON.parse(JSON.stringify(data.row))
       copyRow.jobName = copyRow.jobName + '_COPY_J'
       copyRow.id = ''
       copyRow.inNode.id = ''
       copyRow.outNode.id = ''
       copyRow.transformNode.id = ''
 
-      let transfer = document.createElement('input')
+      const transfer = document.createElement('input')
       document.body.appendChild(transfer)
       transfer.value = JSON.stringify(copyRow)
       transfer.focus()
@@ -1213,7 +1249,7 @@ export default {
         type: 'success'
       })
     },
-    //参数的添加
+    // 参数的添加
     addParam() {
       this.tableData.push({ 'key': '', 'value': '' })
     },
@@ -1223,39 +1259,39 @@ export default {
         return
       }
       this.batchTableData = []
-      let inSet = new Set()
-      let outSet = new Set()
+      const inSet = new Set()
+      const outSet = new Set()
       this.jobList.forEach(a => {
         inSet.add(a.inNode.type)
         outSet.add(a.outNode.type)
       })
       inSet.forEach(inObj => {
-        let obj = {
-          'sourceType': inObj, //数据源类型
+        const obj = {
+          'sourceType': inObj, // 数据源类型
           'sourceTypeName': this.optionsInput.find(val => val.propkey === inObj).propvalue,
-          'nodeType': 'in',   //节点
+          'nodeType': 'in', // 节点
           'nodeTypeName': '输入节点',
-          'dataSource': ''     //数据源
+          'dataSource': '' // 数据源
         }
         this.batchTableData.push(obj)
       })
       outSet.forEach(outObj => {
-        let obj = {
-          'sourceType': outObj, //数据源类型
+        const obj = {
+          'sourceType': outObj, // 数据源类型
           'sourceTypeName': this.optionsOutput.find(val => val.propkey === outObj).propvalue,
-          'nodeType': 'out',   //节点
+          'nodeType': 'out', // 节点
           'nodeTypeName': '输出节点',
-          'dataSource': ''     //数据源
+          'dataSource': '' // 数据源
         }
         this.batchTableData.push(obj)
       })
     },
     batchSetConfirm() {
       this.jobList.forEach(a => {
-        let inDs = this.batchTableData.find(val => val.nodeType === a.inNode.classify && val.sourceType === a.inNode.type).dataSource
-        let outDs = this.batchTableData.find(val => val.nodeType === a.outNode.classify && val.sourceType === a.outNode.type).dataSource
-        let inConfigValue = JSON.parse(a.inNode.configValue)
-        let outConfigValue = JSON.parse(a.outNode.configValue)
+        const inDs = this.batchTableData.find(val => val.nodeType === a.inNode.classify && val.sourceType === a.inNode.type).dataSource
+        const outDs = this.batchTableData.find(val => val.nodeType === a.outNode.classify && val.sourceType === a.outNode.type).dataSource
+        const inConfigValue = JSON.parse(a.inNode.configValue)
+        const outConfigValue = JSON.parse(a.outNode.configValue)
         inConfigValue.dataSource = inDs
         outConfigValue.dataSource = outDs
         a.inNode.configValue = JSON.stringify(inConfigValue)
@@ -1269,16 +1305,16 @@ export default {
       })
     },
     importFile(event) {
-      let that = this
+      const that = this
       this.import_flag = false
-      let loading = Loading.service({
+      const loading = Loading.service({
         fullscreen: true,
         text: '导入中',
         background: 'rgba(0, 0, 0, 0.7)',
         spinner: 'el-icon-loading'
       })
-      let reader = new FileReader()
-      reader.readAsText(event.raw, 'utf-8')//发起异步请求
+      const reader = new FileReader()
+      reader.readAsText(event.raw, 'utf-8')// 发起异步请求
       reader.onload = function() {
         var res = JSON.parse(reader.result)
         that.jobList = res.jobList
@@ -1293,13 +1329,13 @@ export default {
       this.new_flag = true
       this.jsonTask.newJson = ''
     },
-    //任务列表的添加
+    // 任务列表的添加
     addJob() {
       this.jobList.push({
         valueName: '',
         enable: 'true',
         inNode: {
-          //要什么就改成什么
+          // 要什么就改成什么
           classify: 'in',
           configValue: '{}',
           type: ''
@@ -1338,19 +1374,19 @@ export default {
       this.jobList.push(jsonObj)
       this.new_flag = false
     },
-    //关闭模板选择按钮的跳转界面弹窗并赋值
+    // 关闭模板选择按钮的跳转界面弹窗并赋值
     modelShow() {
-      //设置模板名称和模板id
+      // 设置模板名称和模板id
       this.subFormData.templateName = this.temData.name
       this.subFormData.templateId = this.temData.id
-      //加载模板内容
+      // 加载模板内容
       api.getTemplateContent(this.temData.id).then(res => {
         this.jobList = res.jobList
         this.tableData = res.configValue != null ? JSON.parse(res.configValue) : []
         this.pathMap.clear()
         this.jobList.forEach(job => {
-          if ('apiUp' === job.inNode.type) {
-            let conf = JSON.parse(job.inNode.configValue)
+          if (job.inNode.type === 'apiUp') {
+            const conf = JSON.parse(job.inNode.configValue)
             this.pathMap.set(conf.path, job.inNode.id)
           }
         })
@@ -1359,7 +1395,7 @@ export default {
         this.fileList = []
         if (res.pluginsList) {
           res.pluginsList.forEach(ps => {
-            let pluginFile = {
+            const pluginFile = {
               name: ps.name
             }
             this.fileList.push(pluginFile)
@@ -1407,8 +1443,8 @@ export default {
           message: `文件大小不得超过2M`
         })
         return false
-      }else if(!isJs){
-         this.$notify.warning({
+      } else if (!isJs) {
+        this.$notify.warning({
           title: '警告',
           message: `只能上传js文件`
         })
@@ -1423,21 +1459,21 @@ export default {
     },
     handleUpload(file, fileList) {
     },
-    //新增&编辑的确认方法
+    // 新增&编辑的确认方法
     subForm(formData) {
-      let obj = {
+      const obj = {
         ...this.subFormData,
         jobList: this.jobList
       }
       obj.configValue = this.tableData
-      //如果上传了插件则把插件保存到数据库
+      // 如果上传了插件则把插件保存到数据库
       if (this.$refs.pluginsUpload && this.$refs.pluginsUpload.uploadFiles.length > 0) {
         obj.pluginsList = []
         this.$refs.pluginsUpload.uploadFiles.forEach(a => {
-          let file = {
+          const file = {
             name: a.name,
             configId: this.subFormData.id,
-            //fileUrl:`%s#${this.subFormData.id}/${a.name}`
+            // fileUrl:`%s#${this.subFormData.id}/${a.name}`
             fileUrl: this.fileMap[a.name]
           }
           obj.pluginsList.push(file)
@@ -1449,24 +1485,24 @@ export default {
           api
             .submitForm(obj)
             .then((res) => {
-                this.$message.success('保存成功')
-                this.subFormData.id = res.model
-                this.getData(this.datas)
-                const rr = api.getIdRow(this.subFormData.id).then(rr => {
-                    console.log(rr)
-                    let cdata = JSON.parse(rr.model)
-                    //把访问路径加到集合中,用来判断是否存在重复的访问路径
-                    this.jobList = cdata.jobList
-                    this.pathMap.clear()
-                    this.jobList.forEach(job => {
-                      if ('apiUp' === job.inNode.type) {
-                        let conf = JSON.parse(job.inNode.configValue)
-                        this.pathMap.set(conf.path, job.inNode.id)
-                      }
-                    })
-                }).catch(e1 => {
-                    console.log(e1)
+              this.$message.success('保存成功')
+              this.subFormData.id = res.model
+              this.getData(this.datas)
+              const rr = api.getIdRow(this.subFormData.id).then(rr => {
+                console.log(rr)
+                const cdata = JSON.parse(rr.model)
+                // 把访问路径加到集合中,用来判断是否存在重复的访问路径
+                this.jobList = cdata.jobList
+                this.pathMap.clear()
+                this.jobList.forEach(job => {
+                  if (job.inNode.type === 'apiUp') {
+                    const conf = JSON.parse(job.inNode.configValue)
+                    this.pathMap.set(conf.path, job.inNode.id)
+                  }
                 })
+              }).catch(e1 => {
+                console.log(e1)
+              })
             })
             .catch(e => {
               console.log(e)
@@ -1477,50 +1513,50 @@ export default {
       })
     },
     clearValidate() {
-      if (!!this.$refs.configForm) {
+      if (this.$refs.configForm) {
         this.$refs.configForm.clearValidate()
       }
     },
     // 新增或编辑页面
     async edit(row) {
-      //重置验证
+      // 重置验证
       this.clearValidate()
       this.fileMap = {}
       this.fileList = []
-      //当为新增时，重置表单 row ==0  操作全是重置表单
+      // 当为新增时，重置表单 row ==0  操作全是重置表单
       if (row === 0) {
-        //初始化数据
+        // 初始化数据
         Object.keys(this.subFormData).forEach((key) => (this.subFormData[key] = null))
         this.tableData = []
         Object.keys(this.transformNode).forEach((key) => (this.transformNode[key] = null))
         Object.keys(this.inNode).forEach((key) => (this.inNode[key] = null))
         Object.keys(this.outNode).forEach((key) => (this.outNode[key] = null))
         this.jobList = []
-        //默认自定义模板
+        // 默认自定义模板
         this.subFormData.templateName = '自定义'
         this.subFormData.templateId = 0
-        //客户默认当前用户所属租户
+        // 客户默认当前用户所属租户
         this.subFormData.tenantId = this.cur_user.tenantId + ''
         // this.subFormData.tenantId = Object.keys(this.bcpTenantName)[0]
-        //显示窗口
+        // 显示窗口
         this.dialogFormVisible = true
         return
       }
-      //编辑
+      // 编辑
       const res = await api.getIdRow(row.id)
-      let data = JSON.parse(res.model)
-      //把访问路径加到集合中,用来判断是否存在重复的访问路径
+      const data = JSON.parse(res.model)
+      // 把访问路径加到集合中,用来判断是否存在重复的访问路径
       this.jobList = data.jobList
       this.pathMap.clear()
       this.jobList.forEach(job => {
-        if ('apiUp' === job.inNode.type) {
-          let conf = JSON.parse(job.inNode.configValue)
+        if (job.inNode.type === 'apiUp') {
+          const conf = JSON.parse(job.inNode.configValue)
           this.pathMap.set(conf.path, job.inNode.id)
         }
       })
       if (data.pluginsList) {
         data.pluginsList.forEach(ps => {
-          let pluginFile = {
+          const pluginFile = {
             name: ps.name
           }
           this.fileList.push(pluginFile)
@@ -1548,7 +1584,6 @@ export default {
     },
     cellMouseEnter(row, column, cell, enter) {
       alert('row...')
-
     }
   }
 }

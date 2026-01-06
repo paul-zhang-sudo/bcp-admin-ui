@@ -513,7 +513,7 @@ export default {
     },
     // 获取角色信息
     getRoleArr() {
-      apiRole.getPage().then(res => {
+      apiRole.getPage({ 'pageSize': 100 }).then(res => {
         this.roleArr = res.model
       })
     },

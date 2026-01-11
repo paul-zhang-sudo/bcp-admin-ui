@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/paul-zhang-sudo/bcp-admin-ui/actions/workflows/ci.yml/badge.svg)](https://github.com/paul-zhang-sudo/bcp-admin-ui/actions/workflows/ci.yml)
 [![Docker](https://github.com/paul-zhang-sudo/bcp-admin-ui/actions/workflows/docker.yml/badge.svg)](https://github.com/paul-zhang-sudo/bcp-admin-ui/actions/workflows/docker.yml)
+[![Docker Hub](https://img.shields.io/docker/pulls/zhangbq1681/bcp-admin-ui)](https://hub.docker.com/r/zhangbq1681/bcp-admin-ui)
 [![License](https://img.shields.io/github/license/paul-zhang-sudo/bcp-admin-ui)](LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/paul-zhang-sudo/bcp-admin-ui)](https://github.com/paul-zhang-sudo/bcp-admin-ui/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/paul-zhang-sudo/bcp-admin-ui)](https://github.com/paul-zhang-sudo/bcp-admin-ui/network/members)
@@ -121,7 +122,31 @@ src/
 - Docker >= 20.10
 - Docker Compose >= 2.0
 
-### 方式一：使用 Docker 直接部署
+### 快速部署（推荐）
+
+直接从 Docker Hub 拉取镜像，无需本地构建：
+
+```bash
+# 拉取镜像
+docker pull zhangbq1681/bcp-admin-ui:latest
+
+# 运行容器
+docker run -d \
+  --name bcp-admin-ui \
+  -p 80:80 \
+  --restart unless-stopped \
+  zhangbq1681/bcp-admin-ui:latest
+```
+
+**可用镜像标签：**
+
+| 标签 | 说明 |
+|------|------|
+| `latest` | 最新稳定版本 |
+| `master` | master 分支最新构建 |
+| `v1.1.0` | 指定版本 |
+
+### 方式一：本地构建部署
 
 ```bash
 # 1. 构建前端项目

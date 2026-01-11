@@ -12,6 +12,23 @@
 
 一个基于 Vue 2.x + Element UI 的企业级后台管理系统，提供数据集成、任务调度、权限管理等功能。
 
+## 项目截图
+
+### 登录页面
+![登录页面](docs/screenshots/login.png)
+
+### 仪表盘
+![仪表盘](docs/screenshots/dashboard.png)
+
+### 用户管理
+![用户管理](docs/screenshots/user-management.png)
+
+### 任务管理
+![任务管理](docs/screenshots/task-management.png)
+
+### 数据源配置
+![数据源配置](docs/screenshots/datasource.png)
+
 ## 技术栈
 
 - **前端框架**: Vue 2.x

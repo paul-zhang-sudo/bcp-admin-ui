@@ -1,0 +1,77 @@
+version: 2
+updates:
+  # npm 依赖更新
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "chore(deps)"
+    labels:
+      - "dependencies"
+      - "npm"
+    reviewers:
+      - "paul-zhang-sudo"
+    ignore:
+      # 忽略主要版本更新，避免破坏性变更
+      - dependency-name: "vue"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "element-ui"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "vuex"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "vue-router"
+        update-types: ["version-update:semver-major"]
+    groups:
+      # 将开发依赖分组
+      dev-dependencies:
+        dependency-type: "development"
+        patterns:
+          - "@babel/*"
+          - "@vue/*"
+          - "eslint*"
+          - "babel-*"
+          - "*-loader"
+      # 将测试依赖分组
+      test-dependencies:
+        patterns:
+          - "jest*"
+          - "@jest/*"
+
+  # GitHub Actions 更新
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(ci)"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    reviewers:
+      - "paul-zhang-sudo"
+
+  # Docker 依赖更新
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "chore(docker)"
+    labels:
+      - "dependencies"
+      - "docker"
+    reviewers:
+      - "paul-zhang-sudo"

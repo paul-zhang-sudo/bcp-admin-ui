@@ -14,6 +14,24 @@
 
 ---
 
+## [1.2.0] - 2025-01-11
+
+### 新增
+- **Docker Hub 集成**: 自动构建并推送镜像到 Docker Hub
+- **Docker Hub 徽章**: README 添加镜像拉取次数徽章
+- **快速部署文档**: 添加 docker pull 一键部署说明
+- **镜像标签说明**: 文档化 latest、master、版本号等标签
+
+### 变更
+- **Docker 工作流**: 配置自动推送到 zhangbq1681/bcp-admin-ui
+- **README 更新**: 优化 Docker 部署章节结构
+
+### 基础设施
+- Docker Hub 自动化推送流水线
+- 多标签镜像发布（latest、分支名、版本号、commit SHA）
+
+---
+
 ## [1.1.0] - 2025-01-11
 
 ### 新增
@@ -101,6 +119,7 @@
 
 ---
 
-[Unreleased]: https://github.com/paul-zhang-sudo/bcp-admin-ui/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/paul-zhang-sudo/bcp-admin-ui/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/paul-zhang-sudo/bcp-admin-ui/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/paul-zhang-sudo/bcp-admin-ui/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/paul-zhang-sudo/bcp-admin-ui/releases/tag/v1.0.0

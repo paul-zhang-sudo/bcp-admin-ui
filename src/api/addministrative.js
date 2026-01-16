@@ -7,17 +7,7 @@ const URL = {
 
 // 2、新增/编辑
 export function submitForm(params) {
-  let ids = ''
-  if (params.menuArr && params.menuArr.length) {
-    params.menuArr.forEach(function(item, index) {
-      if (index === params.menuArr.length - 1) {
-        ids = ids + item
-      } else {
-        ids = ids + item + ','
-      }
-    })
-  }
-  params.menuIds = ids
+  params.menuIds = params.menuArr ? params.menuArr.join(',') : ''
   delete params.menuArr
   return request({
     url: params.id ? URL.role + '/' + params.id + '' : URL.role,
@@ -28,7 +18,6 @@ export function submitForm(params) {
 
 // 3、批量删除
 export function batchDelete(params) {
-  console.log(params)
   const queryParams = qs.stringify(params, { indices: false })
   return request({
     url: URL.role + '?' + queryParams,
@@ -37,7 +26,7 @@ export function batchDelete(params) {
   })
 }
 
-//4.单个删除
+// 4.单个删除
 export function singleDelete(id) {
   return request({
     url: URL.role + '/' + id,

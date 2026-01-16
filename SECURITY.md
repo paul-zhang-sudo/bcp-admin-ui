@@ -20,7 +20,7 @@
 请通过以下方式私下报告：
 
 1. **GitHub Security Advisories（推荐）**
-   - 访问 [Security Advisories](https://github.com/paul-zhang-sudo/bcp-admin-ui/security/advisories)
+   - 访问 [Security Advisories](https://github.com/bsi-bcp/bcp-admin-ui/security/advisories)
    - 点击 "Report a vulnerability"
    - 填写漏洞详情
 
@@ -109,9 +109,9 @@
 
 安全更新将通过以下渠道发布：
 
-- [GitHub Releases](https://github.com/paul-zhang-sudo/bcp-admin-ui/releases)
+- [GitHub Releases](https://github.com/bsi-bcp/bcp-admin-ui/releases)
 - [CHANGELOG.md](CHANGELOG.md)
-- [GitHub Security Advisories](https://github.com/paul-zhang-sudo/bcp-admin-ui/security/advisories)
+- [GitHub Security Advisories](https://github.com/bsi-bcp/bcp-admin-ui/security/advisories)
 
 ## 致谢
 

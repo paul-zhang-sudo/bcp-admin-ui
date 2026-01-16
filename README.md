@@ -1,12 +1,12 @@
 # BCP Admin UI
 
-[![CI](https://github.com/paul-zhang-sudo/bcp-admin-ui/actions/workflows/ci.yml/badge.svg)](https://github.com/paul-zhang-sudo/bcp-admin-ui/actions/workflows/ci.yml)
-[![Docker](https://github.com/paul-zhang-sudo/bcp-admin-ui/actions/workflows/docker.yml/badge.svg)](https://github.com/paul-zhang-sudo/bcp-admin-ui/actions/workflows/docker.yml)
+[![CI](https://github.com/bsi-bcp/bcp-admin-ui/actions/workflows/ci.yml/badge.svg)](https://github.com/bsi-bcp/bcp-admin-ui/actions/workflows/ci.yml)
+[![Docker](https://github.com/bsi-bcp/bcp-admin-ui/actions/workflows/docker.yml/badge.svg)](https://github.com/bsi-bcp/bcp-admin-ui/actions/workflows/docker.yml)
 [![Docker Hub](https://img.shields.io/docker/pulls/zhangbq1681/bcp-admin-ui)](https://hub.docker.com/r/zhangbq1681/bcp-admin-ui)
-[![License](https://img.shields.io/github/license/paul-zhang-sudo/bcp-admin-ui)](LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/paul-zhang-sudo/bcp-admin-ui)](https://github.com/paul-zhang-sudo/bcp-admin-ui/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/paul-zhang-sudo/bcp-admin-ui)](https://github.com/paul-zhang-sudo/bcp-admin-ui/network/members)
-[![GitHub issues](https://img.shields.io/github/issues/paul-zhang-sudo/bcp-admin-ui)](https://github.com/paul-zhang-sudo/bcp-admin-ui/issues)
+[![License](https://img.shields.io/github/license/bsi-bcp/bcp-admin-ui)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/bsi-bcp/bcp-admin-ui)](https://github.com/bsi-bcp/bcp-admin-ui/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/bsi-bcp/bcp-admin-ui)](https://github.com/bsi-bcp/bcp-admin-ui/network/members)
+[![GitHub issues](https://img.shields.io/github/issues/bsi-bcp/bcp-admin-ui)](https://github.com/bsi-bcp/bcp-admin-ui/issues)
 [![Vue](https://img.shields.io/badge/Vue-2.6.10-brightgreen)](https://vuejs.org/)
 [![Element UI](https://img.shields.io/badge/Element%20UI-2.10.1-blue)](https://element.eleme.io/)
 [![Node](https://img.shields.io/badge/Node-%3E%3D%208.9-green)](https://nodejs.org/)

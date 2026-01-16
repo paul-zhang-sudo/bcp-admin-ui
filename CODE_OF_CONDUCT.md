@@ -38,7 +38,7 @@
 
 可以通过以下方式向负责执行的社区领导者报告辱骂、骚扰或其他不可接受的行为：
 
-- GitHub Issues: https://github.com/paul-zhang-sudo/bcp-admin-ui/issues
+- GitHub Issues: https://github.com/bsi-bcp/bcp-admin-ui/issues
 - 项目维护者邮箱
 
 所有投诉都将得到及时和公平的审查和调查。

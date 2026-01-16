@@ -119,7 +119,7 @@
 
 ---
 
-[Unreleased]: https://github.com/paul-zhang-sudo/bcp-admin-ui/compare/v1.2.0...HEAD
-[1.2.0]: https://github.com/paul-zhang-sudo/bcp-admin-ui/compare/v1.1.0...v1.2.0
-[1.1.0]: https://github.com/paul-zhang-sudo/bcp-admin-ui/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/paul-zhang-sudo/bcp-admin-ui/releases/tag/v1.0.0
+[Unreleased]: https://github.com/bsi-bcp/bcp-admin-ui/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/bsi-bcp/bcp-admin-ui/compare/v1.1.0...v1.2.0
+[1.1.0]: https://github.com/bsi-bcp/bcp-admin-ui/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/bsi-bcp/bcp-admin-ui/releases/tag/v1.0.0

@@ -16,7 +16,7 @@
 
 ### 报告 Bug
 
-如果你发现了 Bug，请通过 [GitHub Issues](https://github.com/paul-zhang-sudo/bcp-admin-ui/issues) 提交，并包含以下信息：
+如果你发现了 Bug，请通过 [GitHub Issues](https://github.com/bsi-bcp/bcp-admin-ui/issues) 提交，并包含以下信息：
 
 1. **Bug 描述**：清晰简洁地描述问题
 2. **复现步骤**：详细的复现步骤
@@ -30,7 +30,7 @@
 
 ### 提交功能建议
 
-我们欢迎新功能的建议！请通过 [GitHub Issues](https://github.com/paul-zhang-sudo/bcp-admin-ui/issues) 提交，并：
+我们欢迎新功能的建议！请通过 [GitHub Issues](https://github.com/bsi-bcp/bcp-admin-ui/issues) 提交，并：
 
 1. 使用清晰的标题描述功能
 2. 详细说明功能的使用场景
@@ -235,7 +235,7 @@ export default {
 
 如果你有任何问题，可以：
 
-- 在 [GitHub Issues](https://github.com/paul-zhang-sudo/bcp-admin-ui/issues) 中提问
+- 在 [GitHub Issues](https://github.com/bsi-bcp/bcp-admin-ui/issues) 中提问
 - 查阅项目文档
 
 再次感谢你的贡献！
